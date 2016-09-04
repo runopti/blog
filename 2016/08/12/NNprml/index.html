@@ -1,0 +1,193 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="utf-8">
+  
+  <title>Neural Network Practice Problem: 5.25 | Notes</title>
+  <meta name="author" content="Yutaro Yamada">
+  
+  <meta name="description" content="I decided to do all the practice problems in Chapter 5 of Pattern Recognition and Machine Learning by Bishop. This chapter is about neural nets. Altho">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="Neural Network Practice Problem: 5.25"/>
+  <meta property="og:site_name" content="Notes"/>
+
+  
+    <meta property="og:image" content="undefined"/>
+  
+
+  <link href="/blog/favicon.png" rel="icon">
+  <link rel="alternate" href="/blog/atom.xml" title="Notes" type="application/atom+xml">
+  <link rel="stylesheet" href="/blog/css/style.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]--><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  
+
+</head>
+
+
+<body>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><header id="header" class="inner"><div class="alignleft">
+  <h1><a href="/blog/">Notes</a></h1>
+  <h2><a href="/blog/"></a></h2>
+</div>
+<nav id="main-nav" class="alignright">
+  <ul>
+    
+      <li><a href="/blog/">Home</a></li>
+    
+      <li><a href="/blog/archives">Archives</a></li>
+    
+  </ul>
+  <div class="clearfix"></div>
+</nav>
+<div class="clearfix"></div>
+</header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2016-08-12T14:45:14.000Z"><a href="/blog/2016/08/12/NNprml/">2016-08-12</a></time>
+      
+      
+  
+    <h1 class="title">Neural Network Practice Problem: 5.25</h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>I decided to do all the practice problems in Chapter 5 of <em>Pattern Recognition and Machine Learning</em> by Bishop. This chapter is about neural nets. Although the material per se is a little bit old, all the fundamentals of neural network are very well explained in here, so even today, when a bunch of new papers on deep neural network come out on arxiv almost everyday, it’s worth reading in my opinion. </p>
+<p>So today I did 5.25. The problem reads:</p>
+<hr>
+<p>Consider a quadratic error function of the form $ E = E_0 + (w - w^{\ast} )^T H (w - w^{\ast}) $, where $w^{\ast}$ represents the minimum, and the Hessian matrix $H$ is positive definite and constant. Suppose the initial weight vector $w^{(0)}$ is chosen to be at the origin and is updated using simple gradient descent<br>$$<br>w^{(\tau)} = w^{(\tau−1)} − \rho \nabla E<br>$$<br>where $\tau$ denotes the step number, and $\rho$ is the learning rate (which is assumed to be small). Show that, after $\tau$ steps, the components of the weight vector parallel to the eigenvectors of $H$ can be written<br>$$<br>w_j^{(\tau)} = (1 − (1 − \rho \lambda_j )^{\tau} ) w_j^{\ast}<br>$$<br>where $w_j = w^Tu_j$ , and $u_j$ and $\lambda_j$ are the eigenvectors and eigenvalues, respectively, of $H$. Show that as $\tau \rightarrow \infty$, this gives $w^{(\tau)} \rightarrow w^*$ as expected, provided $|1 − \rho \lambda_j | &lt; 1$.</p>
+<hr>
+<p>I’m assuming that since $H$ is a constant, it is evaluated at $w^{\ast}$, and $E_0 = E(w^{\ast})$. </p>
+<p>First, since $H$ is a symmetric matrix, we can say that the eigenvalues are all real, and the eigenvectors are orthogonal to each other. </p>
+<p>WLOG, we assume the $u_i$s are orthonormal. So the $u_i$s form the orthonormal basis, meaning we can express any vector with these basis vectors. This means that we can express $w - w^{\ast} = \sum_i^n v_i u_i$, where $v_i$s are appropriate coefficients. We can rewrite the equation using matrix form, which is $w - w^{\ast} = U v \iff v = U^T (w - w^{\ast})$, where $U$’s columns are $u_i$s. This expression gives us new perspective: we can view the weight vector $w$ in the original coordinate with a different coordinate, which is obtained by moving $w^{\ast}$ to the origin and rotate the original coordinate by the rotation matrix $U$. </p>
+<p>Let’s plug this into the given error function E. We get<br>$$<br>E = E_0 + \frac{1}{2} (Uv)^T H (Uv) = E_0 +\frac{1}{2} v^T U^T H U v<br>$$</p>
+<p>Note that $H$ is a symmetric, meaning it is diagonalizable. So we get<br>$$<br>E = E_0 + \frac{1}{2} v^T U^T UDU^T U v<br>$$</p>
+<p>Since U is an orthonormal matrix, we have this identity $U^T = U^{-1}$ so everything cancels out, yielding $E = E_0 + \frac{1}{2} v^T D v$. </p>
+<p>Note that $E$ is a function of $w$: $E(w)$. What if we look at it from the new coordinate? We see that $E_0(w^{\ast})$ should be 0 because in the new coordinate $w^{\ast}$ is the origin. Then, we have<br>$$<br>E(v) = \frac{1}{2} v^T D v = \frac{1}{2} \sum_i^n \lambda_i v_i^2<br>$$<br>(Note that D is a diagonal matrix with diagonal elements being eigenvalues.)</p>
+<p>Then,<br>$$<br>\nabla E_v(v) = D v =  \sum_i^n \lambda_i v_i<br>$$<br>So, the update equation becomes<br>$$<br>v^{(\tau)} = v^{(\tau-1)} - \rho D v^{(\tau-1)} = (I - \rho D) v^{(\tau - 1)}<br>$$</p>
+<p>If we look at the last equation coordinate wise, we get $v_i^{(\tau)} =  (1 - \rho \lambda_i) v_i^{(\tau - 1)} $, so by recursion, we get<br>$$<br>v_i^{(\tau)} =  (1 - \rho \lambda_i)^{\tau} v_i^{(0)}<br>$$<br>Now, let’s go back to the original coordinate, and we get<br>$$<br>w_i^{(\tau)} - w_i^{\ast} = (1 - \rho \lambda_i)^{\tau} w_i^{(0)} - w_i^{\ast}<br>$$<br>Since w^{(0)} is the origin, the left term is 0 and moving $w_i^{\ast}$ to left, we get<br>$$<br>w_i^{(\tau)} = (1 - (1 - \rho \lambda_i)^{\tau})w_i^{\ast}<br>$$<br>, which is what we wanted to show. </p>
+
+      
+    </div>
+    <footer>
+      
+        
+        
+  
+  <div class="tags">
+    <a href="/blog/tags/neuralnet/">neuralnet</a>, <a href="/blog/tags/PRML/">PRML</a>
+  </div>
+
+        
+  <div class="addthis addthis_toolbox addthis_default_style">
+    
+      <a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+    
+    
+      <a class="addthis_button_tweet"></a>
+    
+    
+      <a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
+    
+    
+      <a class="addthis_button_pinterest_pinit" pi:pinit:layout="horizontal"></a>
+    
+    <a class="addthis_counter addthis_pill_style"></a>
+  </div>
+  <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js"></script>
+
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+<section id="comment">
+  <h1 class="title">Kommentare</h1>
+
+  
+      <div id="fb-root"></div>
+<script>
+  (function(d, s, id) {
+    var js, fjs = d.getElementsByTagName(s)[0];
+    if (d.getElementById(id)) return;
+    js = d.createElement(s); js.id = id;
+    js.src = "//connect.facebook.net/en_US/all.js#xfbml=1&appId=123456789012345";
+    fjs.parentNode.insertBefore(js, fjs);
+  }(document, 'script', 'facebook-jssdk'));
+</script>
+
+<div class="fb-comments" data-href="http://runopti.github.io/blog/2016/08/12/NNprml/index.html" data-num-posts="5" data-width="840" data-colorscheme="light"></div>
+      
+  
+</section>
+
+</div></div>
+    <aside id="sidebar" class="alignright">
+  <div class="search">
+  <form action="//google.com/search" method="get" accept-charset="utf-8">
+    <input type="search" name="q" results="0" placeholder="Suche">
+    <input type="hidden" name="q" value="site:runopti.github.io/blog">
+  </form>
+</div>
+
+  
+
+  
+<div class="widget tag">
+  <h3 class="title">Tags</h3>
+  <ul class="entry">
+  
+    <li><a href="/blog/tags/PRML/">PRML</a><small>1</small></li>
+  
+    <li><a href="/blog/tags/cv/">cv</a><small>1</small></li>
+  
+    <li><a href="/blog/tags/math/">math</a><small>4</small></li>
+  
+    <li><a href="/blog/tags/neuralnet/">neuralnet</a><small>4</small></li>
+  
+    <li><a href="/blog/tags/optimization/">optimization</a><small>2</small></li>
+  
+    <li><a href="/blog/tags/paper-memo/">paper-memo</a><small>2</small></li>
+  
+    <li><a href="/blog/tags/research/">research</a><small>0</small></li>
+  
+  </ul>
+</div>
+
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2016 Yutaro Yamada
+  
+</div>
+<div class="clearfix"></div></footer>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<script src="/blog/js/jquery.imagesloaded.min.js"></script>
+<script src="/blog/js/gallery.js"></script>
+
+
+
+
+<link rel="stylesheet" href="/blog/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/blog/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+  $('.fancybox').fancybox();
+})(jQuery);
+</script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+
+</body>
+</html>

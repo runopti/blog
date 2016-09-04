@@ -1,0 +1,233 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="utf-8">
+  
+  <title>Hessian Computation using TensorFlow | Notes</title>
+  <meta name="author" content="Yutaro Yamada">
+  
+  <meta name="description" content="Compute Hessian using TensorFlowReference: 
+
+TensorFlow implementation of K-means algorithm: https://codesachin.wordpress.com/2015/11/14/k-means-clust">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="Hessian Computation using TensorFlow"/>
+  <meta property="og:site_name" content="Notes"/>
+
+  
+    <meta property="og:image" content="undefined"/>
+  
+
+  <link href="/blog/favicon.png" rel="icon">
+  <link rel="alternate" href="/blog/atom.xml" title="Notes" type="application/atom+xml">
+  <link rel="stylesheet" href="/blog/css/style.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]--><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  
+
+</head>
+
+
+<body>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><header id="header" class="inner"><div class="alignleft">
+  <h1><a href="/blog/">Notes</a></h1>
+  <h2><a href="/blog/"></a></h2>
+</div>
+<nav id="main-nav" class="alignright">
+  <ul>
+    
+      <li><a href="/blog/">Home</a></li>
+    
+      <li><a href="/blog/archives">Archives</a></li>
+    
+  </ul>
+  <div class="clearfix"></div>
+</nav>
+<div class="clearfix"></div>
+</header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2016-07-08T01:19:58.000Z"><a href="/blog/2016/07/07/HessianComp/">2016-07-07</a></time>
+      
+      
+  
+    <h1 class="title">Hessian Computation using TensorFlow</h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <h1 id="Compute-Hessian-using-TensorFlow"><a href="#Compute-Hessian-using-TensorFlow" class="headerlink" title="Compute Hessian using TensorFlow"></a>Compute Hessian using TensorFlow</h1><p>Reference: </p>
+<ul>
+<li>TensorFlow implementation of K-means algorithm: <a href="https://codesachin.wordpress.com/2015/11/14/k-means-clustering-with-tensorflow/" target="_blank" rel="external">https://codesachin.wordpress.com/2015/11/14/k-means-clustering-with-tensorflow/</a></li>
+<li>Calculating Hessian in Theano (application for Newton’s method): <a href="https://groups.google.com/forum/#!topic/theano-users/2c15kq68lp8" target="_blank" rel="external">https://groups.google.com/forum/#!topic/theano-users/2c15kq68lp8</a></li>
+</ul>
+<p>TensorFlow has a function called tf.gradients() that computes gradient. In the past, I’ve tried to compute Hessian of an neural network objective function in Torch7 using <a href="https://github.com/twitter/torch-autograd" target="_blank" rel="external">torch-autograd</a> but it was somewhat cumbersome; there wasn’t an easy way to store/reshape parameters because Lua uses table for everything. Today, I’d like to do the same thing in TensorFlow. It should be much easier than in Torch7 due to the symbolic differentiation. </p>
+<h3 id="Example-1-Quadratic-function"><a href="#Example-1-Quadratic-function" class="headerlink" title="Example 1 : Quadratic function"></a>Example 1 : Quadratic function</h3><p>We are going to use $f(x) = \frac{1}{2} x^T A x + b^T x + c$ as our first example to compute Hessian. When A is a symmetric matrix, the hessian of $f$ should be equal to $A$.</p>
+<p>For simplicity, let us start with:<br><span>$$A = \left[
+  \begin{array}{rrr}
+    2 &amp; 2 &amp; 2 \\
+    2 &amp; 2 &amp; 2 \\
+    2 &amp; 2 &amp; 2
+  \end{array}
+\right]
+\quad
+b = \left[
+  \begin{array}{rrr}
+    3  \\
+    3  \\
+    3 
+  \end{array}
+\right]
+\quad
+c = 1$$</span><!-- Has MathJax --></p>
+<p>The code below calculates the hessian for f(x).  </p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> tensorflow <span class="keyword">as</span> tf</div><div class="line"><span class="keyword">import</span> matplotlib <span class="keyword">as</span> plt</div><div class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</div><div class="line"><span class="keyword">import</span> math</div></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">getHessian</span><span class="params">(dim)</span>:</span></div><div class="line">    <span class="comment"># Each time getHessian is called, we create a new graph so that the default graph (which exists a priori) won't be filled with old ops.</span></div><div class="line">    g = tf.Graph()</div><div class="line">    <span class="keyword">with</span> g.as_default():</div><div class="line">        <span class="comment"># First create placeholders for inputs: A, b, and c.</span></div><div class="line">        A = tf.placeholder(tf.float32, shape=[dim, dim])</div><div class="line">        b = tf.placeholder(tf.float32, shape=[dim, <span class="number">1</span>])</div><div class="line">        c = tf.placeholder(tf.float32, shape=[<span class="number">1</span>])</div><div class="line"></div><div class="line">        <span class="comment"># Define our variable</span></div><div class="line">        x = tf.Variable(np.float32(np.repeat(<span class="number">1</span>,dim).reshape(dim,<span class="number">1</span>)))</div><div class="line"></div><div class="line">        <span class="comment"># Construct the computational graph for quadratic function: f(x) = 1/2 * x^t A x + b^t x + c</span></div><div class="line">        fx = <span class="number">0.5</span> * tf.matmul(tf.matmul(tf.transpose(x), A), x) + tf.matmul(tf.transpose(b), x) + c</div><div class="line">        </div><div class="line">        <span class="comment"># Get gradients of fx with repect to x</span></div><div class="line">        dfx = tf.gradients(fx, x)[<span class="number">0</span>]</div><div class="line">        <span class="comment"># Compute hessian</span></div><div class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(dim):</div><div class="line">            <span class="comment"># Take the i th value of the gradient vector dfx </span></div><div class="line">            <span class="comment"># tf.slice: https://www.tensorflow.org/versions/0.6.0/api_docs/python/array_ops.html#slice</span></div><div class="line">            dfx_i = tf.slice(dfx, begin=[i,<span class="number">0</span>] , size=[<span class="number">1</span>,<span class="number">1</span>])</div><div class="line">            <span class="comment"># Feed it to tf.gradients to compute the second derivative. </span></div><div class="line">            <span class="comment"># Since x is a vector and dfx_i is a scalar, this will return a vector : [d(dfx_i) / dx_i , ... , d(dfx_n) / dx_n]</span></div><div class="line">            ddfx_i = tf.gradients(dfx_i, x)[<span class="number">0</span>] <span class="comment"># whenever we use tf.gradients, make sure you get the actual tensors by putting [0] at the end</span></div><div class="line">            <span class="keyword">if</span> i == <span class="number">0</span>: hess = ddfx_i</div><div class="line">            <span class="keyword">else</span>: hess = tf.concat(<span class="number">1</span>, [hess, ddfx_i]) </div><div class="line">            <span class="comment">## Instead of doing this, you can just append each element to a list, and then do tf.pack(list_object) to get the hessian matrix too.</span></div><div class="line">            <span class="comment">## I'll use this alternative in the second example.  </span></div><div class="line"></div><div class="line">        <span class="comment"># Before we execute the graph, we need to initialize all the variables we defined</span></div><div class="line">        init_op = tf.initialize_all_variables()</div><div class="line">    </div><div class="line">        <span class="keyword">with</span> tf.Session() <span class="keyword">as</span> sess:</div><div class="line">            sess.run(init_op)</div><div class="line">            <span class="comment"># We need to feed actual values into the computational graph that we created above. </span></div><div class="line">            feed_dict = &#123;A: np.float32(np.repeat(<span class="number">2</span>,dim*dim).reshape(dim,dim)), b: np.float32(np.repeat(<span class="number">3</span>,dim).reshape(dim,<span class="number">1</span>)) , c: [<span class="number">1</span>]&#125;</div><div class="line">            <span class="comment"># sess.run() executes the graph. Here, "hess" will be calculated with the values in "feed_dict".</span></div><div class="line">            print(sess.run(hess, feed_dict))</div></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">getHessian(<span class="number">3</span>)</div></pre></td></tr></table></figure>
+<pre><code>[[ 2.  2.  2.]
+ [ 2.  2.  2.]
+ [ 2.  2.  2.]]
+</code></pre><p>We can see that the result of sess.run(hess, feed_dict) is indeed the desired value: A</p>
+<h3 id="Example-2-Multilayer-Perceptron"><a href="#Example-2-Multilayer-Perceptron" class="headerlink" title="Example 2 : Multilayer Perceptron"></a>Example 2 : Multilayer Perceptron</h3><p>Next, we’ll try a small neural network model: Multilayer perceptron. We need to modify our getHessian function a little bit; we need to create one-long vector for parameters, and then slice them according to the model architecture. Otherwise tf.gradients() cannot calculate the hessian matrix.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">getHessianMLP</span><span class="params">(n_input, n_hidden, n_output)</span>:</span></div><div class="line">    batch_size = <span class="number">1</span></div><div class="line"></div><div class="line">    <span class="comment"># Each time getHessianMLP is called, we create a new graph so that the default graph (which exists a priori) won't be filled with old ops.</span></div><div class="line">    g = tf.Graph()</div><div class="line">    <span class="keyword">with</span> g.as_default():</div><div class="line">        <span class="comment"># First create placeholders for inputs and targets: x_input, y_target</span></div><div class="line">        x_input = tf.placeholder(tf.float32, shape=[batch_size, n_input])</div><div class="line">        y_target = tf.placeholder(tf.float32, shape=[batch_size, n_output])</div><div class="line">    </div><div class="line">        <span class="comment"># Start constructing a computational graph for multilayer perceptron</span></div><div class="line">        <span class="comment">###  Since we want to store parameters as one long vector, we first define our parameters as below and then</span></div><div class="line">        <span class="comment">### reshape it later according to each layer specification.</span></div><div class="line">        parameters = tf.Variable(tf.concat(<span class="number">0</span>, [tf.truncated_normal([n_input * n_hidden, <span class="number">1</span>]), tf.zeros([n_hidden, <span class="number">1</span>]),</div><div class="line">                                                                                                      tf.truncated_normal([n_hidden * n_output,<span class="number">1</span>]), tf.zeros([n_output, <span class="number">1</span>])]))</div><div class="line">        </div><div class="line">        <span class="keyword">with</span> tf.name_scope(<span class="string">"hidden"</span>) <span class="keyword">as</span> scope:</div><div class="line">            idx_from = <span class="number">0</span> </div><div class="line">            weights = tf.reshape(tf.slice(parameters, begin=[idx_from, <span class="number">0</span>], size=[n_input*n_hidden, <span class="number">1</span>]), [n_input, n_hidden])</div><div class="line">            idx_from = idx_from + n_input*n_hidden</div><div class="line">            biases = tf.reshape(tf.slice(parameters, begin=[idx_from, <span class="number">0</span>], size=[n_hidden, <span class="number">1</span>]), [n_hidden]) <span class="comment"># tf.Variable(tf.truncated_normal([n_hidden]))</span></div><div class="line">            hidden = tf.matmul(x_input, weights) + biases</div><div class="line">        <span class="keyword">with</span> tf.name_scope(<span class="string">"linear"</span>) <span class="keyword">as</span> scope:</div><div class="line">            idx_from = idx_from + n_hidden</div><div class="line">            weights = tf.reshape(tf.slice(parameters, begin=[idx_from, <span class="number">0</span>], size=[n_hidden*n_output, <span class="number">1</span>]), [n_hidden, n_output])</div><div class="line">            idx_from = idx_from + n_hidden*n_output</div><div class="line">            biases = tf.reshape(tf.slice(parameters, begin=[idx_from, <span class="number">0</span>], size=[n_output, <span class="number">1</span>]), [n_output]) </div><div class="line">            output = tf.nn.softmax(tf.matmul(hidden, weights) + biases)</div><div class="line">        <span class="comment"># Define cross entropy loss</span></div><div class="line">        loss = -tf.reduce_sum(y_target * tf.log(output))</div><div class="line">        </div><div class="line">        </div><div class="line">        <span class="comment">### Note: We can call tf.trainable_variables to get GraphKeys.TRAINABLE_VARIABLES </span></div><div class="line">        <span class="comment">### because we are using g as our default graph inside the "with" scope. </span></div><div class="line">        <span class="comment"># Get trainable variables</span></div><div class="line">        tvars = tf.trainable_variables()</div><div class="line">        <span class="comment"># Get gradients of loss with repect to parameters</span></div><div class="line">        dloss_dw = tf.gradients(loss, tvars)[<span class="number">0</span>]</div><div class="line">        dim, _ = dloss_dw.get_shape()</div><div class="line">        hess = []</div><div class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(dim):</div><div class="line">            <span class="comment"># tf.slice: https://www.tensorflow.org/versions/0.6.0/api_docs/python/array_ops.html#slice</span></div><div class="line">            dfx_i = tf.slice(dloss_dw, begin=[i,<span class="number">0</span>] , size=[<span class="number">1</span>,<span class="number">1</span>])</div><div class="line">            ddfx_i = tf.gradients(dfx_i, parameters)[<span class="number">0</span>] <span class="comment"># whenever we use tf.gradients, make sure you get the actual tensors by putting [0] at the end</span></div><div class="line">            hess.append(ddfx_i)</div><div class="line">        hess = tf.squeeze(hess) </div><div class="line">        init_op = tf.initialize_all_variables()</div><div class="line">        <span class="keyword">with</span> tf.Session() <span class="keyword">as</span> sess:</div><div class="line">            sess.run(init_op)</div><div class="line">            feed_dict = &#123;x_input: np.random.random([batch_size, n_input]), y_target: np.random.random([batch_size, n_output])&#125;</div><div class="line">            <span class="comment">#print(sess.run(loss, feed_dict))</span></div><div class="line">            print(hess.get_shape())</div><div class="line">            print(sess.run(hess, feed_dict))</div></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">getHessianMLP(n_input=<span class="number">3</span>,n_hidden=<span class="number">4</span>,n_output=<span class="number">3</span>)</div></pre></td></tr></table></figure>
+<pre><code>(31, 31)
+[[  2.19931314e-03  -1.42659002e-03   1.30957202e-03  -8.70158256e-04
+    8.50890204e-03  -5.51932165e-03   5.06659178e-03  -3.36654740e-03
+    7.25943921e-03  -4.70885402e-03   4.32260381e-03  -2.87219742e-03
+    1.87662840e-02  -1.21727986e-02   1.11743081e-02  -7.42488075e-03
+   -5.90046346e-02   8.59218910e-02  -2.69172415e-02  -1.75508182e-03
+    3.87416431e-03  -2.11908249e-03  -5.98554593e-03   1.32124824e-02
+   -7.22693698e-03   3.56099289e-03  -7.86052924e-03   4.29953635e-03
+   -1.33406427e-02   2.94481106e-02  -1.61074679e-02]
+ [ -1.42659002e-03   2.15499196e-03   2.23391340e-03   5.85207134e-04
+   -5.51932165e-03   8.33742879e-03   8.64276756e-03   2.26410269e-03
+   -4.70885402e-03   7.11314566e-03   7.37364776e-03   1.93163764e-03
+   -1.21727986e-02   1.83881018e-02   1.90615226e-02   4.99345176e-03
+   -2.40529864e-03  -1.63234770e-02   1.87287778e-02  -5.11422716e-02
+    6.40287027e-02  -1.28864162e-02  -1.72071008e-03  -1.16775408e-02
+    1.33982506e-02   1.02370558e-03   6.94734277e-03  -7.97104836e-03
+   -3.83513537e-03  -2.60270163e-02   2.98621524e-02] ... [omitted] ]
+</code></pre>
+      
+    </div>
+    <footer>
+      
+        
+        
+  
+  <div class="tags">
+    <a href="/blog/tags/neuralnet/">neuralnet</a>
+  </div>
+
+        
+  <div class="addthis addthis_toolbox addthis_default_style">
+    
+      <a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+    
+    
+      <a class="addthis_button_tweet"></a>
+    
+    
+      <a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
+    
+    
+      <a class="addthis_button_pinterest_pinit" pi:pinit:layout="horizontal"></a>
+    
+    <a class="addthis_counter addthis_pill_style"></a>
+  </div>
+  <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js"></script>
+
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+<section id="comment">
+  <h1 class="title">Kommentare</h1>
+
+  
+      <div id="fb-root"></div>
+<script>
+  (function(d, s, id) {
+    var js, fjs = d.getElementsByTagName(s)[0];
+    if (d.getElementById(id)) return;
+    js = d.createElement(s); js.id = id;
+    js.src = "//connect.facebook.net/en_US/all.js#xfbml=1&appId=123456789012345";
+    fjs.parentNode.insertBefore(js, fjs);
+  }(document, 'script', 'facebook-jssdk'));
+</script>
+
+<div class="fb-comments" data-href="http://runopti.github.io/blog/2016/07/07/HessianComp/index.html" data-num-posts="5" data-width="840" data-colorscheme="light"></div>
+      
+  
+</section>
+
+</div></div>
+    <aside id="sidebar" class="alignright">
+  <div class="search">
+  <form action="//google.com/search" method="get" accept-charset="utf-8">
+    <input type="search" name="q" results="0" placeholder="Suche">
+    <input type="hidden" name="q" value="site:runopti.github.io/blog">
+  </form>
+</div>
+
+  
+
+  
+<div class="widget tag">
+  <h3 class="title">Tags</h3>
+  <ul class="entry">
+  
+    <li><a href="/blog/tags/PRML/">PRML</a><small>1</small></li>
+  
+    <li><a href="/blog/tags/cv/">cv</a><small>1</small></li>
+  
+    <li><a href="/blog/tags/math/">math</a><small>4</small></li>
+  
+    <li><a href="/blog/tags/neuralnet/">neuralnet</a><small>4</small></li>
+  
+    <li><a href="/blog/tags/optimization/">optimization</a><small>2</small></li>
+  
+    <li><a href="/blog/tags/paper-memo/">paper-memo</a><small>2</small></li>
+  
+    <li><a href="/blog/tags/research/">research</a><small>0</small></li>
+  
+  </ul>
+</div>
+
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2016 Yutaro Yamada
+  
+</div>
+<div class="clearfix"></div></footer>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<script src="/blog/js/jquery.imagesloaded.min.js"></script>
+<script src="/blog/js/gallery.js"></script>
+
+
+
+
+<link rel="stylesheet" href="/blog/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/blog/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+  $('.fancybox').fancybox();
+})(jQuery);
+</script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+
+</body>
+</html>

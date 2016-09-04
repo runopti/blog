@@ -1,0 +1,210 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="utf-8">
+  
+  <title>History of Neural Network Research since 2006 | Notes</title>
+  <meta name="author" content="Yutaro Yamada">
+  
+  <meta name="description" content="[On-going notes.] 
+Invention of pre-training2006: Hinton &amp;amp; Salakhutdinov “Reducing the Dimensionality of Data with Neural Networks”
+2007: Bengio “">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="History of Neural Network Research since 2006"/>
+  <meta property="og:site_name" content="Notes"/>
+
+  
+    <meta property="og:image" content="undefined"/>
+  
+
+  <link href="/blog/favicon.png" rel="icon">
+  <link rel="alternate" href="/blog/atom.xml" title="Notes" type="application/atom+xml">
+  <link rel="stylesheet" href="/blog/css/style.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]--><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  
+
+</head>
+
+
+<body>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><header id="header" class="inner"><div class="alignleft">
+  <h1><a href="/blog/">Notes</a></h1>
+  <h2><a href="/blog/"></a></h2>
+</div>
+<nav id="main-nav" class="alignright">
+  <ul>
+    
+      <li><a href="/blog/">Home</a></li>
+    
+      <li><a href="/blog/archives">Archives</a></li>
+    
+  </ul>
+  <div class="clearfix"></div>
+</nav>
+<div class="clearfix"></div>
+</header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2016-05-21T14:10:25.000Z"><a href="/blog/2016/05/21/History-of-Neural-Nets-Research-since-2006/">2016-05-21</a></time>
+      
+      
+  
+    <h1 class="title">History of Neural Network Research since 2006</h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>[On-going notes.] </p>
+<h2 id="Invention-of-pre-training"><a href="#Invention-of-pre-training" class="headerlink" title="Invention of pre-training"></a>Invention of pre-training</h2><p>2006: Hinton &amp; Salakhutdinov “Reducing the Dimensionality of Data with Neural Networks”</p>
+<p>2007: Bengio “Greedy layer-wise training of deep networks”</p>
+<p>Pre-training resolved the issue associated with training deep networks.</p>
+<p>Glorot, X. and Bengio, Y. “Understanding the difficulty of training deep feedforward neural networks”</p>
+<h2 id="2nd-order-method"><a href="#2nd-order-method" class="headerlink" title="2nd order method"></a>2nd order method</h2><p>2010: Martens “Deep Learning via Hessian-Free optimization”</p>
+<ul>
+<li>showed that HF “is capable of training DNNs from certain random initializations without the use of pre-training, and can achieve lower errors for the various auto-encoding tasks considered (by Hinton &amp; Salakhutdinov” (Hinton 2013))</li>
+</ul>
+<h2 id="maybe-SGD-wasn’t-that-bad-to-train-deep-nets"><a href="#maybe-SGD-wasn’t-that-bad-to-train-deep-nets" class="headerlink" title="maybe SGD wasn’t that bad to train deep nets?"></a>maybe SGD wasn’t that bad to train deep nets?</h2><ul>
+<li>Notably, Chapelle &amp; Erhan (2011) used the random initialization of Glorot &amp; Bengio (2010) and SGD to train the 11-layer autoencoder of Hinton &amp; Salakhutdinov (2006), and were able to surpass the results reported by Hinton &amp; Salakhutdinov (2006). While these results still fall short of those reported in Martens (2010) for the same tasks, they indicate that learning deep networks is not nearly as hard as was previously believed.</li>
+</ul>
+<h2 id="Dropout"><a href="#Dropout" class="headerlink" title="Dropout"></a>Dropout</h2><p>2012: Hinton [“Improving neural<br>networks by preventing co-adaptation of feature detectors”]<br>(<a href="http://arxiv.org/abs/1207.0580" target="_blank" rel="external">http://arxiv.org/abs/1207.0580</a>)</p>
+<h2 id="learning-rate-schedule-for-momentum"><a href="#learning-rate-schedule-for-momentum" class="headerlink" title="learning rate schedule for momentum"></a>learning rate schedule for momentum</h2><p>2013: Hinton <a href="http://www.cs.toronto.edu/~fritz/absps/momentum.pdf" target="_blank" rel="external">“On the importance of initialization and momentum in deep learning”</a></p>
+<ul>
+<li>when stochastic gradient descent with momentum uses a well-designed random initialization and a particular type of slowly increasing schedule for the momentum parameter, it can train both DNNs and RNNs (on datasets with long-term dependencies) to levels of performance that were previously achievable only with Hessian-Free optimization</li>
+</ul>
+<p>Interesting remark:</p>
+<ul>
+<li>Furthermore, carefully tuned momentum methods suffice for dealing with the curvature issues in deep and recurrent network training objectives without the need for sophisticated second-order methods.</li>
+</ul>
+<p>-&gt; what is the reasoning behind this?</p>
+<ul>
+<li><p>the optimization problem resembles an estimation one)</p>
+</li>
+<li><p>One explanation is that previous theoretical analyses and practical benchmarking focused on local convergence in the stochastic setting, which is more of an estimation problem than an optimization one (Bottou &amp; LeCun, 2004). In deep learning problems this final phase of learning is not nearly as long or important as the initial “transient phase” (Darken &amp; Moody, 1993), where a better argument can be made for the beneficial effects of momentum.</p>
+</li>
+</ul>
+<p>what does this estimation-optimization thing mean?</p>
+
+      
+    </div>
+    <footer>
+      
+        
+        
+  
+  <div class="tags">
+    <a href="/blog/tags/neuralnet/">neuralnet</a>
+  </div>
+
+        
+  <div class="addthis addthis_toolbox addthis_default_style">
+    
+      <a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+    
+    
+      <a class="addthis_button_tweet"></a>
+    
+    
+      <a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
+    
+    
+      <a class="addthis_button_pinterest_pinit" pi:pinit:layout="horizontal"></a>
+    
+    <a class="addthis_counter addthis_pill_style"></a>
+  </div>
+  <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js"></script>
+
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+<section id="comment">
+  <h1 class="title">Kommentare</h1>
+
+  
+      <div id="fb-root"></div>
+<script>
+  (function(d, s, id) {
+    var js, fjs = d.getElementsByTagName(s)[0];
+    if (d.getElementById(id)) return;
+    js = d.createElement(s); js.id = id;
+    js.src = "//connect.facebook.net/en_US/all.js#xfbml=1&appId=123456789012345";
+    fjs.parentNode.insertBefore(js, fjs);
+  }(document, 'script', 'facebook-jssdk'));
+</script>
+
+<div class="fb-comments" data-href="http://runopti.github.io/blog/2016/05/21/History-of-Neural-Nets-Research-since-2006/index.html" data-num-posts="5" data-width="840" data-colorscheme="light"></div>
+      
+  
+</section>
+
+</div></div>
+    <aside id="sidebar" class="alignright">
+  <div class="search">
+  <form action="//google.com/search" method="get" accept-charset="utf-8">
+    <input type="search" name="q" results="0" placeholder="Suche">
+    <input type="hidden" name="q" value="site:runopti.github.io/blog">
+  </form>
+</div>
+
+  
+
+  
+<div class="widget tag">
+  <h3 class="title">Tags</h3>
+  <ul class="entry">
+  
+    <li><a href="/blog/tags/PRML/">PRML</a><small>1</small></li>
+  
+    <li><a href="/blog/tags/cv/">cv</a><small>1</small></li>
+  
+    <li><a href="/blog/tags/math/">math</a><small>4</small></li>
+  
+    <li><a href="/blog/tags/neuralnet/">neuralnet</a><small>4</small></li>
+  
+    <li><a href="/blog/tags/optimization/">optimization</a><small>2</small></li>
+  
+    <li><a href="/blog/tags/paper-memo/">paper-memo</a><small>2</small></li>
+  
+    <li><a href="/blog/tags/research/">research</a><small>0</small></li>
+  
+  </ul>
+</div>
+
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2016 Yutaro Yamada
+  
+</div>
+<div class="clearfix"></div></footer>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<script src="/blog/js/jquery.imagesloaded.min.js"></script>
+<script src="/blog/js/gallery.js"></script>
+
+
+
+
+<link rel="stylesheet" href="/blog/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/blog/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+  $('.fancybox').fancybox();
+})(jQuery);
+</script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+
+</body>
+</html>

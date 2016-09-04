@@ -1,0 +1,292 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="utf-8">
+  
+  <title>Seite 2 | Notes</title>
+  <meta name="author" content="Yutaro Yamada">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  
+  <meta property="og:site_name" content="Notes"/>
+
+  
+    <meta property="og:image" content="undefined"/>
+  
+
+  <link href="/blog/favicon.png" rel="icon">
+  <link rel="alternate" href="/blog/atom.xml" title="Notes" type="application/atom+xml">
+  <link rel="stylesheet" href="/blog/css/style.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]--><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  
+
+</head>
+
+
+<body>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><header id="header" class="inner"><div class="alignleft">
+  <h1><a href="/blog/">Notes</a></h1>
+  <h2><a href="/blog/"></a></h2>
+</div>
+<nav id="main-nav" class="alignright">
+  <ul>
+    
+      <li><a href="/blog/">Home</a></li>
+    
+      <li><a href="/blog/archives">Archives</a></li>
+    
+  </ul>
+  <div class="clearfix"></div>
+</nav>
+<div class="clearfix"></div>
+</header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper">
+  <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2016-01-08T05:00:00.000Z"><a href="/blog/2016/01/08/reading-deep-residual-learning-for-image-recognition/">2016-01-08</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/blog/2016/01/08/reading-deep-residual-learning-for-image-recognition/">Reading: Deep Residual Learning for Image Recognition</a></h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>Links:</p>
+<p><a href="http://tinyclouds.org/colorize/" target="_blank" rel="external">http://tinyclouds.org/colorize/</a></p>
+<p>Notes:</p>
+<ul>
+<li><p>This problem, (gradient vanishing problem) however, has been largely addressed by normalized initialization [23, 9, 37, 13] and intermediate normalization layers [16], which enable networks with tens of layers to start converging for stochastic gradient descent (SGD) with backpropagation [22].  </p>
+</li>
+<li><p>Unexpectedly, such degradation is not caused by overfitting, and adding more layers to a suitably deep model leads to higher training error, as reported in [11, 42] and thoroughly verified by our experiments. Fig. 1 shows a typical example</p>
+</li>
+</ul>
+
+      
+    </div>
+    <footer>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+
+  <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2015-12-31T05:00:00.000Z"><a href="/blog/2015/12/31/reading-identifying-and-attacking-the-saddle-point-problem-in-high-dimensional-non-convex-optimization/">2015-12-31</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/blog/2015/12/31/reading-identifying-and-attacking-the-saddle-point-problem-in-high-dimensional-non-convex-optimization/">Reading: Identifying and attacking the saddle point problem in high dimensional non convex optimization</a></h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>Important notes:</p>
+<p>“Thus, given the proliferation of saddle points, not local minima, in high dimensional problems, the entire theoretical justification for quasi-Newton methods, i.e. the ability to rapidly descend to the bottom of a convex local minimum, becomes less relevant in high dimensional non-convex optimization.”</p>
+<p>The proposed algorithm uses the second order curvature information in a different way than quasi-Newton methods. </p>
+<p>Check:</p>
+<p>“Typical, random Gaussian error functions over N scalar variables, or dimensions, are increasingly likely to have saddle points rather than local minima as N increases. Indeed the ratio of the number of saddle points to local minima increases exponentially with the dimensionality N.”</p>
+<p>“Second order methods, like the Newton method, are designed to rapidly descend plateaus surroudning local minima by rescaling gradient steps by the inverse eigenvalues of the Hessian matrix.” -&gt; “H</p>
+
+      
+    </div>
+    <footer>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+
+  <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2015-03-14T04:00:00.000Z"><a href="/blog/2015/03/14/quiz1/">2015-03-14</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/blog/2015/03/14/quiz1/">nCk</a></h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>I read an article about <a href="http://en.wikipedia.org/wiki/Viterbi_algorithm" target="_blank" rel="external">Viterbi algorithm</a> on wikipedia today, which (somehow) reminded me of interesting combinatorics problems back in the day. So I will share some of my favorite ones.</p>
+<pre><code>Give an intuitively understandable description to the following combinatorics expressions:
+</code></pre><span>$$1. _n C _k = _{n-1}C _{k} + _{n-1} C _{k-1} \\
+
+2. k_n C _k = n _{n-1} C _{k-1} \\
+
+3. \sum _{r=k}^{n}{_{r} C _{k}} =  _{n+1} C _{k+1}$$</span><!-- Has MathJax -->
+
+      
+    </div>
+    <footer>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+
+  <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2015-03-12T04:00:00.000Z"><a href="/blog/2015/03/12/katex-test-2/">2015-03-12</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/blog/2015/03/12/katex-test-2/">Similarity between Backpropagation and Dynamic Programming</a></h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>I recently read <a href="http://nlp.stanford.edu/~socherr/sparseAutoencoder_2011new.pdf" target="_blank" rel="external">the lecture notes of Stanford CS294A</a> to learn about autoencoder, but I thought the derivation of partial derivatives for backpropagation algorithm in the lecture notes is a bit unfriendly, so I will try to fill a gap.</p>
+<p>On page 7, he describes one iteration of gradient descent updates as follows:<br><span>$$W_{ij}^{(l)} := 
+W_{ij}^{(l)} - \alpha \frac{\partial}{\partial W_{ij}^{(l)}}J\left(W,b\right)$$</span><!-- Has MathJax --></p>
+<p>We want to find the partial derivative. On the next page, he explains how the backpropagation algorithm can find partial derivatives, but he just set the error term $\delta$ out of nowhere, and it is hard to see where it actually comes from.</p>
+<p>We’ll try to see how the error term delta appears from the gradient update equation.</p>
+<p>So, the partial derivative in the update equation can be written as follows by chain rule:</p>
+<span>$$\frac {\partial J\left(W,b\right)} {\partial W_{ij}^{(l)}}
+= \frac {\partial J\left(W,b\right)} {\partial z_{j}^{(l+1)}} \frac {\partial z_{j}^{(l+1)}} {\partial W_{ij}^{(l)}}$$</span><!-- Has MathJax -->
+<p>From equation (6) on page 5 $z^{(l+1)} = W^{(l)}a^{(l)} +b^{(l)}$, we can see that the partial derivative Z/W is equal to a. So,</p>
+<span>$$\frac {\partial J\left(W,b\right)} {\partial W_{ij}^{(l)}} 
+= \frac {\partial J\left(W,b\right)} {\partial z_{j}^{(l+1)}} a_j^{(l)}$$</span><!-- Has MathJax -->
+<p>Now, we introduce the delta term by letting<br><span>$$\delta_i^{(l)}
+= \frac {\partial J\left(W,b\right)} {\partial z_{i}^{(l)}}
+=\frac {\partial J\left(W,b\right)} {\partial a_i^{(l)}} \frac {\partial a_i^{(l)}} {\partial z_{i}^{(l)}}
+= \frac {\partial J\left(W,b\right)} {\partial a_i^{(l)}} f&apos;(z_{i}^{(l)})$$</span><!-- Has MathJax --></p>
+<p>We look at the partial derivative we get above: $\frac {\partial J\left(W,b\right)} {\partial a_i^{(l)}}$. We can expand this partial derivative by chain rule as follows:</p>
+<p>When l = $n_l$:</p>
+<span>$$\frac {\partial J\left(W,b\right)} {\partial a_i^{(l)}} = \frac {\partial} {\partial a_{i}^{n_l}}{\frac {1} {2} \left\| y-h_{W,b}(x)\right\|^2}
+= -(y_i-a_i^{n_l})$$</span><!-- Has MathJax -->
+<p>Note that<br><span>$$a^{n_l} = h_{W,b}(x) \\
+J(W,b) ={\frac {1} {2} \left\| y-h_{W,b}(x)\right\|^2}$$</span><!-- Has MathJax --><br>as defined on page 6 in the lecture notes.</p>
+<p>When l $\neq n_l$:<br><span>$$\frac {\partial J\left(W,b\right)} {\partial a_{i}^{(l)}} = \frac {\partial J\left(W,b\right)} {\partial z_{1}^{(l+1)}} \frac {\partial z_{1}^{(l+1)}} {\partial a_i^{(l)}} + \frac {\partial J\left(W,b\right)} {\partial z_{2}^{(l+1)}} \frac {\partial z_{2}^{(l+1)}} {\partial a_i^{(l)}} + ... + \frac {\partial J\left(W,b\right)} {\partial z_{s_{l+1}}^{(l+1)}} \frac {\partial z_{s_{l+1}}^{(l+1)}} {\partial a_i^{(l)}}
+= \sum _{j=1}^{s_{l+1}}W_{ji}^{(l)}\delta_i^{(l+1)}$$</span><!-- Has MathJax --></p>
+<p>Note that from the equation (6) in the lecture notes and as we define earlier,<br><span>$$\frac {\partial J\left(W,b\right)} {\partial z_{j}^{(l+1)}} = W_{ji}^{(l)} \\
+\delta_i^{(l+1)} = \frac {\partial J\left(W,b\right)} {\partial z_{i}^{(l+1)}}$$</span><!-- Has MathJax --></p>
+<p>The idea behind the derivation for <span>$l &lt; n_l$</span><!-- Has MathJax --> (or actually, the whole algorithm of backpropagation) is sort of similar to dynamic programming. We want to know the partial derivative $\frac {\partial J\left(W,b\right)} {\partial a_{i}^{(l)}}$. That is, we want to know how a small change in $a_i^{(l)}$ might affect the overall cost function $J(W,b)$. In order to find that, we look for the consequences in the layer right after the layer l, which is (l+1). These values in the layer l+1 have to be computed prior to the current node in the layer l, which is $a_i^{(l)}$. Indeed, these values are already computed when we compute the value for $a_i^{(l)}$ because we start with the last layer, and move backward. This is exactly the idea behind dynamic programming.</p>
+<p>Finally, from above, we can get to the expressions as the lecture notes have on page 8 in the backpropagation algorithm:<br><span>$$\delta_i^{(n_l)} = -(y_i-a_i^{n_l})f&apos;(z_i^{(n_l)})
+\delta_i^{(l)} = \left( \sum _{j=1}^{s_{l+1}}W_{ji}^{(l)}\delta_j^{(l+1)}\right)f&apos;(z_i^{(l)})
+\frac {\partial } {\partial W_{ij}^{(l)}} J(W,b) = a_j^{(l)}\delta_i^{(l+1)}$$</span><!-- Has MathJax --></p>
+<p>Overall, the reason why the partial derivatives can be represented using the delta term is a bit hard to follow is that the logical flow of the derivation is flipped. The way the lecture notes set the delta term seems magical because it doesn’t explain why we would set the term as it is. The answer is that we just set it because that way the equations (in the derivation) look much simpler (and indeed, by setting the delta term, we can visualize filling up the 2D table, where each entry is a corresponding delta term as we do in dynamic programming.) If the delta term were introduced just for the convenience to make the equations look simpler in the sequence of computation from the update equation, it would have been much easier to follow.</p>
+
+      
+    </div>
+    <footer>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+
+
+<nav id="pagination">
+  
+    <a href="/blog/" class="alignleft prev">Vorherige Seite</a>
+  
+  
+  <div class="clearfix"></div>
+</nav></div></div>
+    <aside id="sidebar" class="alignright">
+  <div class="search">
+  <form action="//google.com/search" method="get" accept-charset="utf-8">
+    <input type="search" name="q" results="0" placeholder="Suche">
+    <input type="hidden" name="q" value="site:runopti.github.io/blog">
+  </form>
+</div>
+
+  
+
+  
+<div class="widget tag">
+  <h3 class="title">Tags</h3>
+  <ul class="entry">
+  
+    <li><a href="/blog/tags/PRML/">PRML</a><small>1</small></li>
+  
+    <li><a href="/blog/tags/cv/">cv</a><small>1</small></li>
+  
+    <li><a href="/blog/tags/math/">math</a><small>4</small></li>
+  
+    <li><a href="/blog/tags/neuralnet/">neuralnet</a><small>4</small></li>
+  
+    <li><a href="/blog/tags/optimization/">optimization</a><small>2</small></li>
+  
+    <li><a href="/blog/tags/paper-memo/">paper-memo</a><small>2</small></li>
+  
+    <li><a href="/blog/tags/research/">research</a><small>0</small></li>
+  
+  </ul>
+</div>
+
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2016 Yutaro Yamada
+  
+</div>
+<div class="clearfix"></div></footer>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<script src="/blog/js/jquery.imagesloaded.min.js"></script>
+<script src="/blog/js/gallery.js"></script>
+
+
+
+
+<link rel="stylesheet" href="/blog/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/blog/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+  $('.fancybox').fancybox();
+})(jQuery);
+</script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+
+</body>
+</html>
