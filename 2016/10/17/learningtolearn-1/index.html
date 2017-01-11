@@ -1,0 +1,236 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="utf-8">
+  
+  <title>Learning-To-Learn: RNN-based optimization | Notes</title>
+  <meta name="author" content="Yutaro Yamada">
+  
+  <meta name="description" content="Around the middle of June, this paper came up: Learning to learn by gradient descent by gradient descent. For someone who’s interested in optimization">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="Learning-To-Learn: RNN-based optimization"/>
+  <meta property="og:site_name" content="Notes"/>
+
+  
+    <meta property="og:image" content="undefined"/>
+  
+
+  <link href="/blog/favicon.png" rel="icon">
+  <link rel="alternate" href="/blog/atom.xml" title="Notes" type="application/atom+xml">
+  <link rel="stylesheet" href="/blog/css/style.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]--><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  
+
+</head>
+
+
+<body>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><header id="header" class="inner"><div class="alignleft">
+  <h1><a href="/blog/">Notes</a></h1>
+  <h2><a href="/blog/"></a></h2>
+</div>
+<nav id="main-nav" class="alignright">
+  <ul>
+    
+      <li><a href="/blog/">Home</a></li>
+    
+      <li><a href="/blog/archives">Archives</a></li>
+    
+  </ul>
+  <div class="clearfix"></div>
+</nav>
+<div class="clearfix"></div>
+</header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2016-10-17T00:46:43.000Z"><a href="/blog/2016/10/17/learningtolearn-1/">2016-10-17</a></time>
+      
+      
+  
+    <h1 class="title">Learning-To-Learn: RNN-based optimization</h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>Around the middle of June, this paper came up: <a href="https://arxiv.org/pdf/1606.04474v1.pdf" target="_blank" rel="external">Learning to learn by gradient descent by gradient descent</a>. For someone who’s interested in optimization and neural network, I think this paper is particularly interesting. The main idea is to use neural network to tune the learning rate for gradient descent.</p>
+<h2 id="Summary-of-the-paper"><a href="#Summary-of-the-paper" class="headerlink" title="Summary of the paper"></a>Summary of the paper</h2><p>Usually, when we want to design learning algorithms for an arbitrary problem, we first analyize the problem, and use the insight from the problem to design learning algorithms. This paper takes a one-level-above approach to algorithm design by considering a class of optimization problems, instead of focusing on one particular optimization problem. </p>
+<p>The question is how to learn an optimization algorithm that works on a “class” of optimization problems. The answer is by parameterizing the optimizer. This way, we effectively cast algorithm design as a learning problem, in which we want to learn the parameters of our oprimizer (, which we call the optimzee parameters.) </p>
+<p>But how do we model the optimizer? We use Recurrent Neural Network. Therefore, the parameters of the oprimizer are just the parameters of RNN. The parameters of the original function in question (i.e. the cost function of “one instance” of a problem that is drawn from a class of optimization problems) are referred as “optimizee parameters”, and are updated using the output of our optimizer, just as we update parameters using the gradient in SGD. The final optimzee parameters $\theta^*$ will be a function of the optimizer parameters and the function in question. In summary:</p>
+<p>$$\theta^* (\phi, f) \text{: the final optimzee parameters}$$ </p>
+<p>$$\phi \text{: the optimizer parameters}$$ </p>
+<p>$$ f\text{: the function in question} $$</p>
+<p>$$<br>\theta_{t+1} = \theta_t + g_t(\nabla f(\theta_t), \phi)  \text{: the update equation of the optimzee parameters}<br>$$<br>where $g_t$ is modeled by RNN. So $\phi$is the parameter of RNN. Because LSTM is better than vanilla RNN in general (citation needed*), the paper uses LSTM. Regular gradient descent algorithms use $g_t(\nabla f(\theta_t), \phi) = -\alpha \nabla f(\theta_t)$. </p>
+<p>RNN is a function of the current hidden state $h_t$, the current gradient $\nabla f(\theta_t)$, and the current parameter $\phi$.</p>
+<p>The “goodness” of our optimizer can be measured by the expected loss over the distribution of a function $f$, which is</p>
+<p>$$ L(\phi) = \mathbb{E}_f [f(\theta^* (\phi, f))] $$</p>
+<p>(I’m ignoring $w_t$ in the above expression of $L(\phi)$ because in the paper they set $w_t = 1$.)</p>
+<p>For example, suppose we have a function like $f(\theta) = a \theta^2 + b\theta + c$. If $a,b,c$ are drawn from the Gaussian distribution with some fixed value of $\mu$ and $\sigma$, the distribution of the function $f$ can be defined. (Here, the class of optimization problem is a function where $a,b,c$ are drawn from Gaussian.) In this example, the optimzee parameter is $\theta$. The optimizer (i.e. RNN) will be trained by optimizing functions which are randomly drawn from the function distribution, and we want to find the best parameter $\theta$. If we want to know how good our optimizer is, we can just take the expected value of $f$ to evaluate the goodness, and use gradient descent to optimize this $L(\phi)$.</p>
+<p>After understanding the above basics, all that is left is some implementation/architecture details for computational efficieny and learning capability. </p>
+<p>(By the way, there is a typo in page 3 under Equation 3; <span>$\nabla_{\theta} h(\theta)$</span><!-- Has MathJax --> should be <span>$\nabla_{\theta} f(\theta)$</span><!-- Has MathJax -->. Otherwise it doesn’t make sense.)</p>
+<h3 id="Coordinatewise-LSTM-optimizer"><a href="#Coordinatewise-LSTM-optimizer" class="headerlink" title="Coordinatewise LSTM optimizer"></a>Coordinatewise LSTM optimizer</h3><img src="/blog/2016/10/17/learningtolearn-1/compgraph.png" alt="title" title="title">
+<p>[The Figure is from the paper : Figure 2 on page 4]</p>
+<p>To make the learning problem computationally tractable, we update the optimzee parameters $\theta$ coordinatewise, much like other successful optimization methods such as Adam, RMSprop, and AdaGrad. </p>
+<p>To this end, we create $n$ LSTM cells, where $n$ is the number of dimensions of the parameter of the objective function. We setup the architecture so that the parameters for LSTM cells are shared, but each has a different hidden state. This can be achieved by the code below: </p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">lstm = tf.nn.rnn_cell.BasicLSTMCell(hidden_size)</div><div class="line"><span class="keyword">for</span> i <span class="keyword">in</span> range(number_of_coordinates):</div><div class="line">    cell_list[i] = tf.nn.rnn_cell.MultiRNNCell([lstm_cell] * num_layers) <span class="comment"># num_layers = 2 according to the paper.</span></div></pre></td></tr></table></figure>
+<h3 id="Information-sharing-between-coordinates"><a href="#Information-sharing-between-coordinates" class="headerlink" title="Information sharing between coordinates"></a>Information sharing between coordinates</h3><p>The coordinatewise architecture above treats each dimension independently, which ignore the effect of the correlations between coordinates. To address this issue, the paper introduces more sophisticated methods. The following two models allow different LSTM cells to communicate each other. </p>
+<ol>
+<li>Global averaging cells: a subset of cells are used to take the average and outputs that value for each cell.</li>
+<li>NTM-BFGS optimizer: More sophisticated version of 1., with the external memory that is shared between coordinates.</li>
+</ol>
+<h2 id="Implementation-Notes"><a href="#Implementation-Notes" class="headerlink" title="Implementation Notes"></a>Implementation Notes</h2><h3 id="Quadratic-function-3-1-in-the-paper"><a href="#Quadratic-function-3-1-in-the-paper" class="headerlink" title="Quadratic function (3.1 in the paper)"></a>Quadratic function (3.1 in the paper)</h3><p>Let’s say the objective funtion is $f(\theta) = || W \theta - y ||^2$, where the elements of $W$ and $y$ are drawn from the Gaussian distribution.</p>
+<p>$g$ (as in $\theta_{t+1} = \theta_t + g$) has to be the same size as the parameter size. So, it will be something like:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">g, state = lstm(input_t, hidden_state) <span class="comment"># here, input_t is the gradient of a hidden state at time t w.r.t. the hidden</span></div></pre></td></tr></table></figure>
+<p>And the update equation will be:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">param = param + g</div></pre></td></tr></table></figure>
+<p>The objective function is:<br><span>$$L(\phi) = \mathbb{E}_f [ \sum_{t=1}^T w_t f(\theta_t) ]$$</span><!-- Has MathJax --><br><span>$$\text{where,  }\theta_{t+1} = \theta_t + g_t$$</span><!-- Has MathJax --><br><span>$$\left[
+    \begin{array}{c}
+      g_t \\
+      h_{t+1}  
+    \end{array}
+\right]
+= RNN(\nabla_t, h_t, \phi)$$</span><!-- Has MathJax --></p>
+<p>The loss $L(\phi)$ can be computed by double-for loop. For each loop, a different function is randomly sampled from a distribution of $f$. Then, $\theta_t$ will be computed by the above update equation. So, overall, what we need to implement is the two-layer coordinate-wise LSTM cell. The actual implementation is <a href="https://github.com/runopti/Learning-To-Learn" target="_blank" rel="external">here</a>.  </p>
+<h1 id="Results"><a href="#Results" class="headerlink" title="Results"></a>Results</h1><img src="/blog/2016/10/17/learningtolearn-1/output_38_1.png" alt="title" title="title">
+<p>I compared the result with SGD, but SGD tends to work better than our optimizer for now. Need more improvements on the optimization…</p>
+
+      
+    </div>
+    <footer>
+      
+        
+        
+  
+  <div class="tags">
+    <a href="/blog/tags/neuralnet/">neuralnet</a>, <a href="/blog/tags/optimization/">optimization</a>
+  </div>
+
+        
+  <div class="addthis addthis_toolbox addthis_default_style">
+    
+      <a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+    
+    
+      <a class="addthis_button_tweet"></a>
+    
+    
+      <a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
+    
+    
+      <a class="addthis_button_pinterest_pinit" pi:pinit:layout="horizontal"></a>
+    
+    <a class="addthis_counter addthis_pill_style"></a>
+  </div>
+  <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js"></script>
+
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+<section id="comment">
+  <h1 class="title">Kommentare</h1>
+
+  
+      <div id="fb-root"></div>
+<script>
+  (function(d, s, id) {
+    var js, fjs = d.getElementsByTagName(s)[0];
+    if (d.getElementById(id)) return;
+    js = d.createElement(s); js.id = id;
+    js.src = "//connect.facebook.net/en_US/all.js#xfbml=1&appId=123456789012345";
+    fjs.parentNode.insertBefore(js, fjs);
+  }(document, 'script', 'facebook-jssdk'));
+</script>
+
+<div class="fb-comments" data-href="http://runopti.github.io/blog/2016/10/17/learningtolearn-1/index.html" data-num-posts="5" data-width="840" data-colorscheme="light"></div>
+      
+  
+</section>
+
+</div></div>
+    <aside id="sidebar" class="alignright">
+  <div class="search">
+  <form action="//google.com/search" method="get" accept-charset="utf-8">
+    <input type="search" name="q" results="0" placeholder="Suche">
+    <input type="hidden" name="q" value="site:runopti.github.io/blog">
+  </form>
+</div>
+
+  
+
+  
+<div class="widget tag">
+  <h3 class="title">Tags</h3>
+  <ul class="entry">
+  
+    <li><a href="/blog/tags/PRML/">PRML</a><small>1</small></li>
+  
+    <li><a href="/blog/tags/cv/">cv</a><small>1</small></li>
+  
+    <li><a href="/blog/tags/math/">math</a><small>5</small></li>
+  
+    <li><a href="/blog/tags/neuralnet/">neuralnet</a><small>5</small></li>
+  
+    <li><a href="/blog/tags/optimization/">optimization</a><small>3</small></li>
+  
+    <li><a href="/blog/tags/paper-memo/">paper-memo</a><small>2</small></li>
+  
+    <li><a href="/blog/tags/research/">research</a><small>0</small></li>
+  
+  </ul>
+</div>
+
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2017 Yutaro Yamada
+  
+</div>
+<div class="clearfix"></div></footer>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<script src="/blog/js/jquery.imagesloaded.min.js"></script>
+<script src="/blog/js/gallery.js"></script>
+
+
+
+
+<link rel="stylesheet" href="/blog/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/blog/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+  $('.fancybox').fancybox();
+})(jQuery);
+</script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"displayMath":[["$$","$$"],["\\[","\\]"]],"processEscapes":true}});
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+
+</body>
+</html>

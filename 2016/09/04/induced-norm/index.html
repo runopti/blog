@@ -3,17 +3,16 @@
 <head>
   <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="utf-8">
   
-  <title>History of Neural Network Research since 2006 | Notes</title>
+  <title>Induced Matrix Norm | Notes</title>
   <meta name="author" content="Yutaro Yamada">
   
-  <meta name="description" content="[On-going notes.] 
-Invention of pre-training2006: Hinton &amp;amp; Salakhutdinov “Reducing the Dimensionality of Data with Neural Networks”
-2007: Bengio “">
+  <meta name="description" content="Notes on Induced Matrix Norm. I think the name comes from that fact that it is “induced” by a vector.   
+Definition:For a $m$ by $n$ matrix $A$, and a">
   
   
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
-  <meta property="og:title" content="History of Neural Network Research since 2006"/>
+  <meta property="og:title" content="Induced Matrix Norm"/>
   <meta property="og:site_name" content="Notes"/>
 
   
@@ -53,45 +52,56 @@ Invention of pre-training2006: Hinton &amp;amp; Salakhutdinov “Reducing the Di
     <header>
       
         <div class="icon"></div>
-        <time datetime="2016-05-21T01:10:25.000Z"><a href="/blog/2016/05/21/History-of-Neural-Nets-Research-since-2006/">2016-05-21</a></time>
+        <time datetime="2016-09-04T05:21:09.000Z"><a href="/blog/2016/09/04/induced-norm/">2016-09-04</a></time>
       
       
   
-    <h1 class="title">History of Neural Network Research since 2006</h1>
+    <h1 class="title">Induced Matrix Norm</h1>
   
 
     </header>
     <div class="entry">
       
-        <p>[On-going notes.] </p>
-<h2 id="Invention-of-pre-training"><a href="#Invention-of-pre-training" class="headerlink" title="Invention of pre-training"></a>Invention of pre-training</h2><p>2006: Hinton &amp; Salakhutdinov “Reducing the Dimensionality of Data with Neural Networks”</p>
-<p>2007: Bengio “Greedy layer-wise training of deep networks”</p>
-<p>Pre-training resolved the issue associated with training deep networks.</p>
-<p>Glorot, X. and Bengio, Y. “Understanding the difficulty of training deep feedforward neural networks”</p>
-<h2 id="2nd-order-method"><a href="#2nd-order-method" class="headerlink" title="2nd order method"></a>2nd order method</h2><p>2010: Martens “Deep Learning via Hessian-Free optimization”</p>
-<ul>
-<li>showed that HF “is capable of training DNNs from certain random initializations without the use of pre-training, and can achieve lower errors for the various auto-encoding tasks considered (by Hinton &amp; Salakhutdinov” (Hinton 2013))</li>
+        <p>Notes on Induced Matrix Norm. I think the name comes from that fact that it is “induced” by a vector.   </p>
+<p><strong>Definition:</strong><br>For a $m$ by $n$ matrix $A$, and a n-dimensional vector $x$,<br><span>$$|| A ||_p = \sup \{ ||Ax||_p : ||x||_p = 1\}$$</span><!-- Has MathJax --></p>
+<p>Note that since given $A$, $ ||Ax||_p$ is a function of $x$, which is closed and bounded as $||x||_p = 1$, $||Ax||_p$ achieves maximum or minimum on some $x$. So we can replace $\sup$ with $\max$. </p>
+<p><strong>Claim I : $p = 1$:</strong><br><span>$$||A||_1 = \max_{1 \le j \le n} \sum_{i=1}^m a_{ij}$$</span><!-- Has MathJax --></p>
+<hr>
+<p>First, let us find some upper bound on $||Ax||_1$.<br><span>$$||Ax||_1 =  || \sum_{i=1}^n A_i x_i ||_1 \le \sum_{i=1}^n |x_i| || A_i ||_1 
+\le \max_j ||A_j|| \sum_{i=1}^n |x_i| = \max_j ||A_j|| ||x||_1$$</span><!-- Has MathJax --></p>
+<p>So given A, we have found a constant $K = \max_j ||A_j||$ that will upper bound $||Ax||_1$ by  $K||x||_1$:<br><span>$$||Ax||_1 \le  K ||x||_1$$</span><!-- Has MathJax --></p>
+<p>Next, we show that there exists $x$ for which we have equality for the above equation. Since $K = \max_j ||A_j||$, we can just let $x = [0, 0, …, 1, .. 0, 0]$ where 1 is at the $k$th position. $k$ is the index that satisfies $||A_k|| = \max_j ||A_j||$.    </p>
+<p>So we’ve found that ||A||_1 = \max_j ||A_j|| . </p>
+<p><strong>Claim II : $p = \infty$:</strong><br><span>$$||A||_{\infty} = \max_{1 \le i \le m} \sum_{j=1}^n a_{ij}$$</span><!-- Has MathJax --></p>
+<hr>
+<p>First, consider <span>$|| Ax ||_{\infty}$</span><!-- Has MathJax -->. Then,</p>
+<span>$$\| Ax \|_{\infty} = 
+\left \|
+ \begin{matrix}
+  \sum_{j=1}^n a_{1j} x_j  \\
+  \sum_{j=1}^n a_{2j} x_j  \\
+  \vdots \\
+  \sum_{j=1}^n a_{mj} x_j
+ \end{matrix}
+\right \|_{\infty} = \max_i \left | \sum_{j=1}^n a_{ij} x_j \right | 
+\le \max_i \sum_{j=1}^n \left | a_{ij} x_j \right | 
+\le \max_i \sum_{j=1}^n \left | a_{ij} \right | \max_k \left | x_k \right |
+= \max_i \left( \sum_{j=1}^n \left | a_{ij} \right | \right) \| x \|_{\infty}$$</span><!-- Has MathJax --> 
+<p>So given $A$, we have found a constant <span>$K = \max_i \left( \sum_{j=1}^n \left | a_{ij} \right | \right)$</span><!-- Has MathJax --> that will upper bound <span>$||Ax||_{\infty}$</span><!-- Has MathJax -->:<br><span>$$\| Ax \|_{\infty} \le  K &nbsp;\| x \|_{\infty}$$</span><!-- Has MathJax --> </p>
+<p>To find <span>$\| A \|_{\infty}$</span><!-- Has MathJax -->, we need to find some $x$ that equates the above inequality, which is fortunately straightforward as in the case of $p = 1$. By examining :</p>
+<span>$$\max_i \left | \sum_k a_{ik} x_k \right | = K \max_k | x_k |$$</span><!-- Has MathJax --> 
+<p>we notice that we achieve the equality if we let<br><span>$$x_k = \begin{cases}
+  \frac{ a_{ik} }{ | a_{ik} |} &amp; (a_{ik} \neq 0) \\
+  1  &amp;  (a_{ik} = 0)
+\end{cases}$$</span><!-- Has MathJax --></p>
+<p>where $k$ is the index such that <span>$A_{k,:} = \max_i \left( \sum_{j=1}^n \left | a_{ij} \right | \right)$</span><!-- Has MathJax -->  <strong><em>Note:</em></strong>  I’m using $A_k$ as denoting the $k$ th column vector of a matrix $A$, and <span>$A_{k, :}$</span><!-- Has MathJax --> as denoting the $k$ th row vector of $A$. </p>
+<p><strong>Claim III : $p = 2$:</strong><br><span>$$\|A\|_2 =  \sqrt{ \lambda_{\max} }$$</span><!-- Has MathJax --><br>where $\lambda_{\max}$ is the largest eigenvalue of $A^T A$. </p>
+<hr>
+<p>This is the spectral norm! </p>
+<h2 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h2><ul>
+<li><a href="https://en.wikipedia.org/wiki/Matrix_norm" target="_blank" rel="external">https://en.wikipedia.org/wiki/Matrix_norm</a></li>
+<li><a href="http://www.ece.uah.edu/courses/ee448/chapter4.pdf" target="_blank" rel="external">http://www.ece.uah.edu/courses/ee448/chapter4.pdf</a></li>
 </ul>
-<h2 id="maybe-SGD-wasn’t-that-bad-to-train-deep-nets"><a href="#maybe-SGD-wasn’t-that-bad-to-train-deep-nets" class="headerlink" title="maybe SGD wasn’t that bad to train deep nets?"></a>maybe SGD wasn’t that bad to train deep nets?</h2><ul>
-<li>Notably, Chapelle &amp; Erhan (2011) used the random initialization of Glorot &amp; Bengio (2010) and SGD to train the 11-layer autoencoder of Hinton &amp; Salakhutdinov (2006), and were able to surpass the results reported by Hinton &amp; Salakhutdinov (2006). While these results still fall short of those reported in Martens (2010) for the same tasks, they indicate that learning deep networks is not nearly as hard as was previously believed.</li>
-</ul>
-<h2 id="Dropout"><a href="#Dropout" class="headerlink" title="Dropout"></a>Dropout</h2><p>2012: Hinton [“Improving neural<br>networks by preventing co-adaptation of feature detectors”]<br>(<a href="http://arxiv.org/abs/1207.0580" target="_blank" rel="external">http://arxiv.org/abs/1207.0580</a>)</p>
-<h2 id="learning-rate-schedule-for-momentum"><a href="#learning-rate-schedule-for-momentum" class="headerlink" title="learning rate schedule for momentum"></a>learning rate schedule for momentum</h2><p>2013: Hinton <a href="http://www.cs.toronto.edu/~fritz/absps/momentum.pdf" target="_blank" rel="external">“On the importance of initialization and momentum in deep learning”</a></p>
-<ul>
-<li>when stochastic gradient descent with momentum uses a well-designed random initialization and a particular type of slowly increasing schedule for the momentum parameter, it can train both DNNs and RNNs (on datasets with long-term dependencies) to levels of performance that were previously achievable only with Hessian-Free optimization</li>
-</ul>
-<p>Interesting remark:</p>
-<ul>
-<li>Furthermore, carefully tuned momentum methods suffice for dealing with the curvature issues in deep and recurrent network training objectives without the need for sophisticated second-order methods.</li>
-</ul>
-<p>-&gt; what is the reasoning behind this?</p>
-<ul>
-<li><p>the optimization problem resembles an estimation one)</p>
-</li>
-<li><p>One explanation is that previous theoretical analyses and practical benchmarking focused on local convergence in the stochastic setting, which is more of an estimation problem than an optimization one (Bottou &amp; LeCun, 2004). In deep learning problems this final phase of learning is not nearly as long or important as the initial “transient phase” (Darken &amp; Moody, 1993), where a better argument can be made for the beneficial effects of momentum.</p>
-</li>
-</ul>
-<p>what does this estimation-optimization thing mean?</p>
 
       
     </div>
@@ -101,7 +111,7 @@ Invention of pre-training2006: Hinton &amp;amp; Salakhutdinov “Reducing the Di
         
   
   <div class="tags">
-    <a href="/blog/tags/neuralnet/">neuralnet</a>
+    <a href="/blog/tags/math/">math</a>
   </div>
 
         
@@ -144,7 +154,7 @@ Invention of pre-training2006: Hinton &amp;amp; Salakhutdinov “Reducing the Di
   }(document, 'script', 'facebook-jssdk'));
 </script>
 
-<div class="fb-comments" data-href="http://runopti.github.io/blog/2016/05/21/History-of-Neural-Nets-Research-since-2006/index.html" data-num-posts="5" data-width="840" data-colorscheme="light"></div>
+<div class="fb-comments" data-href="http://runopti.github.io/blog/2016/09/04/induced-norm/index.html" data-num-posts="5" data-width="840" data-colorscheme="light"></div>
       
   
 </section>
