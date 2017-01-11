@@ -55,7 +55,7 @@ $$ L(x,p) = c^T x + p^T(b">
     <header>
       
         <div class="icon"></div>
-        <time datetime="2016-05-28T05:47:17.000Z"><a href="/blog/2016/05/28/duality/">2016-05-28</a></time>
+        <time datetime="2016-05-27T16:47:17.000Z"><a href="/blog/2016/05/28/duality/">2016-05-28</a></time>
       
       
   
@@ -170,7 +170,7 @@ s.t. \quad Ax \ge b, x \ge 0$$</span><!-- Has MathJax -->
   </div>
   <footer id="footer" class="inner"><div class="alignleft">
   
-  &copy; 2016 Yutaro Yamada
+  &copy; 2017 Yutaro Yamada
   
 </div>
 <div class="clearfix"></div></footer>
@@ -187,7 +187,24 @@ s.t. \quad Ax \ge b, x \ge 0$$</span><!-- Has MathJax -->
 (function($){
   $('.fancybox').fancybox();
 })(jQuery);
-</script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+</script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"displayMath":[["$$","$$"],["\\[","\\]"]],"processEscapes":true}});
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
 
 </body>
 </html>

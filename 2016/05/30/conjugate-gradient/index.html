@@ -57,7 +57,7 @@ $$-\nabla f(x_i)^T r_{i+1} = 0 \\
     <header>
       
         <div class="icon"></div>
-        <time datetime="2016-05-30T06:55:14.000Z"><a href="/blog/2016/05/30/conjugate-gradient/">2016-05-30</a></time>
+        <time datetime="2016-05-29T17:55:14.000Z"><a href="/blog/2016/05/30/conjugate-gradient/">2016-05-30</a></time>
       
       
   
@@ -207,7 +207,7 @@ $$-\nabla f(x_i)^T r_{i+1} = 0 \\
   </div>
   <footer id="footer" class="inner"><div class="alignleft">
   
-  &copy; 2016 Yutaro Yamada
+  &copy; 2017 Yutaro Yamada
   
 </div>
 <div class="clearfix"></div></footer>
@@ -224,7 +224,24 @@ $$-\nabla f(x_i)^T r_{i+1} = 0 \\
 (function($){
   $('.fancybox').fancybox();
 })(jQuery);
-</script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+</script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"displayMath":[["$$","$$"],["\\[","\\]"]],"processEscapes":true}});
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
 
 </body>
 </html>

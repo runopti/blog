@@ -3,15 +3,15 @@
 <head>
   <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="utf-8">
   
-  <title>Neural Network Practice Problem: 5.25 | Notes</title>
+  <title>Test | Notes</title>
   <meta name="author" content="Yutaro Yamada">
   
-  <meta name="description" content="I decided to do all the practice problems in Chapter 5 of Pattern Recognition and Machine Learning by Bishop. This chapter is about neural nets. Altho">
+  <meta name="description" content="test post">
   
   
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
-  <meta property="og:title" content="Neural Network Practice Problem: 5.25"/>
+  <meta property="og:title" content="Test"/>
   <meta property="og:site_name" content="Notes"/>
 
   
@@ -51,30 +51,17 @@
     <header>
       
         <div class="icon"></div>
-        <time datetime="2016-08-12T01:45:14.000Z"><a href="/blog/2016/08/12/NNprml/">2016-08-12</a></time>
+        <time datetime="2017-01-11T05:54:51.000Z"><a href="/blog/2017/01/11/untitled-1484114091491/">2017-01-11</a></time>
       
       
   
-    <h1 class="title">Neural Network Practice Problem: 5.25</h1>
+    <h1 class="title">Test</h1>
   
 
     </header>
     <div class="entry">
       
-        <p>I decided to do all the practice problems in Chapter 5 of <em>Pattern Recognition and Machine Learning</em> by Bishop. This chapter is about neural nets. Although the material per se is a little bit old, all the fundamentals of neural network are very well explained in here, so even today, when a bunch of new papers on deep neural network come out on arxiv almost everyday, it’s worth reading in my opinion. </p>
-<p>So today I did 5.25. The problem reads:</p>
-<hr>
-<p>Consider a quadratic error function of the form $ E = E_0 + (w - w^{\ast} )^T H (w - w^{\ast}) $, where $w^{\ast}$ represents the minimum, and the Hessian matrix $H$ is positive definite and constant. Suppose the initial weight vector $w^{(0)}$ is chosen to be at the origin and is updated using simple gradient descent<br>$$<br>w^{(\tau)} = w^{(\tau−1)} − \rho \nabla E<br>$$<br>where $\tau$ denotes the step number, and $\rho$ is the learning rate (which is assumed to be small). Show that, after $\tau$ steps, the components of the weight vector parallel to the eigenvectors of $H$ can be written<br>$$<br>w_j^{(\tau)} = (1 − (1 − \rho \lambda_j )^{\tau} ) w_j^{\ast}<br>$$<br>where $w_j = w^Tu_j$ , and $u_j$ and $\lambda_j$ are the eigenvectors and eigenvalues, respectively, of $H$. Show that as $\tau \rightarrow \infty$, this gives $w^{(\tau)} \rightarrow w^*$ as expected, provided $|1 − \rho \lambda_j | &lt; 1$.</p>
-<hr>
-<p>I’m assuming that since $H$ is a constant, it is evaluated at $w^{\ast}$, and $E_0 = E(w^{\ast})$. </p>
-<p>First, since $H$ is a symmetric matrix, we can say that the eigenvalues are all real, and the eigenvectors are orthogonal to each other. </p>
-<p>WLOG, we assume the $u_i$s are orthonormal. So the $u_i$s form the orthonormal basis, meaning we can express any vector with these basis vectors. This means that we can express $w - w^{\ast} = \sum_i^n v_i u_i$, where $v_i$s are appropriate coefficients. We can rewrite the equation using matrix form, which is $w - w^{\ast} = U v \iff v = U^T (w - w^{\ast})$, where $U$’s columns are $u_i$s. This expression gives us new perspective: we can view the weight vector $w$ in the original coordinate with a different coordinate, which is obtained by moving $w^{\ast}$ to the origin and rotate the original coordinate by the rotation matrix $U$. </p>
-<p>Let’s plug this into the given error function E. We get<br>$$<br>E = E_0 + \frac{1}{2} (Uv)^T H (Uv) = E_0 +\frac{1}{2} v^T U^T H U v<br>$$</p>
-<p>Note that $H$ is a symmetric, meaning it is diagonalizable. So we get<br>$$<br>E = E_0 + \frac{1}{2} v^T U^T UDU^T U v<br>$$</p>
-<p>Since U is an orthonormal matrix, we have this identity $U^T = U^{-1}$ so everything cancels out, yielding $E = E_0 + \frac{1}{2} v^T D v$. </p>
-<p>Note that $E$ is a function of $w$: $E(w)$. What if we look at it from the new coordinate? We see that $E_0(w^{\ast})$ should be 0 because in the new coordinate $w^{\ast}$ is the origin. Then, we have<br>$$<br>E(v) = \frac{1}{2} v^T D v = \frac{1}{2} \sum_i^n \lambda_i v_i^2<br>$$<br>(Note that D is a diagonal matrix with diagonal elements being eigenvalues.)</p>
-<p>Then,<br>$$<br>\nabla E_v(v) = D v =  \sum_i^n \lambda_i v_i<br>$$<br>So, the update equation becomes<br>$$<br>v^{(\tau)} = v^{(\tau-1)} - \rho D v^{(\tau-1)} = (I - \rho D) v^{(\tau - 1)}<br>$$</p>
-<p>If we look at the last equation coordinate wise, we get $v_i^{(\tau)} =  (1 - \rho \lambda_i) v_i^{(\tau - 1)} $, so by recursion, we get<br>$$<br>v_i^{(\tau)} =  (1 - \rho \lambda_i)^{\tau} v_i^{(0)}<br>$$<br>Now, let’s go back to the original coordinate, and we get<br>$$<br>w_i^{(\tau)} - w_i^{\ast} = (1 - \rho \lambda_i)^{\tau} w_i^{(0)} - w_i^{\ast}<br>$$<br>Since w^{(0)} is the origin, the left term is 0 and moving $w_i^{\ast}$ to left, we get<br>$$<br>w_i^{(\tau)} = (1 - (1 - \rho \lambda_i)^{\tau})w_i^{\ast}<br>$$<br>, which is what we wanted to show. </p>
+        <p>test post</p>
 
       
     </div>
@@ -82,11 +69,6 @@
       
         
         
-  
-  <div class="tags">
-    <a href="/blog/tags/neuralnet/">neuralnet</a>, <a href="/blog/tags/PRML/">PRML</a>
-  </div>
-
         
   <div class="addthis addthis_toolbox addthis_default_style">
     
@@ -127,7 +109,7 @@
   }(document, 'script', 'facebook-jssdk'));
 </script>
 
-<div class="fb-comments" data-href="http://runopti.github.io/blog/2016/08/12/NNprml/index.html" data-num-posts="5" data-width="840" data-colorscheme="light"></div>
+<div class="fb-comments" data-href="http://runopti.github.io/blog/2017/01/11/untitled-1484114091491/index.html" data-num-posts="5" data-width="840" data-colorscheme="light"></div>
       
   
 </section>
