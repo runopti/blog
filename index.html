@@ -50,6 +50,55 @@
     <header>
       
         <div class="icon"></div>
+        <time datetime="2017-01-12T11:21:16.000Z"><a href="/blog/2017/01/12/gan-bss/">2017-01-12</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/blog/2017/01/12/gan-bss/">Blind-Source Separation using Generative Adversarial Network</a></h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <h1 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h1><p>The goal of this experiment is to see if blind-source separation can be solvable in an unsupervised fashion with an aid from pre-trained GAN. </p>
+<p>The application of this model can be extended to image separation and audio processing. For image processing: Given a mixture of two images, can we recover the original two images? For audio processing: Given the input of duet of piano and guitar, can we construct a model that separates piano from guitar in an unsupervised manner? </p>
+<h1 id="Generative-Adversarial-Network"><a href="#Generative-Adversarial-Network" class="headerlink" title="Generative Adversarial Network"></a>Generative Adversarial Network</h1><p>GAN is a generative model that can be used to perform high dimensional density estimation in a very sophisticated manner. </p>
+<p>Density estimation can be done by $G$, which represents a generative model, usually constructed by neural networks. Specifically, we consider $G: z \rightarrow x$ where $z$ is drawn from some known distribution (usually uniform distribution) and $x$ is a point in the high dimensional space, which can be viewed as a realization of a random variable $X$ that is drawn from a learned probability distribution (modeled by $G$) over the high dimensional space. For example, we can consider the domain of $X$ to be the entire image space, and choose $G$ to be a sophisticated CNN that can upsample a simple uniformly random vector $z$ (usually lives in some low dimension) to an image $x$ (which usually lives in a very high dimensional space). </p>
+<p>Now the question is how to construct such a function that can model complex probability distribution. We can achieve this by introducing another model $D$, which represents a discriminative model. That is, we consider $D: x \rightarrow [0,1]$, where $x$ is a point in the same high-dimensional space as the range of $G$. The output of $D$ represents a probability of $x$ coming from a true distribution or a “fake” distribution modeled by $G$. We iteratively update $G$ and $D$ until we are satisfied with the quality of the results from $G$.   </p>
+<p>How can we construct a loss function that realizes these specifications?<br>Note that $D$ outputs a value between 0 and 1. That is, $D$  The big picture is that we iteratively update both models $G$ and $D$  (will finish this part on the train.)</p>
+<h1 id="Blind-Source-separation"><a href="#Blind-Source-separation" class="headerlink" title="Blind-Source separation"></a>Blind-Source separation</h1><p>The central question of BSS is this: Given an observation that is a mix of a number of different sources, can we recover both the underlying mechanism of such mix and the sources, without knowing the information of the sources?</p>
+<p>The answer is in general “no”, because the problem is too difficult to solve. But if we add some conditions on the properties of sources, then we could recover both when the mixing mechanism can be considered as a linear system.  </p>
+<p>Here, we consider a non-linear version of the problem. That is, given an observation $x$, we assume $x$ is generated from an unknown non-linear function $F$ with an unknown input $z$. </p>
+<p>To make it suitable for our image experiment, suppose that we mix two different images, say, MNIST data and some synthesized data. We assume that these two images live in two different data manifolds. The sources $z$ here are precisely these two manifolds, and the non-linear function $F$ is the generating process of the image $x$ from $z$. The question is, when we observe only $x$, which is a mixture of two images, can we recover $F$ and $z$, (and thus recover two original images) by modeling a part of $F$ as GAN?    </p>
+<h1 id="Preliminary-Model"><a href="#Preliminary-Model" class="headerlink" title="Preliminary Model"></a>Preliminary Model</h1><p>Essentially, we attempt to solve the problem by autoencoder, where the decoder part consists of two pre-trained GAN + additional decoder that converts the two output of GAN into one image that is an estimate of the input, which is the mixture of the two images.    </p>
+<ol>
+<li>Pre-training:  Let G’(z) and G(z) are the two generative models learned by GAN’s framework using MNIST and synthesized data, respectively. </li>
+<li>Build an autoencoder using G’(z) and G(z) as a part of decoder.  </li>
+</ol>
+<p>We can model $G’(z)$ and $G(z)$ by DCGAN. For implementation, I should be careful how to make a good alignment between the two-dimensional $z$ with the encoder. (Two-dimensional because we have two images.) </p>
+<h1 id="Experiments"><a href="#Experiments" class="headerlink" title="Experiments"></a>Experiments</h1><p>(To be followed.)</p>
+
+      
+    </div>
+    <footer>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+
+  <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
         <time datetime="2017-01-12T10:15:57.000Z"><a href="/blog/2017/01/12/notes-nn-optim/">2017-01-12</a></time>
       
       
@@ -608,83 +657,6 @@ c = 1$$</span><!-- Has MathJax --></p>
 
 
 
-  <article class="post">
-  
-  <div class="post-content">
-    <header>
-      
-        <div class="icon"></div>
-        <time datetime="2016-05-29T17:55:14.000Z"><a href="/blog/2016/05/30/conjugate-gradient/">2016-05-30</a></time>
-      
-      
-  
-    <h1 class="title"><a href="/blog/2016/05/30/conjugate-gradient/">Conjugate Gradient Method Derivation</a></h1>
-  
-
-    </header>
-    <div class="entry">
-      
-        <ul>
-<li>CG solves a linear equation $Ax = b$.</li>
-</ul>
-<h4 id="Derivation"><a href="#Derivation" class="headerlink" title="Derivation:"></a>Derivation:</h4><ol>
-<li>Recall the step size calculation of Steepest Gradient Descent.</li>
-</ol>
-<span>$$-\nabla f(x_i)^T r_{i+1} = 0 \\
-\iff r_i^T r_{i+1} = 0 \\
-\iff (b - Ax_{i+1})^T r_{i} = 0 \\
-\iff (b - A(x_i - \alpha \nabla f(x_i))^T r_i = 0 \\
-\iff (r_i - \alpha A r_i)^T r_i = 0 \\
-\iff \alpha = \frac{r_i^T r_i}{r_i^T A r_i}$$</span><!-- Has MathJax -->
-<p>Recall that $f(x) = \frac{1}{2} x^T A x - b^Tx + c$ is the corresponding parabollic function for the linear equation $Ax = b$ (the minus sign for b is just to make it nice when we consider the relation between $Ax=b$ and its quadratic form). And $f’(x) = \frac{1}{2}A^Tx + \frac{1}{2}Ax - b$</p>
-<p>When $A$ is symmetric, this becomes $f’(x) = Ax - b$. So $-f’(x_i) = r_i$, where $r_i = b - Ax_i$ (residual vector)</p>
-<ol>
-<li><p>Recall the typical trajectory of Steepest Descent. It is often redundant or inefficient when it’s close to the true solution. Can we improve somehow? For example, if we can pick $n$ orthogonal search directions {$d_1, d_2, … d_n$} such that we only need exactly one step for each direction to get to the solution, it would be much more efficient. One obvious choice (but impractical) is to choose coordinate axes as our search directions. This would lead us to:</p>
-<ul>
-<li>Update Equation: $x_{i+1} = x_i + \alpha d_i$</li>
-<li>How to find $\alpha$ :<ul>
-<li>Observe that $d<em>i$ has to be orthogonal to $e</em>{i+1} = x_{i+1} - x$. So,</li>
-</ul>
-</li>
-</ul>
-</li>
-</ol>
-<span>$$e_{i+1}^T d_i = 0 \\
-\iff (x_{i+1} - x)^T d_i = 0 \\
-\iff (x_{i} + \alpha d_i - x)^T d_i = 0 \\
-\iff (e_{i} + \alpha d_i)^T d_i = 0 \\
-\iff \alpha = - \frac{e_{i}^T d_i}{d_i^Td_i}$$</span><!-- Has MathJax -->
-<ol>
-<li><p>But we don’t know $e_i$ (because we don’t know $x$) so this is useless. But we can modify the above idea by picking an $A$-orthogonal set of search directions, instead of orthogonal one. $d_i$ and $d_j$ is $A$-orthogonal if $d_i^T A d_j = 0$. How can we find an appropriate step size?</p>
-</li>
-<li><p>Recall the original idea of step size: we want to minimize the function value most by choosing the best step size. It means we want to solve $argmin f(x_i + \alpha d_i)$. Setting the derivative w.r.t. $\alpha$ equal to 0 tells us that</p>
-<span>$\frac{\partial{f(x_{i+1})}}{\partial \alpha} = 0 \iff \nabla f(x_{i+1})^T \frac{d}{d \alpha} x_{i+1} = 0 \iff -r_{i+1}^T d_i  = 0 \\$</span><!-- Has MathJax -->
-</li>
-</ol>
-<p>(directional derivative: <a href="http://tutorial.math.lamar.edu/Classes/CalcIII/DirectionalDeriv.aspx" target="_blank" rel="external">http://tutorial.math.lamar.edu/Classes/CalcIII/DirectionalDeriv.aspx</a>)</p>
-<p>Now recall that $r_i = b - Ax_i = b - Ax + Ax - Ax_i = -Ae_i$ (Note: b - Ax = 0). So the last term will become<br><span>$$e_{i+1}^T A d_i = 0 \iff (e_i + \alpha d_i)^T A d_i = 0 \\
-\iff \alpha = -\frac{e_i^T A d_i}{d_i^T A d_i}
-= -\frac{r_i^T d_i}{d_i^T A d_i}$$</span><!-- Has MathJax --></p>
-<ul>
-<li>So how to find an A-orthogonal set of search directions? Is the existence even guaranteed?</li>
-</ul>
-<h3 id="Gram-Schmidt-Conjugation"><a href="#Gram-Schmidt-Conjugation" class="headerlink" title="Gram-Schmidt Conjugation"></a>Gram-Schmidt Conjugation</h3><p><a href="https://www.cs.cmu.edu/~quake-papers/painless-conjugate-gradient.pdf" target="_blank" rel="external">https://www.cs.cmu.edu/~quake-papers/painless-conjugate-gradient.pdf</a></p>
-
-      
-    </div>
-    <footer>
-      
-        
-        
-      
-      <div class="clearfix"></div>
-    </footer>
-  </div>
-</article>
-
-
-
-
 
 <nav id="pagination">
   
@@ -714,7 +686,7 @@ c = 1$$</span><!-- Has MathJax --></p>
   
     <li><a href="/blog/tags/math/">math</a><small>5</small></li>
   
-    <li><a href="/blog/tags/neuralnet/">neuralnet</a><small>6</small></li>
+    <li><a href="/blog/tags/neuralnet/">neuralnet</a><small>7</small></li>
   
     <li><a href="/blog/tags/optimization/">optimization</a><small>4</small></li>
   
