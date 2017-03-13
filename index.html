@@ -61,11 +61,26 @@
     <div class="entry">
       
         <p>The goal of this post is to show an instance of derivation of risk bound for nonparmetric regression.   </p>
-<h2 id="Model"><a href="#Model" class="headerlink" title="Model"></a>Model</h2><p>For simplicity, we will focus on Gaussian sequence model. That is, our model of interest is the following:</p>
+<h2 id="Model"><a href="#Model" class="headerlink" title="Model"></a>Model</h2><p>For simplicity, we will focus on Gaussian sequence models. That is, our model of interest is the following type:</p>
 <span>$$Y_i = \theta_i + \frac{1}{\sqrt{n}} \sigma Z_i, \text{ where } Z_i \sim^{iid} N(0,1)$$</span><!-- Has MathJax -->
-<p>for $i = 1, …, n$, where we assume $\sigma=1$. In another word, we observe a noisy parameter as $Y$, and we are interested in estimating the true parameter $\theta$. </p>
-<h2 id="Parameter-space"><a href="#Parameter-space" class="headerlink" title="Parameter space"></a>Parameter space</h2><p>Our parameter space is Sobolev ball:<br><span>$$\Theta = \{ \theta : \sum_{i=1}^{\infty} i^{2 \alpha} \theta^2_i \le M \}$$</span><!-- Has MathJax --> </p>
-<p>The reason why we choose our parameter space this way is related to Fourier basis expansion. </p>
+<p>for $i = 1, …, n$, where we assume $\sigma=1$. In another word, we observe a noisy parameter $Y$, and we are interested in denoising $Y$ to get the true parameter $\theta$. </p>
+<h2 id="Parameter-space"><a href="#Parameter-space" class="headerlink" title="Parameter space"></a>Parameter space</h2><p>Our parameter space is a type of Sobolev ellipsoid:<br><span>$$\Theta = \{ \theta : \sum_{i=1}^{\infty} i^{2 \alpha} \theta^2_i \le M \}$$</span><!-- Has MathJax --> </p>
+<p>This way of choose our parameter space implicitly imposes smoothness assumption on function space we might be interested in. For example, if we view our estimation problem as a function estimation, the problem becomes to estimate a function $f(x)$ through a set of discrete sample pairs $(X_i, Y_i)$.<br>By Fourier basis expansion, </p>
+<span>$$f(x) = \sum_{i=1}^{\infty} &lt;f, \varphi_i&gt; \varphi_i(x) \\
+= \sum_{i=1}^{\infty} \theta_i \varphi_i(x)$$</span><!-- Has MathJax -->
+<p>where <span>$\theta_i =  &lt;f, \varphi_i&gt;$</span><!-- Has MathJax --> and</p>
+<span>$$\varphi_i(x) = 
+\begin{cases} 
+    cos(cix) \\
+    sin(cix)
+\end{cases}$$</span><!-- Has MathJax -->
+<p>Imposing smoothness assumption on $f$ by bounding the integral of $f$’s second derivative is equivalent to the condition in our parameter space. That is, </p>
+<span>$$f&apos;&apos;(x) = \sum_{i=1}^{\infty} \theta_i (\varphi_i(x))&apos;&apos; \\
+= \sum_{i=1}^{\infty} \theta_i (ci)^2 \varphi_i(x)$$</span><!-- Has MathJax -->  
+<p>So</p>
+<span>$$\int (f&apos;&apos;(x))^2 dx \le M&apos; \iff \sum [\theta_i (ci)^2]^2 \le M&apos; \\
+\sum c^4 i^4 \theta_i^2 \le M&apos;$$</span><!-- Has MathJax -->
+<p>(In this derivation, we’ve assumed $\alpha=2$.)</p>
 <h2 id="Goal-of-inference-problem"><a href="#Goal-of-inference-problem" class="headerlink" title="Goal of inference problem"></a>Goal of inference problem</h2><p>Estimate $\theta$. Our loss function is </p>
 <span>$$|| \hat{\theta} - \theta ||^2 = \sum_{i=1}^{\infty} (\hat{\theta}_i - \theta_i)^2$$</span><!-- Has MathJax -->
 <h2 id="Estimation-Procedure"><a href="#Estimation-Procedure" class="headerlink" title="Estimation Procedure"></a>Estimation Procedure</h2><p>Intuitively, due to our parameter space restriction, when $i$ is large, $\theta_i$ has to become smaller, and at some point or later, it becomes neglible. This observation leads to the following naive estimator:</p>
@@ -115,12 +130,12 @@
 <span>$$E_{\theta} E_{Y|\theta} [ \sum_{i=1}^I (\hat{\theta}_i - \theta_i )^2 ] \ge E_{\theta} E_{Y|\theta} [ \sum_{i=1}^I (\hat{\theta}_{i,Bayes} - \theta_i )^2 ]$$</span><!-- Has MathJax --> 
 <p>Note that <span>$\hat{\theta}_{i,Bayes}$</span><!-- Has MathJax --> is a function of $Y_i$ only due to $i.i.d$ assumption. Therefore using our definition of prior,</p>
 <span>$$E_{\theta} E_{Y|\theta} [ \sum_{i=1}^I (\hat{\theta}_{i,Bayes} - \theta_i )^2 ] 
-= \sum_{i=1}^I [ \frac{1}{2} E_{Y_i|\theta_i=0} (\hat{\theta}_{i,Bayes} - 0)^2 + \frac{1}{2} E_{Y_i|\theta_i=\frac{1}{\sqrt{n}}} (\hat{\theta}_{i,Bayes} - \frac{1}{\sqrt{n})^2$$</span><!-- Has MathJax --> 
+= \sum_{i=1}^I [ \frac{1}{2} E_{Y_i|\theta_i=0} (\hat{\theta}_{i,Bayes} - 0)^2 + \frac{1}{2} E_{Y_i|\theta_i=\frac{1}{\sqrt{n}}} (\hat{\theta}_{i,Bayes} - \frac{1}{\sqrt{n}})^2 ]$$</span><!-- Has MathJax --> 
 <p>Rewriting the above equation with $\phi_{a,b}(x)$ be the pdf of N(a,b) yields</p>
-<span>$$\sum_{i=1}^I [ \frac{1}{2} E_{Y_i|\theta_i=0} (\hat{\theta}_{i,Bayes} - 0)^2 + \frac{1}{2} E_{Y_i|    \theta_i=\frac{1}{\sqrt{n}}} (\hat{\theta}_{i,Bayes} - \frac{1}{\sqrt{n})^2  = 
-\sum_{i=1}^I \frac{1}{2} [ \int (\hat{\theta}_{i,Bayes} - 0)^2 \phi_{0,\frac{1}{n}} + \int (\hat{\theta}_{i,Bayes} - \frac{1}{\sqrt{n})^2  \phi_{\frac{1}{\sqrt{n}},\frac{1}{n}}(x) dx ]$$</span><!-- Has MathJax --> 
-<p>Let <span>$g(x) = \min \{ \phi_{0,\frac{1}{n}}(x), \phi_{0,\frac{1}{n}}(x) \}$</span><!-- Has MathJax -->. Then using $g(x)$, the above equation can be lower bounded:</p>
-<span>$$a \ge \sum_{i=1}^I \frac{1}{2} \int [ (\hat{\theta}_{i,Bayes} - 0)^2 + (\hat{\theta}_{i,Bayes} - \frac{1}{\sqrt{n})^2 ] g(x) dx$$</span><!-- Has MathJax -->
+<span>$$\sum_{i=1}^I [ \frac{1}{2} E_{Y_i|\theta_i=0} (\hat{\theta}_{i,Bayes} - 0)^2 + \frac{1}{2} E_{Y_i|    \theta_i=\frac{1}{\sqrt{n}}} (\hat{\theta}_{i,Bayes} - \frac{1}{\sqrt{n}})^2  \\
+= \sum_{i=1}^I \frac{1}{2} [ \int (\hat{\theta}_{i,Bayes} - 0)^2 \phi_{0,\frac{1}{n}}(x)dx + \int (\hat{\theta}_{i,Bayes} - \frac{1}{\sqrt{n}})^2  \phi_{\frac{1}{\sqrt{n}},\frac{1}{n}}(x) dx ]$$</span><!-- Has MathJax --> 
+<p>Let <span>$g(x) = \min \{ \phi_{0,\frac{1}{n}}(x), \phi_{\frac{1}{\sqrt{n}},\frac{1}{n}}(x) \}$</span><!-- Has MathJax -->. Then using $g(x)$, the above equation can be lower bounded:</p>
+<span>$$\ge \sum_{i=1}^I \frac{1}{2} \int \left( ( \hat{\theta}_{i,Bayes} - 0)^2 + (\hat{\theta}_{i,Bayes} - \frac{1}{\sqrt{n}})^2 \right)  g(x) dx$$</span><!-- Has MathJax -->
 <p>Observing that <span>$a^2 + b^2 \ge \frac{1}{2} (a-b)^2$</span><!-- Has MathJax -->, we can rewrite it to</p>
 <span>$$\ge \sum_{i=1}^I \frac{1}{2} \int \frac{1}{2} (\frac{1}{\sqrt{n}})^2 g(x) dx = \frac{I}{n} \frac{1}{4} \int g(x) dx$$</span><!-- Has MathJax -->
 <p>Since $\int g(x) dx$ is some constant $c$, our risk lower bound is</p>
@@ -636,14 +651,14 @@
 <nav id="pagination">
   
   
-    <a href="/blog/page/2/" class="alignright next">Nächste Seite</a>
+    <a href="/blog/page/2/" class="alignright next">Next</a>
   
   <div class="clearfix"></div>
 </nav></div></div>
     <aside id="sidebar" class="alignright">
   <div class="search">
   <form action="//google.com/search" method="get" accept-charset="utf-8">
-    <input type="search" name="q" results="0" placeholder="Suche">
+    <input type="search" name="q" results="0" placeholder="Search">
     <input type="hidden" name="q" value="site:runopti.github.io/blog">
   </form>
 </div>
