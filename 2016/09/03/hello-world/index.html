@@ -142,11 +142,13 @@
   
     <li><a href="/blog/tags/cv/">cv</a><small>1</small></li>
   
-    <li><a href="/blog/tags/math/">math</a><small>4</small></li>
+    <li><a href="/blog/tags/decision-theory/">decision-theory</a><small>1</small></li>
   
-    <li><a href="/blog/tags/neuralnet/">neuralnet</a><small>4</small></li>
+    <li><a href="/blog/tags/math/">math</a><small>7</small></li>
   
-    <li><a href="/blog/tags/optimization/">optimization</a><small>2</small></li>
+    <li><a href="/blog/tags/neuralnet/">neuralnet</a><small>8</small></li>
+  
+    <li><a href="/blog/tags/optimization/">optimization</a><small>5</small></li>
   
     <li><a href="/blog/tags/paper-memo/">paper-memo</a><small>2</small></li>
   
@@ -160,7 +162,7 @@
   </div>
   <footer id="footer" class="inner"><div class="alignleft">
   
-  &copy; 2016 Yutaro Yamada
+  &copy; 2017 Yutaro Yamada
   
 </div>
 <div class="clearfix"></div></footer>
@@ -177,7 +179,24 @@
 (function($){
   $('.fancybox').fancybox();
 })(jQuery);
-</script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+</script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"displayMath":[["$$","$$"],["\\[","\\]"]],"processEscapes":true}});
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
 
 </body>
 </html>

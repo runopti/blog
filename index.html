@@ -50,7 +50,191 @@
     <header>
       
         <div class="icon"></div>
-        <time datetime="2017-01-15T23:15:17.000Z"><a href="/blog/2017/01/16/krylov/">2017-01-16</a></time>
+        <time datetime="2017-03-13T00:56:57.000Z"><a href="/blog/2017/03/12/nonparametric-estimation/">2017-03-12</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/blog/2017/03/12/nonparametric-estimation/">Nonparametric Regression</a></h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>The goal of this post is to show an instance of derivation of risk bound for nonparmetric regression.   </p>
+<h2 id="Model"><a href="#Model" class="headerlink" title="Model"></a>Model</h2><p>For simplicity, we will focus on Gaussian sequence model. That is, our model of interest is the following:</p>
+<span>$$Y_i = \theta_i + \frac{1}{\sqrt{n}} \sigma Z_i, \text{ where } Z_i \sim^{iid} N(0,1)$$</span><!-- Has MathJax -->
+<p>for $i = 1, …, n$, where we assume $\sigma=1$. In another word, we observe a noisy parameter as $Y$, and we are interested in estimating the true parameter $\theta$. </p>
+<h2 id="Parameter-space"><a href="#Parameter-space" class="headerlink" title="Parameter space"></a>Parameter space</h2><p>Our parameter space is Sobolev ball:<br><span>$$\Theta = \{ \theta : \sum_{i=1}^{\infty} i^{2 \alpha} \theta^2_i \le M \}$$</span><!-- Has MathJax --> </p>
+<p>The reason why we choose our parameter space this way is related to Fourier basis expansion. </p>
+<h2 id="Goal-of-inference-problem"><a href="#Goal-of-inference-problem" class="headerlink" title="Goal of inference problem"></a>Goal of inference problem</h2><p>Estimate $\theta$. Our loss function is </p>
+<span>$$|| \hat{theta} - \theta ||^2 = \sum_{i=1}^{\infty} (\hat{\theta}_i - \theta_i)^2$$</span><!-- Has MathJax -->
+<h2 id="Estimation-Procedure"><a href="#Estimation-Procedure" class="headerlink" title="Estimation Procedure"></a>Estimation Procedure</h2><p>Intuitively, due to our parameter space restriction, when $i$ is large, $\theta_i$ has to become smaller, and at some point or later, it becomes neglible. This observation leads to the following naive estimator:</p>
+<span>$$\hat{\theta}_i =  
+\begin{cases} 
+        Y_i &amp; i \le I  \\
+        0    &amp; i &gt; I 
+\end{cases}$$</span><!-- Has MathJax --> 
+<p>where $I$ is the threshold value we will optimize (in terms of having a tigher risk lower bound) soon. </p>
+<h2 id="Risk-Calculation"><a href="#Risk-Calculation" class="headerlink" title="Risk Calculation"></a>Risk Calculation</h2><p>With this procedure, we can easily calculate risk for each case. That is, when $\hat{\theta}_i = Y_i$, its risk is $E (Y_i - \theta_i)^2 = \frac{1}{n}$ (Note: this is just the variance of $Y_i$, which is $\frac{1}{n}$ from the definition of our model.) When $\hat{\theta}_i = 0$, its risk is $E (0 - \theta_i)^2 = \theta_i^2$ (Note that expectation is taken over data, and $\theta$ is deterministic value.) </p>
+<p>With this simple algebra above, we observe that if $\theta^2_i \le \frac{1}{n}$, we want to use $\hat{\theta}_i = 0$, which is imposed by $i &gt; I$ condition. </p>
+<p>The risk of this procedure is given by</p>
+<span>$$R(\hat{\theta}) = E \sum_{i=1}^{\infty} (\hat{\theta}_i - \theta)^2 = E \sum_{i=1}^I (Y_i - \theta_i)^2 + E \sum_{i=I+1}^{\infty} \theta^2_i$$</span><!-- Has MathJax --> 
+<h2 id="Risk-upper-bound"><a href="#Risk-upper-bound" class="headerlink" title="Risk upper bound"></a>Risk upper bound</h2><p>We immediately see that the first term is equivalent to $\frac{I}{n}$.<br>The question is how to upper bound the second term.<br>Recall the condition of our parameter space definition: $\sum_{i=0}^{\infty} i^{2 \alpha} \theta_i^2  \le M$. From this, we observe the following inequalities:</p>
+<span>$$\sum_{i=0}^{\infty} i^{2 \alpha} \theta_i^2 \le M \\ 
+\Rightarrow  \sum_{i = I + 1}^{\infty} i^{2 \alpha} \theta_i^2 \le M  \\ 
+\Rightarrow (I+1)^{2\alpha} \sum_{i = I + 1}^{\infty} \theta_i^2 \le M \\ 
+\Rightarrow \sum_{i = I + 1}^{\infty} \theta_i^2 \le \frac{M}{(I+1)^{2\alpha}} \le \frac{M}{I^{2 \alpha}}$$</span><!-- Has MathJax --> 
+<p>So our upper bound is</p>
+<span>$$R(\hat{\theta}) =  \frac{I}{n} + \frac{M}{I^{2 \alpha}}$$</span><!-- Has MathJax --> 
+<p>To find an optimal $I$, we will treat $\frac{M}{I^{2 \alpha}}$ as $Bias^2$, and pick $I$ to achieve the optimal variance-bias tradeoff. This leads to </p>
+<span>$$\frac{I}{n} = \frac{M}{I^{2 \alpha}} \iff I^{1+2\alpha} = Mn \iff I = (Mn)^{\frac{1}{1+2\alpha}}$$</span><!-- Has MathJax --> 
+<p>Therefore, </p>
+<span>$$R(\hat{\theta}) \le \frac{I}{n} + \frac{M}{I^{2 \alpha}} = \frac{2}{n} (Mn)^{\frac{1}{1+2\alpha}} = 2 M^{\frac{1}{1+2\alpha}} n^{-\frac{2\alpha}{1+2\alpha}}$$</span><!-- Has MathJax --> 
+<p>This leads to our risk upper bound:</p>
+<span>$$sup_{\Theta} E || \hat{\theta} - \theta ||^2 \le  2 M^{\frac{1}{1+2\alpha}} n^{-\frac{2\alpha}{1+2\alpha}}$$</span><!-- Has MathJax --> 
+<p>(We will try to find a better rate in some later posts.)</p>
+<h2 id="Risk-lower-bound"><a href="#Risk-lower-bound" class="headerlink" title="Risk lower bound"></a>Risk lower bound</h2><p>To find lower bound, we resort to Le Cum’s idea. </p>
+<p>We first construct a sub-parameter space so that the resulting risk calculation over the sub-parameter space is simple enough. Considering a sub-parameter space is useful because for any sub-parameter space $\Theta_0 \subset \Theta$, we have the following lower bound for sup risk for $\Theta$. </p>
+<span>$$sup_{\Theta} E || \hat{\theta} - \theta||^2 \ge sup_{\Theta_0} E || \hat{\theta} - \theta ||^2$$</span><!-- Has MathJax --> 
+<p>In our case, let our sub-parameter space be</p>
+<span>$$\Theta_0 = \{ \theta : \theta_i = 0 \text{ if } i \ge I + 1, \theta_i = \frac{1}{\sqrt{n}} \text{ if } i \le I \}$$</span><!-- Has MathJax -->
+<p>where $I$ is the previous optimal value : $I = (Mn)^{\frac{1}{1+2\alpha}}$. </p>
+<p>We can confirm that <span>$\Theta_0$</span><!-- Has MathJax --> is indeed in <span>$\Theta$</span><!-- Has MathJax -->  by checking the condition <span>$\sum_{i=1}^{\infty} i^{2\alpha} \theta_i^2 \le M$</span><!-- Has MathJax -->: </p>
+<span>$$\sum_{i=1}^I i^{2 \alpha} \frac{1}{n} = \frac{1}{n} \sum_{i=1}^I i^{2\alpha} \le \frac{1}{n} I I^{2\alpha} = \frac{1}{n} Mn = M$$</span><!-- Has MathJax --> 
+<p>Now, we want to lower bound <span>$sup_{\Theta_0} E || \hat{\theta} - \theta ||^2$</span><!-- Has MathJax -->: </p>
+<span>$$sup_{\Theta_0} E || \hat{\theta} - \theta ||^2 \ge  sup_{\Theta_0} E \sum_{i=1}^I \hat{\theta} - \theta ||^2  \\$$</span><!-- Has MathJax -->
+<p>Now assume a prior on $\theta_i$ such that</p>
+<span>$$\theta_i =
+\begin{cases}
+    0 &amp; \text{ w.p. } \frac{1}{2} \\
+    \frac{1}{\sqrt{n}} &amp;  \text{ w.p. } \frac{1}{2} 
+\end{cases}$$</span><!-- Has MathJax --> 
+<p>Then, by observing that $sup_x f(x) \ge E_x f(x)$, we have </p>
+<span>$$sup_{\Theta_0} E \sum_{i=1}^I || \hat{\theta} - \theta ||^2  \ge E_{\theta} E_{Y|\theta} [ \sum_{i=1}^I (\hat{\theta}_i - \theta_i )^2 ]$$</span><!-- Has MathJax -->
+<p>Now recall that Bayes estimator is supposed to attain the smallest risk. This gives us the following further lower bound:</p>
+<span>$$E_{\theta} E_{Y|\theta} [ \sum_{i=1}^I (\hat{\theta}_i - \theta_i )^2 ] \ge E_{\theta} E_{Y|\theta} [ \sum_{i=1}^I (\hat{\theta}_{i,Bayes} - \theta_i )^2 ]$$</span><!-- Has MathJax --> 
+<p>Note that <span>$\hat{\theta}_{i,Bayes}$</span><!-- Has MathJax --> is a function of $Y_i$ only due to $i.i.d$ assumption. Therefore using our definition of prior,</p>
+<span>$$E_{\theta} E_{Y|\theta} [ \sum_{i=1}^I (\hat{\theta}_{i,Bayes} - \theta_i )^2 ] 
+= \sum_{i=1}^I [ \frac{1}{2} E_{Y_i|\theta_i=0} (\hat{\theta}_{i,Bayes} - 0)^2 + \frac{1}{2} E_{Y_i|\theta_i=\frac{1}{\sqrt{n}}} (\hat{\theta}_{i,Bayes} - \frac{1}{\sqrt{n})^2$$</span><!-- Has MathJax --> 
+<p>Rewriting the above equation with $\phi_{a,b}(x)$ be the pdf of N(a,b) yields</p>
+<span>$$\sum_{i=1}^I [ \frac{1}{2} E_{Y_i|\theta_i=0} (\hat{\theta}_{i,Bayes} - 0)^2 + \frac{1}{2} E_{Y_i|    \theta_i=\frac{1}{\sqrt{n}}} (\hat{\theta}_{i,Bayes} - \frac{1}{\sqrt{n})^2  = 
+\sum_{i=1}^I \frac{1}{2} [ \int (\hat{\theta}_{i,Bayes} - 0)^2 \phi_{0,\frac{1}{n}} + \int (\hat{\theta}_{i,Bayes} - \frac{1}{\sqrt{n})^2  \phi_{\frac{1}{\sqrt{n}},\frac{1}{n}}(x) dx ]$$</span><!-- Has MathJax --> 
+<p>Let <span>$g(x) = \min \{ \phi_{0,\frac{1}{n}}(x), \phi_{0,\frac{1}{n}}(x) \}$</span><!-- Has MathJax -->. Then using $g(x)$, the above equation can be lower bounded:</p>
+<span>$$a \ge \sum_{i=1}^I \frac{1}{2} \int [ (\hat{\theta}_{i,Bayes} - 0)^2 + (\hat{\theta}_{i,Bayes} - \frac{1}{\sqrt{n})^2 ] g(x) dx$$</span><!-- Has MathJax -->
+<p>Observing that <span>$a^2 + b^2 \ge \frac{1}{2} (a-b)^2$</span><!-- Has MathJax -->, we can rewrite it to</p>
+<span>$$\ge \sum_{i=1}^I \frac{1}{2} \int \frac{1}{2} (\frac{1}{\sqrt{n}})^2 g(x) dx = \frac{I}{n} \frac{1}{4} \int g(x) dx$$</span><!-- Has MathJax -->
+<p>Since $\int g(x) dx$ is some constant $c$, our risk lower bound is</p>
+<span>$$c \frac{I}{n} = c n^{- \frac{2 \alpha}{2 \alpha + 1}}$$</span><!-- Has MathJax --> 
+<p>This establishes our risk lower bound for this particular estimation procedure under this model. </p>
+
+      
+    </div>
+    <footer>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+
+  <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2017-03-10T06:08:10.000Z"><a href="/blog/2017/03/10/notes-on-priors/">2017-03-10</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/blog/2017/03/10/notes-on-priors/">Notes on priors</a></h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>A requirement </p>
+<h2 id="The-Jeffreys-prior"><a href="#The-Jeffreys-prior" class="headerlink" title="The Jeffreys prior"></a>The Jeffreys prior</h2><ul>
+<li>invariant under transformation. </li>
+</ul>
+
+      
+    </div>
+    <footer>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+
+  <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2017-02-03T20:37:20.000Z"><a href="/blog/2017/02/03/mcmc/">2017-02-03</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/blog/2017/02/03/mcmc/">Notes on MCMC</a></h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>MCMC (Markov Chain Monte Carlo) is a way to numerically sample from posterior distribution of interest by constructing Markov Chain in a smart way so that the stationary distribution of MC matches the desired posterior distribution.</p>
+<p>The way I see it is to consider Markov Chain as a search on the parameter space. The goal is to find a parameter $\theta$ that specifies the desired posterior distribution $p(\theta|x)$. </p>
+<p>To have a concrete picture, it’s useful to consider the parameter space (or should I say distribution space, which emphasizes that the space is invariance to reparametrization?) as a discrete space. </p>
+<p>Let’s say we partition the parameter space into a countable blocks, and we start from a certain block at time 0.<br>Suppose at time $t$, we are at block $x$. Denote this probability as $P(\theta_t \in x)$ </p>
+<p>How should we move? </p>
+<ul>
+<li><p>we should move toward regions of the parameter space with higher probability (with respect to the target distribution? But we don’t know this distribution do we..? Oh but we do know the likelihood and prior. So, although we cannot calculate the posterior distribution exactly, we are able to evaluate if the current point is higher than the next point, because this evaluation can be done by $\frac{p(\theta<em>{t+1})p(x|\theta</em>{t+1})}{p(\theta<em>{t})p(x|\theta</em>{t})}$; the integral constant will be cancelled out when you take the proportion.)</p>
+</li>
+<li><p>we should avoid the regions with lower probability with respect to the target distribution. </p>
+</li>
+</ul>
+<p>Transition matrix T(x|y) $\iff$ Proposal distribution with pdf $g(x|x’)$ defined for all $x,x’ \in \xx$. </p>
+<h3 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h3><ul>
+<li><p><a href="http://astrostatistics.psu.edu/su14/lectures/CosPop14-2-2-BayesComp-2.pdf" target="_blank" rel="external">http://astrostatistics.psu.edu/su14/lectures/CosPop14-2-2-BayesComp-2.pdf</a></p>
+</li>
+<li><p><a href="http://www2.stat.duke.edu/~km68/materials/214.7%20(MH).pdf" target="_blank" rel="external">http://www2.stat.duke.edu/~km68/materials/214.7%20(MH).pdf</a></p>
+</li>
+</ul>
+
+      
+    </div>
+    <footer>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+
+  <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2017-01-16T13:15:17.000Z"><a href="/blog/2017/01/16/krylov/">2017-01-16</a></time>
       
       
   
@@ -103,7 +287,7 @@
     <header>
       
         <div class="icon"></div>
-        <time datetime="2017-01-12T11:21:16.000Z"><a href="/blog/2017/01/12/gan-bss/">2017-01-12</a></time>
+        <time datetime="2017-01-13T01:21:16.000Z"><a href="/blog/2017/01/12/gan-bss/">2017-01-12</a></time>
       
       
   
@@ -153,7 +337,7 @@
     <header>
       
         <div class="icon"></div>
-        <time datetime="2017-01-12T10:15:57.000Z"><a href="/blog/2017/01/12/notes-nn-optim/">2017-01-12</a></time>
+        <time datetime="2017-01-13T00:15:57.000Z"><a href="/blog/2017/01/12/notes-nn-optim/">2017-01-12</a></time>
       
       
   
@@ -223,7 +407,7 @@
     <header>
       
         <div class="icon"></div>
-        <time datetime="2016-10-17T00:46:43.000Z"><a href="/blog/2016/10/17/learningtolearn-1/">2016-10-17</a></time>
+        <time datetime="2016-10-17T13:46:43.000Z"><a href="/blog/2016/10/17/learningtolearn-1/">2016-10-17</a></time>
       
       
   
@@ -295,7 +479,7 @@
     <header>
       
         <div class="icon"></div>
-        <time datetime="2016-09-04T05:21:09.000Z"><a href="/blog/2016/09/04/induced-norm/">2016-09-04</a></time>
+        <time datetime="2016-09-04T18:21:09.000Z"><a href="/blog/2016/09/04/induced-norm/">2016-09-04</a></time>
       
       
   
@@ -367,11 +551,11 @@
     <header>
       
         <div class="icon"></div>
-        <time datetime="2016-09-04T03:20:55.000Z"><a href="/blog/2016/09/04/hello-world/">2016-09-04</a></time>
+        <time datetime="2016-09-04T03:20:55.000Z"><a href="/blog/2016/09/03/hello-world/">2016-09-03</a></time>
       
       
   
-    <h1 class="title"><a href="/blog/2016/09/04/hello-world/">Hello World</a></h1>
+    <h1 class="title"><a href="/blog/2016/09/03/hello-world/">Hello World</a></h1>
   
 
     </header>
@@ -408,7 +592,7 @@
     <header>
       
         <div class="icon"></div>
-        <time datetime="2016-08-12T01:45:14.000Z"><a href="/blog/2016/08/12/NNprml/">2016-08-12</a></time>
+        <time datetime="2016-08-12T14:45:14.000Z"><a href="/blog/2016/08/12/NNprml/">2016-08-12</a></time>
       
       
   
@@ -432,187 +616,6 @@
 <p>Note that $E$ is a function of $w$: $E(w)$. What if we look at it from the new coordinate? We see that $E_0(w^{\ast})$ should be 0 because in the new coordinate $w^{\ast}$ is the origin. Then, we have<br>$$<br>E(v) = \frac{1}{2} v^T D v = \frac{1}{2} \sum_i^n \lambda_i v_i^2<br>$$<br>(Note that D is a diagonal matrix with diagonal elements being eigenvalues.)</p>
 <p>Then,<br>$$<br>\nabla E_v(v) = D v =  \sum_i^n \lambda_i v_i<br>$$<br>So, the update equation becomes<br>$$<br>v^{(\tau)} = v^{(\tau-1)} - \rho D v^{(\tau-1)} = (I - \rho D) v^{(\tau - 1)}<br>$$</p>
 <p>If we look at the last equation coordinate wise, we get $v_i^{(\tau)} =  (1 - \rho \lambda_i) v_i^{(\tau - 1)} $, so by recursion, we get<br>$$<br>v_i^{(\tau)} =  (1 - \rho \lambda_i)^{\tau} v_i^{(0)}<br>$$<br>Now, let’s go back to the original coordinate, and we get<br>$$<br>w_i^{(\tau)} - w_i^{\ast} = (1 - \rho \lambda_i)^{\tau} w_i^{(0)} - w_i^{\ast}<br>$$<br>Since w^{(0)} is the origin, the left term is 0 and moving $w_i^{\ast}$ to left, we get<br>$$<br>w_i^{(\tau)} = (1 - (1 - \rho \lambda_i)^{\tau})w_i^{\ast}<br>$$<br>, which is what we wanted to show. </p>
-
-      
-    </div>
-    <footer>
-      
-        
-        
-      
-      <div class="clearfix"></div>
-    </footer>
-  </div>
-</article>
-
-
-
-
-  <article class="post">
-  
-  <div class="post-content">
-    <header>
-      
-        <div class="icon"></div>
-        <time datetime="2016-07-26T09:19:58.000Z"><a href="/blog/2016/07/26/MatrixFactorizationNotes/">2016-07-26</a></time>
-      
-      
-  
-    <h1 class="title"><a href="/blog/2016/07/26/MatrixFactorizationNotes/">Matrix Factorization Notes</a></h1>
-  
-
-    </header>
-    <div class="entry">
-      
-        <h2 id="LU-decomposition"><a href="#LU-decomposition" class="headerlink" title="LU decomposition"></a>LU decomposition</h2><p>Thm 1:<br>N-rank regular matrix A has a unique factorization LU, where L is a N-rank regular matrix and U is a N-rank upper-triangular matrix. </p>
-<p>When we think about the signs of eigenvalues in neural network literature, we only deal with Hessian, which is symmetric, so the signs of all eigenvalues uniquely determine the positive definiteness of the Hessian matrix. But this is not generally true for non-symmetric positive definite matrix. </p>
-<p>One example of equivalent condition of a matrix being positive definite is the existence of a unique lower triangular matrix L with real and strictly positive diagonal entries s.t. M = LL<em> holds. (M = LL</em> is called Cholesky decomposition.)</p>
-<h2 id="Cholesky-decomposition"><a href="#Cholesky-decomposition" class="headerlink" title="Cholesky decomposition"></a>Cholesky decomposition</h2><p>Thm 2:<br>For a symmetric positive definite matrix M, there exists a decomposition s.t. M = LL^T</p>
-<p>Pf. (sketch)<br><span>$$M = PDP^T \\
-    = PSS^TP^T \\
-    = B^TB \quad (B = (PS)^T) \\
-    = (QR)^T QR \quad (B = QR) \\
-    = R^T Q^{-1} Q R
-    = R^T R 
-    = LL^T$$</span><!-- Has MathJax --></p>
-
-      
-    </div>
-    <footer>
-      
-        
-        
-      
-      <div class="clearfix"></div>
-    </footer>
-  </div>
-</article>
-
-
-
-
-  <article class="post">
-  
-  <div class="post-content">
-    <header>
-      
-        <div class="icon"></div>
-        <time datetime="2016-07-07T12:19:58.000Z"><a href="/blog/2016/07/07/HessianComp/">2016-07-07</a></time>
-      
-      
-  
-    <h1 class="title"><a href="/blog/2016/07/07/HessianComp/">Hessian Computation using TensorFlow</a></h1>
-  
-
-    </header>
-    <div class="entry">
-      
-        <h1 id="Compute-Hessian-using-TensorFlow"><a href="#Compute-Hessian-using-TensorFlow" class="headerlink" title="Compute Hessian using TensorFlow"></a>Compute Hessian using TensorFlow</h1><p>Reference: </p>
-<ul>
-<li>TensorFlow implementation of K-means algorithm: <a href="https://codesachin.wordpress.com/2015/11/14/k-means-clustering-with-tensorflow/" target="_blank" rel="external">https://codesachin.wordpress.com/2015/11/14/k-means-clustering-with-tensorflow/</a></li>
-<li>Calculating Hessian in Theano (application for Newton’s method): <a href="https://groups.google.com/forum/#!topic/theano-users/2c15kq68lp8" target="_blank" rel="external">https://groups.google.com/forum/#!topic/theano-users/2c15kq68lp8</a></li>
-</ul>
-<p>TensorFlow has a function called tf.gradients() that computes gradient. In the past, I’ve tried to compute Hessian of an neural network objective function in Torch7 using <a href="https://github.com/twitter/torch-autograd" target="_blank" rel="external">torch-autograd</a> but it was somewhat cumbersome; there wasn’t an easy way to store/reshape parameters because Lua uses table for everything. Today, I’d like to do the same thing in TensorFlow. It should be much easier than in Torch7 due to the symbolic differentiation. </p>
-<h3 id="Example-1-Quadratic-function"><a href="#Example-1-Quadratic-function" class="headerlink" title="Example 1 : Quadratic function"></a>Example 1 : Quadratic function</h3><p>We are going to use $f(x) = \frac{1}{2} x^T A x + b^T x + c$ as our first example to compute Hessian. When A is a symmetric matrix, the hessian of $f$ should be equal to $A$.</p>
-<p>For simplicity, let us start with:<br><span>$$A = \left[
-  \begin{array}{rrr}
-    2 &amp; 2 &amp; 2 \\
-    2 &amp; 2 &amp; 2 \\
-    2 &amp; 2 &amp; 2
-  \end{array}
-\right]
-\quad
-b = \left[
-  \begin{array}{rrr}
-    3  \\
-    3  \\
-    3 
-  \end{array}
-\right]
-\quad
-c = 1$$</span><!-- Has MathJax --></p>
-<p>The code below calculates the hessian for f(x).  </p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> tensorflow <span class="keyword">as</span> tf</div><div class="line"><span class="keyword">import</span> matplotlib <span class="keyword">as</span> plt</div><div class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</div><div class="line"><span class="keyword">import</span> math</div></pre></td></tr></table></figure>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">getHessian</span><span class="params">(dim)</span>:</span></div><div class="line">    <span class="comment"># Each time getHessian is called, we create a new graph so that the default graph (which exists a priori) won't be filled with old ops.</span></div><div class="line">    g = tf.Graph()</div><div class="line">    <span class="keyword">with</span> g.as_default():</div><div class="line">        <span class="comment"># First create placeholders for inputs: A, b, and c.</span></div><div class="line">        A = tf.placeholder(tf.float32, shape=[dim, dim])</div><div class="line">        b = tf.placeholder(tf.float32, shape=[dim, <span class="number">1</span>])</div><div class="line">        c = tf.placeholder(tf.float32, shape=[<span class="number">1</span>])</div><div class="line"></div><div class="line">        <span class="comment"># Define our variable</span></div><div class="line">        x = tf.Variable(np.float32(np.repeat(<span class="number">1</span>,dim).reshape(dim,<span class="number">1</span>)))</div><div class="line"></div><div class="line">        <span class="comment"># Construct the computational graph for quadratic function: f(x) = 1/2 * x^t A x + b^t x + c</span></div><div class="line">        fx = <span class="number">0.5</span> * tf.matmul(tf.matmul(tf.transpose(x), A), x) + tf.matmul(tf.transpose(b), x) + c</div><div class="line">        </div><div class="line">        <span class="comment"># Get gradients of fx with repect to x</span></div><div class="line">        dfx = tf.gradients(fx, x)[<span class="number">0</span>]</div><div class="line">        <span class="comment"># Compute hessian</span></div><div class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(dim):</div><div class="line">            <span class="comment"># Take the i th value of the gradient vector dfx </span></div><div class="line">            <span class="comment"># tf.slice: https://www.tensorflow.org/versions/0.6.0/api_docs/python/array_ops.html#slice</span></div><div class="line">            dfx_i = tf.slice(dfx, begin=[i,<span class="number">0</span>] , size=[<span class="number">1</span>,<span class="number">1</span>])</div><div class="line">            <span class="comment"># Feed it to tf.gradients to compute the second derivative. </span></div><div class="line">            <span class="comment"># Since x is a vector and dfx_i is a scalar, this will return a vector : [d(dfx_i) / dx_i , ... , d(dfx_n) / dx_n]</span></div><div class="line">            ddfx_i = tf.gradients(dfx_i, x)[<span class="number">0</span>] <span class="comment"># whenever we use tf.gradients, make sure you get the actual tensors by putting [0] at the end</span></div><div class="line">            <span class="keyword">if</span> i == <span class="number">0</span>: hess = ddfx_i</div><div class="line">            <span class="keyword">else</span>: hess = tf.concat(<span class="number">1</span>, [hess, ddfx_i]) </div><div class="line">            <span class="comment">## Instead of doing this, you can just append each element to a list, and then do tf.pack(list_object) to get the hessian matrix too.</span></div><div class="line">            <span class="comment">## I'll use this alternative in the second example.  </span></div><div class="line"></div><div class="line">        <span class="comment"># Before we execute the graph, we need to initialize all the variables we defined</span></div><div class="line">        init_op = tf.initialize_all_variables()</div><div class="line">    </div><div class="line">        <span class="keyword">with</span> tf.Session() <span class="keyword">as</span> sess:</div><div class="line">            sess.run(init_op)</div><div class="line">            <span class="comment"># We need to feed actual values into the computational graph that we created above. </span></div><div class="line">            feed_dict = &#123;A: np.float32(np.repeat(<span class="number">2</span>,dim*dim).reshape(dim,dim)), b: np.float32(np.repeat(<span class="number">3</span>,dim).reshape(dim,<span class="number">1</span>)) , c: [<span class="number">1</span>]&#125;</div><div class="line">            <span class="comment"># sess.run() executes the graph. Here, "hess" will be calculated with the values in "feed_dict".</span></div><div class="line">            print(sess.run(hess, feed_dict))</div></pre></td></tr></table></figure>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">getHessian(<span class="number">3</span>)</div></pre></td></tr></table></figure>
-<pre><code>[[ 2.  2.  2.]
- [ 2.  2.  2.]
- [ 2.  2.  2.]]
-</code></pre><p>We can see that the result of sess.run(hess, feed_dict) is indeed the desired value: A</p>
-<h3 id="Example-2-Multilayer-Perceptron"><a href="#Example-2-Multilayer-Perceptron" class="headerlink" title="Example 2 : Multilayer Perceptron"></a>Example 2 : Multilayer Perceptron</h3><p>Next, we’ll try a small neural network model: Multilayer perceptron. We need to modify our getHessian function a little bit; we need to create one-long vector for parameters, and then slice them according to the model architecture. Otherwise tf.gradients() cannot calculate the hessian matrix.</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">getHessianMLP</span><span class="params">(n_input, n_hidden, n_output)</span>:</span></div><div class="line">    batch_size = <span class="number">1</span></div><div class="line"></div><div class="line">    <span class="comment"># Each time getHessianMLP is called, we create a new graph so that the default graph (which exists a priori) won't be filled with old ops.</span></div><div class="line">    g = tf.Graph()</div><div class="line">    <span class="keyword">with</span> g.as_default():</div><div class="line">        <span class="comment"># First create placeholders for inputs and targets: x_input, y_target</span></div><div class="line">        x_input = tf.placeholder(tf.float32, shape=[batch_size, n_input])</div><div class="line">        y_target = tf.placeholder(tf.float32, shape=[batch_size, n_output])</div><div class="line">    </div><div class="line">        <span class="comment"># Start constructing a computational graph for multilayer perceptron</span></div><div class="line">        <span class="comment">###  Since we want to store parameters as one long vector, we first define our parameters as below and then</span></div><div class="line">        <span class="comment">### reshape it later according to each layer specification.</span></div><div class="line">        parameters = tf.Variable(tf.concat(<span class="number">0</span>, [tf.truncated_normal([n_input * n_hidden, <span class="number">1</span>]), tf.zeros([n_hidden, <span class="number">1</span>]),</div><div class="line">                                                                                                      tf.truncated_normal([n_hidden * n_output,<span class="number">1</span>]), tf.zeros([n_output, <span class="number">1</span>])]))</div><div class="line">        </div><div class="line">        <span class="keyword">with</span> tf.name_scope(<span class="string">"hidden"</span>) <span class="keyword">as</span> scope:</div><div class="line">            idx_from = <span class="number">0</span> </div><div class="line">            weights = tf.reshape(tf.slice(parameters, begin=[idx_from, <span class="number">0</span>], size=[n_input*n_hidden, <span class="number">1</span>]), [n_input, n_hidden])</div><div class="line">            idx_from = idx_from + n_input*n_hidden</div><div class="line">            biases = tf.reshape(tf.slice(parameters, begin=[idx_from, <span class="number">0</span>], size=[n_hidden, <span class="number">1</span>]), [n_hidden]) <span class="comment"># tf.Variable(tf.truncated_normal([n_hidden]))</span></div><div class="line">            hidden = tf.matmul(x_input, weights) + biases</div><div class="line">        <span class="keyword">with</span> tf.name_scope(<span class="string">"linear"</span>) <span class="keyword">as</span> scope:</div><div class="line">            idx_from = idx_from + n_hidden</div><div class="line">            weights = tf.reshape(tf.slice(parameters, begin=[idx_from, <span class="number">0</span>], size=[n_hidden*n_output, <span class="number">1</span>]), [n_hidden, n_output])</div><div class="line">            idx_from = idx_from + n_hidden*n_output</div><div class="line">            biases = tf.reshape(tf.slice(parameters, begin=[idx_from, <span class="number">0</span>], size=[n_output, <span class="number">1</span>]), [n_output]) </div><div class="line">            output = tf.nn.softmax(tf.matmul(hidden, weights) + biases)</div><div class="line">        <span class="comment"># Define cross entropy loss</span></div><div class="line">        loss = -tf.reduce_sum(y_target * tf.log(output))</div><div class="line">        </div><div class="line">        </div><div class="line">        <span class="comment">### Note: We can call tf.trainable_variables to get GraphKeys.TRAINABLE_VARIABLES </span></div><div class="line">        <span class="comment">### because we are using g as our default graph inside the "with" scope. </span></div><div class="line">        <span class="comment"># Get trainable variables</span></div><div class="line">        tvars = tf.trainable_variables()</div><div class="line">        <span class="comment"># Get gradients of loss with repect to parameters</span></div><div class="line">        dloss_dw = tf.gradients(loss, tvars)[<span class="number">0</span>]</div><div class="line">        dim, _ = dloss_dw.get_shape()</div><div class="line">        hess = []</div><div class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(dim):</div><div class="line">            <span class="comment"># tf.slice: https://www.tensorflow.org/versions/0.6.0/api_docs/python/array_ops.html#slice</span></div><div class="line">            dfx_i = tf.slice(dloss_dw, begin=[i,<span class="number">0</span>] , size=[<span class="number">1</span>,<span class="number">1</span>])</div><div class="line">            ddfx_i = tf.gradients(dfx_i, parameters)[<span class="number">0</span>] <span class="comment"># whenever we use tf.gradients, make sure you get the actual tensors by putting [0] at the end</span></div><div class="line">            hess.append(ddfx_i)</div><div class="line">        hess = tf.squeeze(hess) </div><div class="line">        init_op = tf.initialize_all_variables()</div><div class="line">        <span class="keyword">with</span> tf.Session() <span class="keyword">as</span> sess:</div><div class="line">            sess.run(init_op)</div><div class="line">            feed_dict = &#123;x_input: np.random.random([batch_size, n_input]), y_target: np.random.random([batch_size, n_output])&#125;</div><div class="line">            <span class="comment">#print(sess.run(loss, feed_dict))</span></div><div class="line">            print(hess.get_shape())</div><div class="line">            print(sess.run(hess, feed_dict))</div></pre></td></tr></table></figure>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">getHessianMLP(n_input=<span class="number">3</span>,n_hidden=<span class="number">4</span>,n_output=<span class="number">3</span>)</div></pre></td></tr></table></figure>
-<pre><code>(31, 31)
-[[  2.19931314e-03  -1.42659002e-03   1.30957202e-03  -8.70158256e-04
-    8.50890204e-03  -5.51932165e-03   5.06659178e-03  -3.36654740e-03
-    7.25943921e-03  -4.70885402e-03   4.32260381e-03  -2.87219742e-03
-    1.87662840e-02  -1.21727986e-02   1.11743081e-02  -7.42488075e-03
-   -5.90046346e-02   8.59218910e-02  -2.69172415e-02  -1.75508182e-03
-    3.87416431e-03  -2.11908249e-03  -5.98554593e-03   1.32124824e-02
-   -7.22693698e-03   3.56099289e-03  -7.86052924e-03   4.29953635e-03
-   -1.33406427e-02   2.94481106e-02  -1.61074679e-02]
- [ -1.42659002e-03   2.15499196e-03   2.23391340e-03   5.85207134e-04
-   -5.51932165e-03   8.33742879e-03   8.64276756e-03   2.26410269e-03
-   -4.70885402e-03   7.11314566e-03   7.37364776e-03   1.93163764e-03
-   -1.21727986e-02   1.83881018e-02   1.90615226e-02   4.99345176e-03
-   -2.40529864e-03  -1.63234770e-02   1.87287778e-02  -5.11422716e-02
-    6.40287027e-02  -1.28864162e-02  -1.72071008e-03  -1.16775408e-02
-    1.33982506e-02   1.02370558e-03   6.94734277e-03  -7.97104836e-03
-   -3.83513537e-03  -2.60270163e-02   2.98621524e-02] ... [omitted] ]
-</code></pre>
-      
-    </div>
-    <footer>
-      
-        
-        
-      
-      <div class="clearfix"></div>
-    </footer>
-  </div>
-</article>
-
-
-
-
-  <article class="post">
-  
-  <div class="post-content">
-    <header>
-      
-        <div class="icon"></div>
-        <time datetime="2016-06-29T21:31:24.000Z"><a href="/blog/2016/06/30/MetricLearningPart1/">2016-06-30</a></time>
-      
-      
-  
-    <h1 class="title"><a href="/blog/2016/06/30/MetricLearningPart1/">Metric Learning Part1</a></h1>
-  
-
-    </header>
-    <div class="entry">
-      
-        <h2 id="Metric-Learning-Part-1"><a href="#Metric-Learning-Part-1" class="headerlink" title="Metric Learning: Part 1"></a>Metric Learning: Part 1</h2><hr>
-<p><strong><em>Note:</em></strong> <em>this post is the first part of the distance metric series. The first post discusses “Distance Metric Learning, with application<br>to clustering with side-information” (<a href="http://ai.stanford.edu/~ang/papers/nips02-metric.pdf" target="_blank" rel="external">http://ai.stanford.edu/~ang/papers/nips02-metric.pdf</a>) and the<br>second post discusses “Geometric Mean Metric Learning” (<a href="http://suvrit.de/papers/GMML.pdf" target="_blank" rel="external">http://suvrit.de/papers/GMML.pdf</a>)</em></p>
-<hr>
-<p>I attended one of the optimization session on the first day of ICML and one of the talks I listened to was about geometric<br>mean metric learning (<a href="http://suvrit.de/papers/GMML.pdf" target="_blank" rel="external">http://suvrit.de/papers/GMML.pdf</a>). I was amazed by their result so I’ll make some notes about<br>their method for myself. </p>
-<p>In many machine learning tasks (i.e. classification, search, clustering),<br>it is necessary to learn some sort of notion of distance between input<br>data points. For example, in classification, one needs to –</p>
-<p>Metric learning was (first?) introduced in this paper: “Distance Metric Learning, with application<br>to clustering with side-information”<br><a href="http://ai.stanford.edu/~ang/papers/nips02-metric.pdf" target="_blank" rel="external">http://ai.stanford.edu/~ang/papers/nips02-metric.pdf</a>.</p>
-<h3 id="Problem-Setting"><a href="#Problem-Setting" class="headerlink" title="Problem Setting"></a>Problem Setting</h3><hr>
-<p>Suppose we have a set of points <span>$\{x_i\}_{i=1}^n \subseteq R^m$</span><!-- Has MathJax -->. Suppose also we are given a set of “side information” that tells us that a certain set of points are “similar” s.t. <span>$S: (x_i, x_j) \in S \text{ if } x_i \text{ and } x_j \text{ are similar. }$</span><!-- Has MathJax --> How can we encode this similar-dissimilar information in a distance metric? </p>
-<h3 id="Simple-answer"><a href="#Simple-answer" class="headerlink" title="Simple answer"></a>Simple answer</h3><hr>
-<p>Learn a Mahalanobis distance $d(x,y) = \sqrt{(x-y)^T A (x-y)}$ so that $A$ will somehow encode the desired information. </p>
-<p>Now the problem is reduced to how to learn the matrix A. Whenever we want to learn something, we should remind ourselves of viewing it as optimization. To do so, we need to define what we want to minimize (or maximize…just flip the sign of the objective function), which should correspond to the notion of “goodness” of the matrix A. But before that, we will go over how the Mahalanobis distance came in.</p>
-<h3 id="Mahalanobis-distance-in-R-2"><a href="#Mahalanobis-distance-in-R-2" class="headerlink" title="Mahalanobis distance in R^2"></a>Mahalanobis distance in R^2</h3><p>To get the feel of it, we will look at some examples. </p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</div><div class="line"><span class="keyword">import</span> tensorflow <span class="keyword">as</span> tf</div><div class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</div></pre></td></tr></table></figure>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">%matplotlib inline</div><div class="line">mu = [<span class="number">0</span>, <span class="number">0</span>]</div><div class="line">cov = [[<span class="number">1</span>,<span class="number">0</span>],[<span class="number">0</span>,<span class="number">1</span>]]</div><div class="line">x_data, y_data = np.random.multivariate_normal(mu,cov,<span class="number">500</span>).T</div><div class="line"><span class="comment">#x_data = np.float32(np.random.rand(1,1000))</span></div><div class="line"><span class="comment">#y_data = np.float32(np.random.rand(1,1000))</span></div><div class="line">fig = plt.figure(figsize=(<span class="number">8</span>,<span class="number">8</span>))</div><div class="line">plt.axis([<span class="number">-10.0</span>,<span class="number">10.0</span>,<span class="number">-10.0</span>,<span class="number">10.0</span>],size=<span class="number">20</span>)</div><div class="line">plt.grid(<span class="keyword">True</span>)</div><div class="line">ax = fig.add_subplot(<span class="number">1</span>,<span class="number">1</span>,<span class="number">1</span>)</div><div class="line">plot_out = plt.scatter(x_data,y_data,color=<span class="string">'b'</span>,marker=<span class="string">'o'</span>,label=<span class="string">"$K_2,mu_2$"</span>, alpha=<span class="number">0.3</span>)</div><div class="line">circle = plt.Circle((<span class="number">0</span>,<span class="number">0</span>),<span class="number">1</span>,color=<span class="string">'r'</span>, fill=<span class="keyword">False</span>, alpha=<span class="number">0.9</span>)</div><div class="line">plot_out = ax.add_artist(circle)</div><div class="line"><span class="comment">#plot_out = plt.plot(x_data, y_data, "bo", alpha=0.3, )</span></div><div class="line"></div><div class="line"><span class="comment">#plt.show()</span></div></pre></td></tr></table></figure>
-<img src="/blog/2016/06/30/MetricLearningPart1/output_6_0.png" alt="title" title="title">
-<p>Suppose that the data distribution were Gaussian and our data samples are distributed according to $N(0, I)$. The red circle marks the unit standard deviation. Now, take two blue points x and y. The Euclidian distance between x and y is $|| x - y ||_2 = \sqrt{(x-y)^T (x-y)}$. Now normally the data are not distributed according to Gaussian, but rather some obscure distribution. In this data distribution, some data samples might be “similar” and others are not. If we use Euclidian distance as a way to measure similarity, we might end up disregarding the intrinsic information within the data distribution. We want to “correct” this.  </p>
-<p>To be more concrete, suppose our real data distribution were something like $\mu = 0$ and $Cov = [[1,0], [0, 6]], which is still too simplistic for any real data. Then sample distribution might look like this:</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">%matplotlib inline</div><div class="line">mu = [<span class="number">0</span>, <span class="number">0</span>]</div><div class="line">cov = [[<span class="number">3</span>,<span class="number">1</span>],[<span class="number">1</span>,<span class="number">2</span>]]</div><div class="line">x_data, y_data = np.random.multivariate_normal(mu,cov,<span class="number">500</span>).T</div><div class="line"><span class="comment">#x_data = np.float32(np.random.rand(1,1000))</span></div><div class="line"><span class="comment">#y_data = np.float32(np.random.rand(1,1000))</span></div><div class="line">fig = plt.figure(figsize=(<span class="number">8</span>,<span class="number">8</span>))</div><div class="line">plt.axis([<span class="number">-10.0</span>,<span class="number">10.0</span>,<span class="number">-10.0</span>,<span class="number">10.0</span>],size=<span class="number">20</span>)</div><div class="line">plt.grid(<span class="keyword">True</span>)</div><div class="line">ax = fig.add_subplot(<span class="number">1</span>,<span class="number">1</span>,<span class="number">1</span>)</div><div class="line">plot_out = plt.scatter(x_data,y_data,color=<span class="string">'b'</span>,marker=<span class="string">'o'</span>,label=<span class="string">"$K_2,mu_2$"</span>, alpha=<span class="number">0.3</span>)</div><div class="line">circle = plt.Circle((<span class="number">0</span>,<span class="number">0</span>),<span class="number">1</span>,color=<span class="string">'r'</span>, fill=<span class="keyword">False</span>, alpha=<span class="number">0.9</span>)</div><div class="line">plot_out = ax.add_artist(circle)</div><div class="line"></div><div class="line"><span class="comment"># TO DO: I should fix the red circle so that it will correspond to the blue distribution.</span></div></pre></td></tr></table></figure>
-<img src="/blog/2016/06/30/MetricLearningPart1/output_9_0.png" alt="title" title="title">
-<p>In order to reflect the distortion, we should use ; what is the correct way to measure the distance between x and y in the new plot? For example, can we say that the point at the top of the distribution and that point right this and this are the same distance? We should fix this because we think that those two points that are along the principle direction should be “more” similar than those that are not (in this case perpendicular). How can we fix this? By rotating back. The rotation matrix we used was C. So one correct distance metric we could use is $|| x - y ||_{C^{-1}} = \sqrt{(x-y)^T C^{-1} (x-y)}$</p>
-<p>Now let’s go back to the paper. What the paper says is this: why not let the data decide which matrix $C^{-1}$ to use. </p>
-<h3 id="Optimization-problem"><a href="#Optimization-problem" class="headerlink" title="Optimization problem"></a>Optimization problem</h3><p>The simplest formulation would be : <span>$\min \sum_{x_i, y_i \in S} || x_i - y_i ||_A$</span><!-- Has MathJax -->. However, this would lead to the non-interesting answer which is to let A be 0 matrix, which will give us 0 for even pairs of x and y which are in a dissimilar set $D$. So we should have a restriction which prevents that to happen. One way to do is add a constraint on $A$ such that $\sum_{x_i, y_i \in D} || x_i - y_i ||_A \ge c$, where $c$ is some positive constant.  such that (most of) $|| x_i - y_i ||_A = 0$ even if $x_i \neq y_i$, which is not even a distance anymore. (Recall the definition of “distance”.) So the final form is:<br><span>$\min \sum_{x_i, y_i \in S} || x_i - y_i ||_A  \text{ s.t. }  \sum_{x_i, y_i \in D} || x_i - y_i ||_A \ge c \text{ and } A \succeq 0$</span><!-- Has MathJax --></p>
 
       
     </div>
@@ -656,7 +659,9 @@ c = 1$$</span><!-- Has MathJax --></p>
   
     <li><a href="/blog/tags/cv/">cv</a><small>1</small></li>
   
-    <li><a href="/blog/tags/math/">math</a><small>6</small></li>
+    <li><a href="/blog/tags/decision-theory/">decision-theory</a><small>1</small></li>
+  
+    <li><a href="/blog/tags/math/">math</a><small>7</small></li>
   
     <li><a href="/blog/tags/neuralnet/">neuralnet</a><small>8</small></li>
   
