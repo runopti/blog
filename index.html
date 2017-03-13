@@ -67,7 +67,7 @@
 <h2 id="Parameter-space"><a href="#Parameter-space" class="headerlink" title="Parameter space"></a>Parameter space</h2><p>Our parameter space is Sobolev ball:<br><span>$$\Theta = \{ \theta : \sum_{i=1}^{\infty} i^{2 \alpha} \theta^2_i \le M \}$$</span><!-- Has MathJax --> </p>
 <p>The reason why we choose our parameter space this way is related to Fourier basis expansion. </p>
 <h2 id="Goal-of-inference-problem"><a href="#Goal-of-inference-problem" class="headerlink" title="Goal of inference problem"></a>Goal of inference problem</h2><p>Estimate $\theta$. Our loss function is </p>
-<span>$$|| \hat{theta} - \theta ||^2 = \sum_{i=1}^{\infty} (\hat{\theta}_i - \theta_i)^2$$</span><!-- Has MathJax -->
+<span>$$|| \hat{\theta} - \theta ||^2 = \sum_{i=1}^{\infty} (\hat{\theta}_i - \theta_i)^2$$</span><!-- Has MathJax -->
 <h2 id="Estimation-Procedure"><a href="#Estimation-Procedure" class="headerlink" title="Estimation Procedure"></a>Estimation Procedure</h2><p>Intuitively, due to our parameter space restriction, when $i$ is large, $\theta_i$ has to become smaller, and at some point or later, it becomes neglible. This observation leads to the following naive estimator:</p>
 <span>$$\hat{\theta}_i =  
 \begin{cases} 
