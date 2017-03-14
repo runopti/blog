@@ -80,9 +80,10 @@ ModelFor simplicity, we will focus on Gaussia">
 <span>$$f&apos;&apos;(x) = \sum_{i=1}^{\infty} \theta_i (\varphi_i(x))&apos;&apos; \\
 = \sum_{i=1}^{\infty} \theta_i (ci)^2 \varphi_i(x)$$</span><!-- Has MathJax -->  
 <p>So</p>
-<span>$$\int (f&apos;&apos;(x))^2 dx \le M&apos; \iff \sum [\theta_i (ci)^2]^2 \le M&apos; \\
-\sum c^4 i^4 \theta_i^2 \le M&apos;$$</span><!-- Has MathJax -->
+<span>$$\int (f&apos;&apos;(x))^2 dx \le M&apos; \iff \sum_{i=1}^{\infty} [\theta_i (ci)^2]^2 \le M&apos; \\
+\sum_{i=1}^{\infty} c^4 i^4 \theta_i^2 \le M&apos;$$</span><!-- Has MathJax -->
 <p>(In this derivation, we’ve assumed $\alpha=2$.)</p>
+<p>Note that without any parameter space condition, the best estimation procedure is the linear procedure. We can show this through Pinsker bound, which we might go over in the future posts under decision-theory tag. </p>
 <h2 id="Goal-of-inference-problem"><a href="#Goal-of-inference-problem" class="headerlink" title="Goal of inference problem"></a>Goal of inference problem</h2><p>Estimate $\theta$. Our loss function is </p>
 <span>$$|| \hat{\theta} - \theta ||^2 = \sum_{i=1}^{\infty} (\hat{\theta}_i - \theta_i)^2$$</span><!-- Has MathJax -->
 <h2 id="Estimation-Procedure"><a href="#Estimation-Procedure" class="headerlink" title="Estimation Procedure"></a>Estimation Procedure</h2><p>Intuitively, due to our parameter space restriction, when $i$ is large, $\theta_i$ has to become smaller, and at some point or later, it becomes neglible. This observation leads to the following naive estimator:</p>
@@ -220,7 +221,7 @@ ModelFor simplicity, we will focus on Gaussia">
   
     <li><a href="/blog/tags/cv/">cv</a><small>1</small></li>
   
-    <li><a href="/blog/tags/decision-theory/">decision-theory</a><small>1</small></li>
+    <li><a href="/blog/tags/decision-theory/">decision-theory</a><small>2</small></li>
   
     <li><a href="/blog/tags/math/">math</a><small>7</small></li>
   
