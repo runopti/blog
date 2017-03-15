@@ -50,6 +50,43 @@
     <header>
       
         <div class="icon"></div>
+        <time datetime="2017-03-15T16:06:06.000Z"><a href="/blog/2017/03/15/alternative-blockwise/">2017-03-15</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/blog/2017/03/15/alternative-blockwise/">Nonparametric Regression 03</a></h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>In this post, we will modify the blockwise estimation procedure we discussed last time, to reduce the constant factor appeared in our upper bound on the expected risk. </p>
+<h2 id="Alternative-Blockwise-Estimator"><a href="#Alternative-Blockwise-Estimator" class="headerlink" title="Alternative Blockwise Estimator"></a>Alternative Blockwise Estimator</h2><p>The issue is that the number of blocks could be very small compared to the number of observations. For example, when $n=1024$, the number of blocks $K = 10$. </p>
+<p>Previously, we set each block size to be the power of 2. That is, $|B_k| = 2^k$. </p>
+<p>To have a smaller blocksize, we can set $|B_k| = \lfloor (1+a)^k \rfloor$, where $0 &lt; a &lt; 1$. </p>
+<p>(WIP)</p>
+
+      
+    </div>
+    <footer>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+
+  <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
         <time datetime="2017-03-13T16:20:10.000Z"><a href="/blog/2017/03/13/adaptive-pinsker/">2017-03-13</a></time>
       
       
@@ -123,12 +160,12 @@ c = \frac{||\theta||^2}{||\theta||^2 + m \sigma^2}$$</span><!-- Has MathJax -->
 <h2 id="Shrinkage-Estimator"><a href="#Shrinkage-Estimator" class="headerlink" title="Shrinkage Estimator"></a>Shrinkage Estimator</h2><p>Now let’s go back to our original problem of constructing an estimation procedure that achieves </p>
 <span>$$E || \hat{\theta} - \theta ||^2 \asymp M^\frac{1}{1+2 \alpha} n^{- \frac{2 \alpha}{2 \alpha+1}}$$</span><!-- Has MathJax --> 
 <p>By leveraging the idea of James-Stein estimator, we can think of a form of shrinkage estimator for this problem as well.<br>However, simply using $\hat{\theta} = \hat{\theta}_{JS}$ doesn’t work, because JS implicitely assumes that $\theta_i$ ($i=1,…,m$) are all in the same magnitude, which means that when some $\theta_i$ is big and others are small, the performance will be really bad.<br>This makes sense because we equally shrink $X$ by the same factor: $(1 - \frac{c}{||X||^2})$</p>
-<p>The natural extention of the JS procedure is to divide the observation into many blocks and apply a different shrinkcage factor for each block, according to its magnitude. </p>
+<p>The natural extention of the JS procedure is to divide the observation into many blocks and apply a different shrinkcage factor for each block, according to its magnitude. (WLOG, we can assume our observations are sorted in a decreasing order.)</p>
 <h2 id="Risk-Calculation"><a href="#Risk-Calculation" class="headerlink" title="Risk Calculation"></a>Risk Calculation</h2><p>The modified JS-like estimation procedure leads us to the following risk:</p>
 <span>$$E || \hat{\theta} - \theta ||^2 = E \sum_{i=1}^n (\hat{\theta}_i - \theta_i)^2 + \sum_{i=n+1}^{\infty} \theta_i^2  \\
 
 \le \sum_{k=1}^K \left[ \frac{|B_k| \frac{1}{n} ||\theta_{B_k}||^2}{|B_k|\frac{1}{n}+||\theta_{B_k}||^2} + 2 \frac{1}{n} \right] + O(n^{-\frac{2\alpha}{2\alpha+1}})$$</span><!-- Has MathJax --> 
-<p>where $K$ is the number of blocks, $B_k$ represents the $k$ th block, $|B_k|$ is the size of that block. </p>
+<p>where $K$ is the number of blocks, $B_k$ represents the $k$ th block, $|B_k|$ is the size of that block.<br>We can naively set the number of elements in each block to be the power of 2, which allows us to write $K = \log_2 n$, where $n$ is the number of observations in total. </p>
 <p>The correspondence from the James-Stein estimator risk upper bound is: </p>
 <span>$$\sigma^2 = \frac{1}{n}, ||\theta||^2 = ||\theta_{B_k}||^2, m = |B_k|$$</span><!-- Has MathJax -->
 <p>Recall that we introduced the threshold index $I$ by considering bias-variance trade-off.<br>This time, we will try to find $K_0$ (the number of blocks) such that $I \le |B<em>1| + \cdots |B</em>{K_0}| \le 2I$ holds. </p>
@@ -672,59 +709,18 @@ c = \frac{||\theta||^2}{||\theta||^2 + m \sigma^2}$$</span><!-- Has MathJax -->
 
 
 
-  <article class="post">
-  
-  <div class="post-content">
-    <header>
-      
-        <div class="icon"></div>
-        <time datetime="2016-09-04T03:20:55.000Z"><a href="/blog/2016/09/03/hello-world/">2016-09-03</a></time>
-      
-      
-  
-    <h1 class="title"><a href="/blog/2016/09/03/hello-world/">Hello World</a></h1>
-  
-
-    </header>
-    <div class="entry">
-      
-        <p>Welcome to <a href="https://hexo.io/" target="_blank" rel="external">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="external">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="external">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="external">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo new <span class="string">"My New Post"</span></div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="external">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo server</div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="external">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo generate</div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="external">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo deploy</div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/deployment.html" target="_blank" rel="external">Deployment</a></p>
-
-      
-    </div>
-    <footer>
-      
-        
-        
-      
-      <div class="clearfix"></div>
-    </footer>
-  </div>
-</article>
-
-
-
-
 
 <nav id="pagination">
   
   
-    <a href="/blog/page/2/" class="alignright next">Next</a>
+    <a href="/blog/page/2/" class="alignright next">Siguiente</a>
   
   <div class="clearfix"></div>
 </nav></div></div>
     <aside id="sidebar" class="alignright">
   <div class="search">
   <form action="//google.com/search" method="get" accept-charset="utf-8">
-    <input type="search" name="q" results="0" placeholder="Search">
+    <input type="search" name="q" results="0" placeholder="Buscar">
     <input type="hidden" name="q" value="site:runopti.github.io/blog">
   </form>
 </div>
@@ -733,14 +729,14 @@ c = \frac{||\theta||^2}{||\theta||^2 + m \sigma^2}$$</span><!-- Has MathJax -->
 
   
 <div class="widget tag">
-  <h3 class="title">Tags</h3>
+  <h3 class="title">Etiquetas</h3>
   <ul class="entry">
   
     <li><a href="/blog/tags/PRML/">PRML</a><small>1</small></li>
   
     <li><a href="/blog/tags/cv/">cv</a><small>1</small></li>
   
-    <li><a href="/blog/tags/decision-theory/">decision-theory</a><small>2</small></li>
+    <li><a href="/blog/tags/decision-theory/">decision-theory</a><small>3</small></li>
   
     <li><a href="/blog/tags/math/">math</a><small>7</small></li>
   
