@@ -50,6 +50,78 @@
     <header>
       
         <div class="icon"></div>
+        <time datetime="2016-09-04T18:21:09.000Z"><a href="/blog/2016/09/04/induced-norm/">2016-09-04</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/blog/2016/09/04/induced-norm/">Induced Matrix Norm</a></h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>Notes on Induced Matrix Norm. I think the name comes from that fact that it is “induced” by a vector.   </p>
+<p><strong>Definition:</strong><br>For a $m$ by $n$ matrix $A$, and a n-dimensional vector $x$,<br><span>$$|| A ||_p = \sup \{ ||Ax||_p : ||x||_p = 1\}$$</span><!-- Has MathJax --></p>
+<p>Note that since given $A$, $ ||Ax||_p$ is a function of $x$, which is closed and bounded as $||x||_p = 1$, $||Ax||_p$ achieves maximum or minimum on some $x$. So we can replace $\sup$ with $\max$. </p>
+<p><strong>Claim I : $p = 1$:</strong><br><span>$$||A||_1 = \max_{1 \le j \le n} \sum_{i=1}^m a_{ij}$$</span><!-- Has MathJax --></p>
+<hr>
+<p>First, let us find some upper bound on $||Ax||_1$.<br><span>$$||Ax||_1 =  || \sum_{i=1}^n A_i x_i ||_1 \le \sum_{i=1}^n |x_i| || A_i ||_1 
+\le \max_j ||A_j|| \sum_{i=1}^n |x_i| = \max_j ||A_j|| ||x||_1$$</span><!-- Has MathJax --></p>
+<p>So given A, we have found a constant $K = \max_j ||A_j||$ that will upper bound $||Ax||_1$ by  $K||x||_1$:<br><span>$$||Ax||_1 \le  K ||x||_1$$</span><!-- Has MathJax --></p>
+<p>Next, we show that there exists $x$ for which we have equality for the above equation. Since $K = \max_j ||A_j||$, we can just let $x = [0, 0, …, 1, .. 0, 0]$ where 1 is at the $k$th position. $k$ is the index that satisfies $||A_k|| = \max_j ||A_j||$.    </p>
+<p>So we’ve found that ||A||_1 = \max_j ||A_j|| . </p>
+<p><strong>Claim II : $p = \infty$:</strong><br><span>$$||A||_{\infty} = \max_{1 \le i \le m} \sum_{j=1}^n a_{ij}$$</span><!-- Has MathJax --></p>
+<hr>
+<p>First, consider <span>$|| Ax ||_{\infty}$</span><!-- Has MathJax -->. Then,</p>
+<span>$$\| Ax \|_{\infty} = 
+\left \|
+ \begin{matrix}
+  \sum_{j=1}^n a_{1j} x_j  \\
+  \sum_{j=1}^n a_{2j} x_j  \\
+  \vdots \\
+  \sum_{j=1}^n a_{mj} x_j
+ \end{matrix}
+\right \|_{\infty} = \max_i \left | \sum_{j=1}^n a_{ij} x_j \right | 
+\le \max_i \sum_{j=1}^n \left | a_{ij} x_j \right | 
+\le \max_i \sum_{j=1}^n \left | a_{ij} \right | \max_k \left | x_k \right |
+= \max_i \left( \sum_{j=1}^n \left | a_{ij} \right | \right) \| x \|_{\infty}$$</span><!-- Has MathJax --> 
+<p>So given $A$, we have found a constant <span>$K = \max_i \left( \sum_{j=1}^n \left | a_{ij} \right | \right)$</span><!-- Has MathJax --> that will upper bound <span>$||Ax||_{\infty}$</span><!-- Has MathJax -->:<br><span>$$\| Ax \|_{\infty} \le  K &nbsp;\| x \|_{\infty}$$</span><!-- Has MathJax --> </p>
+<p>To find <span>$\| A \|_{\infty}$</span><!-- Has MathJax -->, we need to find some $x$ that equates the above inequality, which is fortunately straightforward as in the case of $p = 1$. By examining :</p>
+<span>$$\max_i \left | \sum_k a_{ik} x_k \right | = K \max_k | x_k |$$</span><!-- Has MathJax --> 
+<p>we notice that we achieve the equality if we let<br><span>$$x_k = \begin{cases}
+  \frac{ a_{ik} }{ | a_{ik} |} &amp; (a_{ik} \neq 0) \\
+  1  &amp;  (a_{ik} = 0)
+\end{cases}$$</span><!-- Has MathJax --></p>
+<p>where $k$ is the index such that <span>$A_{k,:} = \max_i \left( \sum_{j=1}^n \left | a_{ij} \right | \right)$</span><!-- Has MathJax -->  <strong><em>Note:</em></strong>  I’m using $A_k$ as denoting the $k$ th column vector of a matrix $A$, and <span>$A_{k, :}$</span><!-- Has MathJax --> as denoting the $k$ th row vector of $A$. </p>
+<p><strong>Claim III : $p = 2$:</strong><br><span>$$\|A\|_2 =  \sqrt{ \lambda_{\max} }$$</span><!-- Has MathJax --><br>where $\lambda_{\max}$ is the largest eigenvalue of $A^T A$. </p>
+<hr>
+<p>This is the spectral norm! </p>
+<h2 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h2><ul>
+<li><a href="https://en.wikipedia.org/wiki/Matrix_norm" target="_blank" rel="external">https://en.wikipedia.org/wiki/Matrix_norm</a></li>
+<li><a href="http://www.ece.uah.edu/courses/ee448/chapter4.pdf" target="_blank" rel="external">http://www.ece.uah.edu/courses/ee448/chapter4.pdf</a></li>
+</ul>
+
+      
+    </div>
+    <footer>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+
+  <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
         <time datetime="2016-09-04T03:20:55.000Z"><a href="/blog/2016/09/03/hello-world/">2016-09-03</a></time>
       
       
@@ -574,39 +646,6 @@ s.t. \quad Ax \ge b, x \ge 0$$</span><!-- Has MathJax -->
 
 
 
-  <article class="post">
-  
-  <div class="post-content">
-    <header>
-      
-        <div class="icon"></div>
-        <time datetime="2016-01-09T05:00:00.000Z"><a href="/blog/2016/01/09/this-is-amazing/">2016-01-09</a></time>
-      
-      
-  
-    <h1 class="title"><a href="/blog/2016/01/09/this-is-amazing/">This is amazing</a></h1>
-  
-
-    </header>
-    <div class="entry">
-      
-        <p>The progress on image generation has been dramatically improved due to VAE/GAN. The quality of Figure 5 in <a href="http://arxiv.org/pdf/1512.09300.pdf" target="_blank" rel="external">this paper</a> is incredible.  </p>
-
-      
-    </div>
-    <footer>
-      
-        
-        
-      
-      <div class="clearfix"></div>
-    </footer>
-  </div>
-</article>
-
-
-
-
 
 <nav id="pagination">
   
@@ -636,7 +675,7 @@ s.t. \quad Ax \ge b, x \ge 0$$</span><!-- Has MathJax -->
   
     <li><a href="/blog/tags/cv/">cv</a><small>1</small></li>
   
-    <li><a href="/blog/tags/decision-theory/">decision-theory</a><small>3</small></li>
+    <li><a href="/blog/tags/decision-theory/">decision-theory</a><small>2</small></li>
   
     <li><a href="/blog/tags/math/">math</a><small>7</small></li>
   
@@ -647,6 +686,8 @@ s.t. \quad Ax \ge b, x \ge 0$$</span><!-- Has MathJax -->
     <li><a href="/blog/tags/paper-memo/">paper-memo</a><small>2</small></li>
   
     <li><a href="/blog/tags/research/">research</a><small>0</small></li>
+  
+    <li><a href="/blog/tags/variational-inference/">variational-inference</a><small>1</small></li>
   
   </ul>
 </div>
