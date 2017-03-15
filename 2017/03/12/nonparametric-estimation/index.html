@@ -103,7 +103,7 @@ ModelFor simplicity, we will focus on Gaussia">
 \Rightarrow (I+1)^{2\alpha} \sum_{i = I + 1}^{\infty} \theta_i^2 \le M \\ 
 \Rightarrow \sum_{i = I + 1}^{\infty} \theta_i^2 \le \frac{M}{(I+1)^{2\alpha}} \le \frac{M}{I^{2 \alpha}}$$</span><!-- Has MathJax --> 
 <p>So our upper bound is</p>
-<span>$$R(\hat{\theta}) =  \frac{I}{n} + \frac{M}{I^{2 \alpha}}$$</span><!-- Has MathJax --> 
+<span>$$R(\hat{\theta}) \le  \frac{I}{n} + \frac{M}{I^{2 \alpha}}$$</span><!-- Has MathJax --> 
 <p>To find an optimal $I$, we will treat $\frac{M}{I^{2 \alpha}}$ as $Bias^2$, and pick $I$ to achieve the optimal variance-bias tradeoff. This leads to </p>
 <span>$$\frac{I}{n} = \frac{M}{I^{2 \alpha}} \iff I^{1+2\alpha} = Mn \iff I = (Mn)^{\frac{1}{1+2\alpha}}$$</span><!-- Has MathJax --> 
 <p>Therefore, </p>

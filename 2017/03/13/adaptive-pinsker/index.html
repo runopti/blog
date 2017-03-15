@@ -66,10 +66,66 @@ $$\inf_{\hat{\theta}} \sup_{\Theta} E || \hat{\theta} - \theta ||">
 <span>$$\inf_{\hat{\theta}} \sup_{\Theta} E || \hat{\theta} - \theta ||^2 \asymp M^{\frac{1}{2\alpha + 1}} n^{-\frac{2\alpha}{2\alpha+1}}$$</span><!-- Has MathJax --> 
 <p>The crucial assumption to derive this bound is that we assumed $\alpha$ and $M$ are known, which defines a Sobolev ellipsoid, our parameter space. </p>
 <p>In this post, we remove that assumption and attempt to achieve the same risk bound (up to some constant).</p>
-<h2 id="Adaptive-Estimation"><a href="#Adaptive-Estimation" class="headerlink" title="Adaptive Estimation"></a>Adaptive Estimation</h2><p>To recap, model description and parameter space:</p>
+<p>To recap, the followings are our model description and parameter space.</p>
 <h3 id="Model"><a href="#Model" class="headerlink" title="Model"></a>Model</h3><span>$$Y_i = \theta_i + \frac{1}{\sqrt{n}} \sigma Z_i, \text{ where } Z_i \sim^{iid} N(0,1)$$</span><!-- Has MathJax --> 
 <h3 id="Parameter-space"><a href="#Parameter-space" class="headerlink" title="Parameter space"></a>Parameter space</h3><span>$$\Theta = \{ \theta : \sum_{i=1}^{\infty} i^{2 \alpha} \theta^2_i \le M \}$$</span><!-- Has MathJax -->
-<p>Recall that the naive estimation procedure in the previous post is just use an observation as our estimator for small indices and 0 for large indices.<br>It worked because we were able to optimize $I$ based on $\alpha$ and $M$. </p>
+<h2 id="Adaptive-Estimation"><a href="#Adaptive-Estimation" class="headerlink" title="Adaptive Estimation"></a>Adaptive Estimation</h2><p>Recall that the naive estimation procedure in the previous post just uses an observation as our estimator for small $i$s and 0 for large $i$s.<br>It worked because we were able to optimize $I$ based on $\alpha$ and $M$.<br>Now since we don’t have access to $\alpha$ and $M$, we have to take an alternative estimation procedure.<br>Since the only available information we have is data, we want our procedure to reflect this information in a meaningful way.  </p>
+<p>To get a hint, we will look into how James-Stein estimator was conceived.</p>
+<h3 id="James-Stein-Estimator"><a href="#James-Stein-Estimator" class="headerlink" title="James-Stein Estimator"></a>James-Stein Estimator</h3><p>James-Stein estimator is a form of $\delta(X) = a^T X$ (linear procedure) where $a$ is a data-dependent parameter.<br>(That is, JS estimator is adaptive to the $|| \theta ||^2$.) </p>
+<p>If we have $m$ observations such that</p>
+<span>$$X_i = \theta_i + \sigma Z_i , Z_i \sim^{i.i.d} N(0,1)$$</span><!-- Has MathJax --> 
+<p>Then JS estimator is</p>
+<span>$$\hat{\theta}_{JS} = (1 - \frac{(m-2)\sigma^2}{\sum_{i=1}^m X_i^2} ) X$$</span><!-- Has MathJax --> 
+<p>where $X$ represents a $m$ dimensional vector (so we put all the $m$ observations into one vector). </p>
+<p>We say that JS-estimator is mimicking linear estimator because the difference of the two risks is bounded by some constant:</p>
+<span>$$E || \hat{\theta}_{JS} - \theta ||^2 - \inf_c E || c X - \theta ||^2 \le \text{constant}$$</span><!-- Has MathJax --> 
+<p>To see this, we will investigate each term and show the difference is bounded.<br>(assume $\sigma=1$ without loss of generality.) </p>
+<h3 id="The-First-Term"><a href="#The-First-Term" class="headerlink" title="The First Term"></a>The First Term</h3><span>$$E || \hat{\theta}_{JS} - \theta ||^2 =  E_{X|\theta} \sum_{i=1}^m (X_i - \frac{m-2}{||X||^2} - \theta_i)^2  \\
+= E_{X|\theta} \sum_{i=1}^m ((X_i - \theta)^2 + \frac{(m-2)^2}{(||X||^2)^2} X_i^2 - 2(X_i - \theta_i) \frac{m-2}{||X||^2} X_i  ) \\
+= m + E_{X|\theta} (\frac{(m-2)^2}{||X||^2} ) - 2 \sum_{i=1}^m E_{X|\theta} (X_i - \theta) \frac{m-2}{||X||^2} X_i$$</span><!-- Has MathJax -->
+<p>To go further, we will need Stein’s identity (simplified version):</p>
+<span>$$\text{For } Y \sim N(\theta, 1), \text{ we have } 
+E_{Y|\theta} (Y - \theta) g(Y) = E_{Y|\theta} g&apos;(Y)$$</span><!-- Has MathJax --> 
+<p>under some regularity assumption for $g$. </p>
+<p>In our case, $Y=X_i$ and  $g(X_i) = \frac{m-2}{||X||^2} X_i$.</p>
+<p>By the above identity, we have</p>
+<span>$$\sum_{i=1}^m E_{X|\theta} (X_i - \theta) \frac{m-2}{||X||^2} X_i
+= \sum_{i=1}^m E_{X|\theta} \frac{\partial}{\partial X_i}(\frac{m-2}{||X||^2}X_i) \\
+= \sum_{i=1}^m E_{X|\theta}( \frac{m-2}{||X||^2} + \frac{-(m-2) 2X_i}{(\sum_{i=1}^m X_i^2)^2}X_i ) \\
+= E_{X|\theta} (\frac{m(m-2)}{||X||^2} - \frac{2 (m-2)}{||X||^2} ) \\
+= E_{X|\theta} (\frac{m(m-2)^2}{||X||^2}  ) \\$$</span><!-- Has MathJax --> 
+<p>This gives us</p>
+<span>$$E || \hat{\theta}_{JS} - \theta ||^2 =  m + E_{X|\theta} (\frac{(m-2)^2}{||X||^2} ) - 2 \sum_{i=1}^m E_{X|\theta} (X_i - \theta) \frac{m-2}{||X||^2} X_i \\
+= m - E_{X|\theta} \frac{(m-2)^2}{||X||^2}$$</span><!-- Has MathJax --> 
+<p>Now to get an upper bound on this, we will apply Jensen’s inequality but before that we will use the following property of noncentral Chi-squared distribution to simplify (noncentral because each $X_i$ has a different mean $\theta$):</p>
+<span>$$||X||^2 = \sum_{i=1}^m X_i^2 \sim \chi_{m+2N},&nbsp;\text{ where } N \sim Poisson \left(\frac{||\theta||^2}{2} \right)$$</span><!-- Has MathJax --> 
+<p>By conditioning on $N$, we have</p>
+<span>$$m - E_{X|\theta} \frac{(m-2)^2}{||X||^2} = m - E_N \left[ E_{X|N} \frac{(m-2)^2}{||X||^2} | N \right]  \\
+= m - E_N \frac{(m-2)^2}{m+2N-2}  \text{  (Note that } E\frac{1}{\chi^2_d} = \frac{1}{d-2} \text{)} \\
+\le m - \frac{(m-2)^2}{m-2 + 2E_N[n]} \text{  Note (Jensen&apos;s inequality):} E \frac{1}{Y} \ge \frac{1}{EY} \\
+= m - \frac{(m-2)^2}{m-2 + ||\theta||^2} \\
+= 2 + m - 2 - \frac{(m-2)^2}{m-2 + ||\theta||^2} \\
+= 2 + \frac{(m-2)||\theta||^2}{m-2 + ||\theta||^2} \\
+\le 2 + \frac{m||\theta||^2}{m + ||\theta||^2}$$</span><!-- Has MathJax -->
+<p>When $\sigma \neq 1$, it’s going to be </p>
+<span>$$E ||\hat{\theta} - \theta||^2  \le 2\sigma^2 + \frac{m \sigma^2 ||\theta||^2}{m\sigma^2 + ||\theta||^2}$$</span><!-- Has MathJax -->
+<h3 id="The-Second-Term"><a href="#The-Second-Term" class="headerlink" title="The Second Term"></a>The Second Term</h3><p>We can see that<br><span>$$\inf_c E || c X - \theta ||^2 = \frac{m \sigma^2 ||\theta||^2}{||\theta||^2 + m \sigma^2}$$</span><!-- Has MathJax --></p>
+<p>by optimizing $c$ to get $inf$. </p>
+<p>First, consider the bias-variance decomposition for squared loss:</p>
+<span>$$E || cX - \theta ||^2 = (c-1)^2 ||\theta||^2 + c^2 m \sigma^2$$</span><!-- Has MathJax -->
+<p>By taking the derivative w.r.t. $c$ and setting it equal to zero, we have</p>
+<span>$$2(c-1) ||\theta||^2 + 2cm\sigma^2 = 0 \\
+c = \frac{||\theta||^2}{||\theta||^2 + m \sigma^2}$$</span><!-- Has MathJax -->
+<p>By plugging this value into  $E||cX - \theta||^2$, we have</p>
+<span>$$(c-1)^2 ||\theta||^2 + c^2 m \sigma^2 = (\frac{-m\sigma^2}{||\theta||^2 + m \sigma^2})^2 ||\theta||^2 + (\frac{||\theta||^2}{||\theta||^2 + m \sigma^2})^2 m \sigma^2 \\
+= \frac{m \sigma^2 ||\theta||^2 }{||\theta||^2 + m \sigma^2 }$$</span><!-- Has MathJax --> 
+<p>By combining the results from First Term and Second Term, we have</p>
+<span>$$E || \hat{\theta}_{JS} - \theta ||^2 - \inf_c E || c X - \theta ||^2 \le 2 \sigma^2$$</span><!-- Has MathJax --> 
+<p>which shows that the risk difference is bounded by $2 \sigma^2$, a constant that doesn’t depend on $c$. </p>
+<h2 id="Shrinkage-Estimator"><a href="#Shrinkage-Estimator" class="headerlink" title="Shrinkage Estimator"></a>Shrinkage Estimator</h2><p>Now let’s go back to our original problem of constructing an estimation procedure that achieves </p>
+<span>$$E || \hat{\theta} - \theta ||^2 \asymp M^\frac{1}{1+2 \alpha} n^{- \frac{2 \alpha}{2 \alpha+1}}$$</span><!-- Has MathJax --> 
+<p>By leveraging the idea of James-Stein estimator, we can think of a form of shrinkage estimator for this problem as well.<br>However, simply using $\hat{\theta} = \hat{\theta}_{JS}$ doesn’t work, because JS implicitely assumes that $\theta_i$ ($i=1,…,m$) are all in the same magnitude, which means that when some $\theta_i$ is big and others are small, the performance will be really bad.<br>This makes sense because we equally shrink $X$ by the same factor: $(1 - \frac{c}{||X||^2})$</p>
+<p>The natural extention is to divide the observation into many blocks and apply different shrinkcage factor for each block, according to their magnitude. </p>
 <p>(WIP)</p>
 
       
