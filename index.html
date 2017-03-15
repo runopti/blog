@@ -61,17 +61,24 @@
     <div class="entry">
       
         <h2 id="Assumption"><a href="#Assumption" class="headerlink" title="Assumption"></a>Assumption</h2><ul>
-<li>$z = t(\epsilon, \nu)$ for $\epsilon \sim s(\epsilon)$ implies $z \sim q(z; \nu)$. </li>
+<li>$z = t(\epsilon, v)$ for $\epsilon \sim s(\epsilon)$ implies $z \sim q(z; v)$. </li>
 </ul>
 <h3 id="Example"><a href="#Example" class="headerlink" title="Example"></a>Example</h3><span>$$\epsilon \sim N(0,1) \\
-z = t(\epsilon, \nu) \text{,  where  } t(\epsilon,\nu) = \epsilon \nu_1 + \nu_0 \\
-\Rightarrow z \sim q(z; \nu) \text{,  where  } q(z; \nu) =  N(\nu_0, \nu_1^2)$$</span><!-- Has MathJax --> 
-<p>That is, the distribution of $Z$: $q(z)$ is parameterized by $\nu = [\nu_0, \nu_1^2] = [\mu, \sigma^2]$.</p>
+z = t(\epsilon, v) \text{,  where  } t(\epsilon,v) = \epsilon v_1 + v_0 \\
+\Rightarrow z \sim q(z; v) \text{,  where  } q(z; v) =  N(v_0, v_1^2)$$</span><!-- Has MathJax --> 
+<p>That is, the distribution of $Z$: $q(z)$ is parameterized by $v = [v_0, v_1^2] = [\mu, \sigma^2]$.</p>
 <ul>
-<li>$\log p(x,z)$ and $\log q(z)$ are differentiable with respect to $z$. </li>
+<li>$\log p(x,z)$ and $\log q(z; v)$ are differentiable with respect to $z$. </li>
 </ul>
 <h2 id="Usage"><a href="#Usage" class="headerlink" title="Usage"></a>Usage</h2><p>Recall that EBLO is the following:</p>
-<p>(WIP)</p>
+<span>$$L(v) = E_{q(z;v)}[\log p(x,z) - \log q(z;v)]$$</span><!-- Has MathJax -->
+<p>If we define $g(z,v) = \log p(x,z) - \log q(z:v)$, then we can express $\nabla_v L(v)$ as:</p>
+<span>$$\nabla_v L(v) = \nabla_v \int g(z,v) q(z; v) dz \\
+= \int \nabla_v q(z: v) g(z,v) + q(z; v) \nabla_v g(z,v) dz \\
+= \int q(z;v) \nabla_v \log q(z;v) g(z,v) + q(z;v) \nabla_v g(z,v) dz \\
+= E_{q(z;v)} \left [ \nabla_v \log q(z;v) g(z,v) + \nabla_v g(z,v) \right ]$$</span><!-- Has MathJax --> 
+<p>We can rewrite the above gradient using $z = t(\epsilon, v)$:</p>
+<span>$$\nabla_v L(v) = E_{s(\epsilon)} \left [ \nabla_v \log q(z;v) g(z,v) + \nabla_v g(z,v) \right ]$$</span><!-- Has MathJax -->
 <h3 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h3><p><a href="http://www.cs.columbia.edu/~blei/talks/2016_NIPS_VI_tutorial.pdf" target="_blank" rel="external">http://www.cs.columbia.edu/~blei/talks/2016_NIPS_VI_tutorial.pdf</a></p>
 
       
@@ -95,19 +102,17 @@ z = t(\epsilon, \nu) \text{,  where  } t(\epsilon,\nu) = \epsilon \nu_1 + \nu_0 
     <header>
       
         <div class="icon"></div>
-        <time datetime="2017-03-15T04:00:00.000Z"><a href="/blog/2017/03/15/alternative-blockwise/">2017-03-15</a></time>
+        <time datetime="2017-03-15T16:06:06.000Z"><a href="/blog/2017/03/15/alternative-blockwise/">2017-03-15</a></time>
       
       
   
-    <h1 class="title"><a href="/blog/2017/03/15/alternative-blockwise/"></a></h1>
+    <h1 class="title"><a href="/blog/2017/03/15/alternative-blockwise/">Nonparametric Regression 03</a></h1>
   
 
     </header>
     <div class="entry">
       
-        <hr>
-<p>title: Nonparametric Regression 03<br>date: 2017-03-15 12:06:06<br>tags: decision-theory —</p>
-<p>In this post, we will modify the blockwise estimation procedure we discussed last time, to reduce the constant factor appeared in our upper bound on the expected risk. </p>
+        <p>In this post, we will modify the blockwise estimation procedure we discussed last time, to reduce the constant factor appeared in our upper bound on the expected risk. </p>
 <h2 id="Alternative-Blockwise-Estimator"><a href="#Alternative-Blockwise-Estimator" class="headerlink" title="Alternative Blockwise Estimator"></a>Alternative Blockwise Estimator</h2><p>The issue is that the number of blocks could be very small compared to the number of observations. For example, when $n=1024$, the number of blocks $K = 10$. </p>
 <p>Previously, we set each block size to be the power of 2. That is, $|B_k| = 2^k$. </p>
 <p>To have a smaller blocksize, we can set $|B_k| = \lfloor (1+a)^k \rfloor$, where $0 &lt; a &lt; 1$. </p>
@@ -713,7 +718,7 @@ c = \frac{||\theta||^2}{||\theta||^2 + m \sigma^2}$$</span><!-- Has MathJax -->
   
     <li><a href="/blog/tags/cv/">cv</a><small>1</small></li>
   
-    <li><a href="/blog/tags/decision-theory/">decision-theory</a><small>2</small></li>
+    <li><a href="/blog/tags/decision-theory/">decision-theory</a><small>3</small></li>
   
     <li><a href="/blog/tags/math/">math</a><small>7</small></li>
   
