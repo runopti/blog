@@ -123,8 +123,22 @@ c = \frac{||\theta||^2}{||\theta||^2 + m \sigma^2}$$</span><!-- Has MathJax -->
 <h2 id="Shrinkage-Estimator"><a href="#Shrinkage-Estimator" class="headerlink" title="Shrinkage Estimator"></a>Shrinkage Estimator</h2><p>Now let’s go back to our original problem of constructing an estimation procedure that achieves </p>
 <span>$$E || \hat{\theta} - \theta ||^2 \asymp M^\frac{1}{1+2 \alpha} n^{- \frac{2 \alpha}{2 \alpha+1}}$$</span><!-- Has MathJax --> 
 <p>By leveraging the idea of James-Stein estimator, we can think of a form of shrinkage estimator for this problem as well.<br>However, simply using $\hat{\theta} = \hat{\theta}_{JS}$ doesn’t work, because JS implicitely assumes that $\theta_i$ ($i=1,…,m$) are all in the same magnitude, which means that when some $\theta_i$ is big and others are small, the performance will be really bad.<br>This makes sense because we equally shrink $X$ by the same factor: $(1 - \frac{c}{||X||^2})$</p>
-<p>The natural extention is to divide the observation into many blocks and apply different shrinkcage factor for each block, according to their magnitude. </p>
-<p>(WIP)</p>
+<p>The natural extention of the JS procedure is to divide the observation into many blocks and apply a different shrinkcage factor for each block, according to its magnitude. </p>
+<h2 id="Risk-Calculation"><a href="#Risk-Calculation" class="headerlink" title="Risk Calculation"></a>Risk Calculation</h2><p>The modified JS-like estimation procedure leads us to the following risk:</p>
+<span>$$E || \hat{\theta} - \theta ||^2 = E \sum_{i=1}^n (\hat{\theta}_i - \theta_i)^2 + \sum_{i=n+1}^{\infty} \theta_i^2  \\
+
+\le \sum_{k=1}^K \left[ \frac{|B_k| \frac{1}{n} ||\theta_{B_k}||^2}{|B_k|\frac{1}{n}+||\theta_{B_k}||^2} + 2 \frac{1}{n} \right] + O(n^{-\frac{2\alpha}{2\alpha+1}})$$</span><!-- Has MathJax --> 
+<p>where $K$ is the number of blocks, $B_k$ represents the $k$ th block, $|B_k|$ is the size of that block. </p>
+<p>The correspondence from the James-Stein estimator risk upper bound is: </p>
+<span>$$\sigma^2 = \frac{1}{n}, ||\theta||^2 = ||\theta_{B_k}||^2, m = |B_k|$$</span><!-- Has MathJax -->
+<p>Recall that we introduced the threshold index $I$ by considering bias-variance trade-off.<br>This time, we will try to find $K_0$ (the number of blocks) such that $I \le |B<em>1| + \cdots |B</em>{K_0}| \le 2I$ holds. </p>
+<p>Now observe that for any positive real number $a$ and $b$, we have $\frac{ab}{a+b} \le a$ and $\frac{ab}{a+b} \le b$.<br>Therefore,</p>
+<span>$$\sum_{k=1}^K \left[ \frac{|B_k| \frac{1}{n} ||\theta_{B_k}||^2}{|B_k|\frac{1}{n}+||\theta_{B_k}||^2} + 2 \frac{1}{n} \right] + O(n^{-\frac{2\alpha}{2\alpha+1}}) \\
+\le \sum_{k=1}^{K_0} |B_k|\frac{1}{n} + \sum_{k=K_0+1}^K ||\theta_{B_k}||^2 + 2 \frac{1}{n} K + O(n^{-\frac{2 \alpha}{2\alpha+1}}) \\
+\le \frac{1}{n} 2I + \sum_{i &gt; I}^{\infty} \theta_i^2 + + O(n^{-\frac{2 \alpha}{2\alpha+1}}) \\$$</span><!-- Has MathJax -->
+<p>From the calculation in the last post, we see that this will be upper bounded by</p>
+<span>$$\le c M^{\frac{1}{1+2\alpha}} n^{-\frac{2\alpha}{2\alpha+1}}$$</span><!-- Has MathJax -->
+<p>One criticism toward this procedure is that the constant $c$ could be huge.<br>Is there a way to reduce it? We will explore alternative blockwise procedure next time.</p>
 
       
     </div>
@@ -703,14 +717,14 @@ c = \frac{||\theta||^2}{||\theta||^2 + m \sigma^2}$$</span><!-- Has MathJax -->
 <nav id="pagination">
   
   
-    <a href="/blog/page/2/" class="alignright next">Nächste Seite</a>
+    <a href="/blog/page/2/" class="alignright next">Next</a>
   
   <div class="clearfix"></div>
 </nav></div></div>
     <aside id="sidebar" class="alignright">
   <div class="search">
   <form action="//google.com/search" method="get" accept-charset="utf-8">
-    <input type="search" name="q" results="0" placeholder="Suche">
+    <input type="search" name="q" results="0" placeholder="Search">
     <input type="hidden" name="q" value="site:runopti.github.io/blog">
   </form>
 </div>
