@@ -82,7 +82,7 @@ SummaryThe dropout objective minimises the KL divergence between an approximate 
 <li>averaging forward passes: </li>
 </ul>
 <span>$$p(y^* | x^*, X, Y) = \int p(y^*|x^*,\omega) p(\omega|X,Y) d\omega$$</span><!-- Has MathJax --> 
-<p>where one forward pass calculation (given all the weights $\omega$ and the test input $x^<em>$ is equal to one sample draw from this distribution $p(y^</em>|x^*,\omega)$, where we define </p>
+<p>where one forward pass calculation (given all the weights $\omega$ and the test input <span>$x^*$</span><!-- Has MathJax -->) is equal to one sample draw from this distribution <span>$p(y^*|x^*,\omega)$</span><!-- Has MathJax -->, where we define </p>
 <span>$$p(y^*|x^*,\omega) = N(y^*; \sqrt{\frac{1}{K}} \sigma(x^* W_1 + b) W_2, \tau^{-1} I_n)$$</span><!-- Has MathJax --> 
 <h1 id="Gaussian-Process"><a href="#Gaussian-Process" class="headerlink" title="Gaussian Process"></a>Gaussian Process</h1><ul>
 <li><p>A Gaussian process is completely specified by its mean function and covariance function. </p>
