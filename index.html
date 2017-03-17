@@ -50,6 +50,82 @@
     <header>
       
         <div class="icon"></div>
+        <time datetime="2017-03-17T15:27:50.000Z"><a href="/blog/2017/03/17/dropout-bayesian/">2017-03-17</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/blog/2017/03/17/dropout-bayesian/">Dropout as a Bayesian Approximation</a></h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>(notes to myself)</p>
+<h2 id="Summary"><a href="#Summary" class="headerlink" title="Summary"></a>Summary</h2><p>The dropout objective minimises the KL divergence between an approximate distribution and the posterior of a deep Gaussian process (marginalized over its finite rank covariance function parameters). </p>
+<h2 id="Gaussian-Processes"><a href="#Gaussian-Processes" class="headerlink" title="Gaussian Processes"></a>Gaussian Processes</h2><ul>
+<li>models distributions over functions. </li>
+<li>offers a way to get uncertainty estimates over the function values, robustness to over-fitting, and principled ways of hyper-parameter tuning. </li>
+</ul>
+<h3 id="Bayesian-approach-to-function-approximation"><a href="#Bayesian-approach-to-function-approximation" class="headerlink" title="Bayesian approach to function approximation"></a>Bayesian approach to function approximation</h3><p>Given a training set <span>$\{ X_i, Y_i \}_{i=1}^n$</span><!-- Has MathJax -->, we want to estimate a function $y = f(x)$ that is likely to describe the relationship between $X$ and $Y$. </p>
+<p>Following the Bayesian approach, we can put some prior distribution over the space of functions $p(f)$.<br>We then look for the posterior distribution given data $(X,Y)$:</p>
+<span>$$p(f|X,Y) \propto p(Y|X, f) p(f)$$</span><!-- Has MathJax --> 
+<p>This distribution captures the most likely functions given $(X,Y)$.<br>A prediction can be done in the following way:</p>
+<span>$$p(y^*|x^*, X,Y) = \int p(y^*|x^*,f) p(f|X,Y) df \\
+\iff p(y^*|x^*, X,Y) = \int p(y^*|f) p(f|x,X,Y) df$$</span><!-- Has MathJax -->
+<p>Covariance function is like a kernel function: it takes two arguments, and returns a similarity of these two.  Therefore, given some $n by p$ data matrix, this function induces an $n \times n$ covariance matrix. </p>
+<h2 id="How-do-these-functions-correspond-to-the-Gaussian-process"><a href="#How-do-these-functions-correspond-to-the-Gaussian-process" class="headerlink" title="How do these functions correspond to the Gaussian process?"></a>How do these functions correspond to the Gaussian process?</h2><h2 id="Why-can-we-think-that-the-noise-as-approximate-integration"><a href="#Why-can-we-think-that-the-noise-as-approximate-integration" class="headerlink" title="Why can we think that the noise as approximate integration?"></a>Why can we think that the noise as approximate integration?</h2><ul>
+<li>Because averaging forward passes through the network is equivalent to Monte Carlo integration over a Gaussian process posterior approximation.</li>
+</ul>
+<h3 id="Derivation"><a href="#Derivation" class="headerlink" title="Derivation"></a>Derivation</h3><ul>
+<li>averaging forward passes: </li>
+</ul>
+<span>$$p(y^* | x^*, X, Y) = \int p(y^*|x^*,\omega) p(\omega|X,Y) d\omega$$</span><!-- Has MathJax --> 
+<p>where one forward pass calculation (given all the weights $\omega$ and the test input $x^<em>$ is equal to one sample draw from this distribution $p(y^</em>|x^*,\omega)$, where we define </p>
+<span>$$p(y^*|x^*,\omega) = N(y^*; \sqrt{\frac{1}{K}} \sigma(x^* W_1 + b) W_2, \tau^{-1} I_n)$$</span><!-- Has MathJax --> 
+<h1 id="Gaussian-Process"><a href="#Gaussian-Process" class="headerlink" title="Gaussian Process"></a>Gaussian Process</h1><ul>
+<li><p>A Gaussian process is completely specified by its mean function and covariance function. </p>
+</li>
+<li><p>The predictions from a GP model take the form of a full predictive distribution</p>
+</li>
+<li><p>A Gaussian process is a collection of random variables, any finite number of which have a joint Gaussian distribution. </p>
+</li>
+<li><p>The random variables represent the value of the function $f(x)$ at location $x$. </p>
+</li>
+<li><p>Often, GP is defined over time, where the index set of random variables is time, but this is not normally the case. </p>
+</li>
+<li><p>Usually, the index set $\mathcal{X}$ is the set of all possible inputs, i.e. $\mathbb{R}^D$. </p>
+</li>
+</ul>
+<p>Question: When you say “distribution over functions”, it means we put some probability mass on every possible function in the function space of interest. How do we put such a mass in what way? </p>
+<p>-&gt; We can see this from the fact that we can draw samples from the distribution of functions evaluated at any number of points; i.e. we choose a number of input points $X_*$ and write out the corresponding covariance matrix using pre-defined covariance function elementwise. Then we generate a random Gaussian vector with this covariance matrix:</p>
+<span>$$f_* \sim N(0, K(X_*, X_*))$$</span><!-- Has MathJax -->
+<h3 id="Reference"><a href="#Reference" class="headerlink" title="Reference:"></a>Reference:</h3><ul>
+<li><a href="http://mlg.eng.cam.ac.uk/yarin/blog_3d801aa532c1ce.html" target="_blank" rel="external">http://mlg.eng.cam.ac.uk/yarin/blog_3d801aa532c1ce.html</a></li>
+<li><a href="https://arxiv.org/pdf/1506.02157.pdf" target="_blank" rel="external">https://arxiv.org/pdf/1506.02157.pdf</a></li>
+<li>Gaussian Processes for Machine Learning</li>
+</ul>
+
+      
+    </div>
+    <footer>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+
+  <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
         <time datetime="2017-03-15T18:11:49.000Z"><a href="/blog/2017/03/15/pathwise/">2017-03-15</a></time>
       
       
@@ -72,13 +148,23 @@ z = t(\epsilon, v) \text{,  where  } t(\epsilon,v) = \epsilon v_1 + v_0 \\
 </ul>
 <h2 id="Usage"><a href="#Usage" class="headerlink" title="Usage"></a>Usage</h2><p>Recall that EBLO is the following:</p>
 <span>$$L(v) = E_{q(z;v)}[\log p(x,z) - \log q(z;v)]$$</span><!-- Has MathJax -->
-<p>If we define $g(z,v) = \log p(x,z) - \log q(z:v)$, then we can express $\nabla_v L(v)$ as:</p>
+<p>If we define $g(z,v) = \log p(x,z) - \log q(z;v)$, then we can express $\nabla_v L(v)$ as:</p>
 <span>$$\nabla_v L(v) = \nabla_v \int g(z,v) q(z; v) dz \\
-= \int \nabla_v q(z: v) g(z,v) + q(z; v) \nabla_v g(z,v) dz \\
+= \int \nabla_v q(z; v) g(z,v) + q(z; v) \nabla_v g(z,v) dz \\
 = \int q(z;v) \nabla_v \log q(z;v) g(z,v) + q(z;v) \nabla_v g(z,v) dz \\
 = E_{q(z;v)} \left [ \nabla_v \log q(z;v) g(z,v) + \nabla_v g(z,v) \right ]$$</span><!-- Has MathJax --> 
 <p>We can rewrite the above gradient using $z = t(\epsilon, v)$:</p>
-<span>$$\nabla_v L(v) = E_{s(\epsilon)} \left [ \nabla_v \log q(z;v) g(z,v) + \nabla_v g(z,v) \right ]$$</span><!-- Has MathJax -->
+<span>$$\nabla_v L(v) =  \int [\nabla_v \log q(z;v) g(z,v) + \nabla_v g(z,v)] q(z;v) dz \\
+= E_{s(\epsilon)} \left [ \nabla_v \log s(\epsilon) g(t(\epsilon, v),v) + \nabla_v g(t(\epsilon, v),v) \right ]$$</span><!-- Has MathJax -->
+<p>Since $\log s(\epsilon)$ doesn’t depend on $v$, the first term will disappear. Then,</p>
+<span>$$\nabla_v L(v) = E_{s(\epsilon)} [\nabla_v g(t(\epsilon, v),v)] \\
+= E_{s(\epsilon)} [ \nabla_v (\log p(x,z) - \log q(z;v)) ] \\
+= E_{s(\epsilon)} [ \frac{1}{p(x,z)} \log \nabla_v p(x,z) -  \frac{1}{q(z;v)} \log \nabla_v q(z;v)) ] \\
+= E_{s(\epsilon)} [ \frac{1}{p(x,z)} \log \nabla_z p(x,z) \frac{\partial z}{\partial v} - \frac{1}{q(z;v)} \log \nabla_v q(z;v)) ] \\$$</span><!-- Has MathJax --> 
+<span>$$\nabla_v L(v) = E_{s(\epsilon)} [\nabla_v g(t(\epsilon, v),v)] \\
+= E_{s(\epsilon)} [ \nabla_v (\log p(x,z) - \log q(z;v)) ] \\
+= E_{s(\epsilon)} [ \nabla_z (\log p(x,z) -  \frac{1}{q(z;v)) \nabla_v t(\epsilon, v) - \nabla_v \log q(z; v) ]  \\
+= E_{s(\epsilon)} [ \frac{1}{p(x,z)} \log \nabla_z p(x,z) \frac{\partial z}{\partial v} - \frac{1}{q(z;v)} \log \nabla_v q(z;v)) ] \\$$</span><!-- Has MathJax -->
 <h3 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h3><p><a href="http://www.cs.columbia.edu/~blei/talks/2016_NIPS_VI_tutorial.pdf" target="_blank" rel="external">http://www.cs.columbia.edu/~blei/talks/2016_NIPS_VI_tutorial.pdf</a></p>
 
       
@@ -619,78 +705,6 @@ c = \frac{||\theta||^2}{||\theta||^2 + m \sigma^2}$$</span><!-- Has MathJax -->
 
 
 
-  <article class="post">
-  
-  <div class="post-content">
-    <header>
-      
-        <div class="icon"></div>
-        <time datetime="2016-10-17T13:46:43.000Z"><a href="/blog/2016/10/17/learningtolearn-1/">2016-10-17</a></time>
-      
-      
-  
-    <h1 class="title"><a href="/blog/2016/10/17/learningtolearn-1/">Learning-To-Learn: RNN-based optimization</a></h1>
-  
-
-    </header>
-    <div class="entry">
-      
-        <p>Around the middle of June, this paper came up: <a href="https://arxiv.org/pdf/1606.04474v1.pdf" target="_blank" rel="external">Learning to learn by gradient descent by gradient descent</a>. For someone who’s interested in optimization and neural network, I think this paper is particularly interesting. The main idea is to use neural network to tune the learning rate for gradient descent.</p>
-<h2 id="Summary-of-the-paper"><a href="#Summary-of-the-paper" class="headerlink" title="Summary of the paper"></a>Summary of the paper</h2><p>Usually, when we want to design learning algorithms for an arbitrary problem, we first analyize the problem, and use the insight from the problem to design learning algorithms. This paper takes a one-level-above approach to algorithm design by considering a class of optimization problems, instead of focusing on one particular optimization problem. </p>
-<p>The question is how to learn an optimization algorithm that works on a “class” of optimization problems. The answer is by parameterizing the optimizer. This way, we effectively cast algorithm design as a learning problem, in which we want to learn the parameters of our oprimizer (, which we call the optimzee parameters.) </p>
-<p>But how do we model the optimizer? We use Recurrent Neural Network. Therefore, the parameters of the oprimizer are just the parameters of RNN. The parameters of the original function in question (i.e. the cost function of “one instance” of a problem that is drawn from a class of optimization problems) are referred as “optimizee parameters”, and are updated using the output of our optimizer, just as we update parameters using the gradient in SGD. The final optimzee parameters $\theta^*$ will be a function of the optimizer parameters and the function in question. In summary:</p>
-<p>$$\theta^* (\phi, f) \text{: the final optimzee parameters}$$ </p>
-<p>$$\phi \text{: the optimizer parameters}$$ </p>
-<p>$$ f\text{: the function in question} $$</p>
-<p>$$<br>\theta_{t+1} = \theta_t + g_t(\nabla f(\theta_t), \phi)  \text{: the update equation of the optimzee parameters}<br>$$<br>where $g_t$ is modeled by RNN. So $\phi$is the parameter of RNN. Because LSTM is better than vanilla RNN in general (citation needed*), the paper uses LSTM. Regular gradient descent algorithms use $g_t(\nabla f(\theta_t), \phi) = -\alpha \nabla f(\theta_t)$. </p>
-<p>RNN is a function of the current hidden state $h_t$, the current gradient $\nabla f(\theta_t)$, and the current parameter $\phi$.</p>
-<p>The “goodness” of our optimizer can be measured by the expected loss over the distribution of a function $f$, which is</p>
-<p>$$ L(\phi) = \mathbb{E}_f [f(\theta^* (\phi, f))] $$</p>
-<p>(I’m ignoring $w_t$ in the above expression of $L(\phi)$ because in the paper they set $w_t = 1$.)</p>
-<p>For example, suppose we have a function like $f(\theta) = a \theta^2 + b\theta + c$. If $a,b,c$ are drawn from the Gaussian distribution with some fixed value of $\mu$ and $\sigma$, the distribution of the function $f$ can be defined. (Here, the class of optimization problem is a function where $a,b,c$ are drawn from Gaussian.) In this example, the optimzee parameter is $\theta$. The optimizer (i.e. RNN) will be trained by optimizing functions which are randomly drawn from the function distribution, and we want to find the best parameter $\theta$. If we want to know how good our optimizer is, we can just take the expected value of $f$ to evaluate the goodness, and use gradient descent to optimize this $L(\phi)$.</p>
-<p>After understanding the above basics, all that is left is some implementation/architecture details for computational efficieny and learning capability. </p>
-<p>(By the way, there is a typo in page 3 under Equation 3; <span>$\nabla_{\theta} h(\theta)$</span><!-- Has MathJax --> should be <span>$\nabla_{\theta} f(\theta)$</span><!-- Has MathJax -->. Otherwise it doesn’t make sense.)</p>
-<h3 id="Coordinatewise-LSTM-optimizer"><a href="#Coordinatewise-LSTM-optimizer" class="headerlink" title="Coordinatewise LSTM optimizer"></a>Coordinatewise LSTM optimizer</h3><img src="/blog/2016/10/17/learningtolearn-1/compgraph.png" alt="title" title="title">
-<p>[The Figure is from the paper : Figure 2 on page 4]</p>
-<p>To make the learning problem computationally tractable, we update the optimzee parameters $\theta$ coordinatewise, much like other successful optimization methods such as Adam, RMSprop, and AdaGrad. </p>
-<p>To this end, we create $n$ LSTM cells, where $n$ is the number of dimensions of the parameter of the objective function. We setup the architecture so that the parameters for LSTM cells are shared, but each has a different hidden state. This can be achieved by the code below: </p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">lstm = tf.nn.rnn_cell.BasicLSTMCell(hidden_size)</div><div class="line"><span class="keyword">for</span> i <span class="keyword">in</span> range(number_of_coordinates):</div><div class="line">    cell_list[i] = tf.nn.rnn_cell.MultiRNNCell([lstm_cell] * num_layers) <span class="comment"># num_layers = 2 according to the paper.</span></div></pre></td></tr></table></figure>
-<h3 id="Information-sharing-between-coordinates"><a href="#Information-sharing-between-coordinates" class="headerlink" title="Information sharing between coordinates"></a>Information sharing between coordinates</h3><p>The coordinatewise architecture above treats each dimension independently, which ignore the effect of the correlations between coordinates. To address this issue, the paper introduces more sophisticated methods. The following two models allow different LSTM cells to communicate each other. </p>
-<ol>
-<li>Global averaging cells: a subset of cells are used to take the average and outputs that value for each cell.</li>
-<li>NTM-BFGS optimizer: More sophisticated version of 1., with the external memory that is shared between coordinates.</li>
-</ol>
-<h2 id="Implementation-Notes"><a href="#Implementation-Notes" class="headerlink" title="Implementation Notes"></a>Implementation Notes</h2><h3 id="Quadratic-function-3-1-in-the-paper"><a href="#Quadratic-function-3-1-in-the-paper" class="headerlink" title="Quadratic function (3.1 in the paper)"></a>Quadratic function (3.1 in the paper)</h3><p>Let’s say the objective funtion is $f(\theta) = || W \theta - y ||^2$, where the elements of $W$ and $y$ are drawn from the Gaussian distribution.</p>
-<p>$g$ (as in $\theta_{t+1} = \theta_t + g$) has to be the same size as the parameter size. So, it will be something like:</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">g, state = lstm(input_t, hidden_state) <span class="comment"># here, input_t is the gradient of a hidden state at time t w.r.t. the hidden</span></div></pre></td></tr></table></figure>
-<p>And the update equation will be:</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">param = param + g</div></pre></td></tr></table></figure>
-<p>The objective function is:<br><span>$$L(\phi) = \mathbb{E}_f [ \sum_{t=1}^T w_t f(\theta_t) ]$$</span><!-- Has MathJax --><br><span>$$\text{where,  }\theta_{t+1} = \theta_t + g_t$$</span><!-- Has MathJax --><br><span>$$\left[
-    \begin{array}{c}
-      g_t \\
-      h_{t+1}  
-    \end{array}
-\right]
-= RNN(\nabla_t, h_t, \phi)$$</span><!-- Has MathJax --></p>
-<p>The loss $L(\phi)$ can be computed by double-for loop. For each loop, a different function is randomly sampled from a distribution of $f$. Then, $\theta_t$ will be computed by the above update equation. So, overall, what we need to implement is the two-layer coordinate-wise LSTM cell. The actual implementation is <a href="https://github.com/runopti/Learning-To-Learn" target="_blank" rel="external">here</a>.  </p>
-<h1 id="Results"><a href="#Results" class="headerlink" title="Results"></a>Results</h1><img src="/blog/2016/10/17/learningtolearn-1/output_38_1.png" alt="title" title="title">
-<p>I compared the result with SGD, but SGD tends to work better than our optimizer for now. Need more improvements on the optimization…</p>
-
-      
-    </div>
-    <footer>
-      
-        
-        
-      
-      <div class="clearfix"></div>
-    </footer>
-  </div>
-</article>
-
-
-
-
 
 <nav id="pagination">
   
@@ -722,7 +736,7 @@ c = \frac{||\theta||^2}{||\theta||^2 + m \sigma^2}$$</span><!-- Has MathJax -->
   
     <li><a href="/blog/tags/math/">math</a><small>7</small></li>
   
-    <li><a href="/blog/tags/neuralnet/">neuralnet</a><small>8</small></li>
+    <li><a href="/blog/tags/neuralnet/">neuralnet</a><small>9</small></li>
   
     <li><a href="/blog/tags/optimization/">optimization</a><small>5</small></li>
   
@@ -730,7 +744,7 @@ c = \frac{||\theta||^2}{||\theta||^2 + m \sigma^2}$$</span><!-- Has MathJax -->
   
     <li><a href="/blog/tags/research/">research</a><small>0</small></li>
   
-    <li><a href="/blog/tags/variational-inference/">variational-inference</a><small>1</small></li>
+    <li><a href="/blog/tags/variational-inference/">variational-inference</a><small>2</small></li>
   
   </ul>
 </div>

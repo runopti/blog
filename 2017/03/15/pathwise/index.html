@@ -77,13 +77,23 @@ z = t(\epsilon, v) \text{,  where  } t(\epsilon,v) = \epsilon v_1 + v_0 \\
 </ul>
 <h2 id="Usage"><a href="#Usage" class="headerlink" title="Usage"></a>Usage</h2><p>Recall that EBLO is the following:</p>
 <span>$$L(v) = E_{q(z;v)}[\log p(x,z) - \log q(z;v)]$$</span><!-- Has MathJax -->
-<p>If we define $g(z,v) = \log p(x,z) - \log q(z:v)$, then we can express $\nabla_v L(v)$ as:</p>
+<p>If we define $g(z,v) = \log p(x,z) - \log q(z;v)$, then we can express $\nabla_v L(v)$ as:</p>
 <span>$$\nabla_v L(v) = \nabla_v \int g(z,v) q(z; v) dz \\
-= \int \nabla_v q(z: v) g(z,v) + q(z; v) \nabla_v g(z,v) dz \\
+= \int \nabla_v q(z; v) g(z,v) + q(z; v) \nabla_v g(z,v) dz \\
 = \int q(z;v) \nabla_v \log q(z;v) g(z,v) + q(z;v) \nabla_v g(z,v) dz \\
 = E_{q(z;v)} \left [ \nabla_v \log q(z;v) g(z,v) + \nabla_v g(z,v) \right ]$$</span><!-- Has MathJax --> 
 <p>We can rewrite the above gradient using $z = t(\epsilon, v)$:</p>
-<span>$$\nabla_v L(v) = E_{s(\epsilon)} \left [ \nabla_v \log q(z;v) g(z,v) + \nabla_v g(z,v) \right ]$$</span><!-- Has MathJax -->
+<span>$$\nabla_v L(v) =  \int [\nabla_v \log q(z;v) g(z,v) + \nabla_v g(z,v)] q(z;v) dz \\
+= E_{s(\epsilon)} \left [ \nabla_v \log s(\epsilon) g(t(\epsilon, v),v) + \nabla_v g(t(\epsilon, v),v) \right ]$$</span><!-- Has MathJax -->
+<p>Since $\log s(\epsilon)$ doesn’t depend on $v$, the first term will disappear. Then,</p>
+<span>$$\nabla_v L(v) = E_{s(\epsilon)} [\nabla_v g(t(\epsilon, v),v)] \\
+= E_{s(\epsilon)} [ \nabla_v (\log p(x,z) - \log q(z;v)) ] \\
+= E_{s(\epsilon)} [ \frac{1}{p(x,z)} \log \nabla_v p(x,z) -  \frac{1}{q(z;v)} \log \nabla_v q(z;v)) ] \\
+= E_{s(\epsilon)} [ \frac{1}{p(x,z)} \log \nabla_z p(x,z) \frac{\partial z}{\partial v} - \frac{1}{q(z;v)} \log \nabla_v q(z;v)) ] \\$$</span><!-- Has MathJax --> 
+<span>$$\nabla_v L(v) = E_{s(\epsilon)} [\nabla_v g(t(\epsilon, v),v)] \\
+= E_{s(\epsilon)} [ \nabla_v (\log p(x,z) - \log q(z;v)) ] \\
+= E_{s(\epsilon)} [ \nabla_z (\log p(x,z) -  \frac{1}{q(z;v)) \nabla_v t(\epsilon, v) - \nabla_v \log q(z; v) ]  \\
+= E_{s(\epsilon)} [ \frac{1}{p(x,z)} \log \nabla_z p(x,z) \frac{\partial z}{\partial v} - \frac{1}{q(z;v)} \log \nabla_v q(z;v)) ] \\$$</span><!-- Has MathJax -->
 <h3 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h3><p><a href="http://www.cs.columbia.edu/~blei/talks/2016_NIPS_VI_tutorial.pdf" target="_blank" rel="external">http://www.cs.columbia.edu/~blei/talks/2016_NIPS_VI_tutorial.pdf</a></p>
 
       
@@ -166,7 +176,7 @@ z = t(\epsilon, v) \text{,  where  } t(\epsilon,v) = \epsilon v_1 + v_0 \\
   
     <li><a href="/blog/tags/math/">math</a><small>7</small></li>
   
-    <li><a href="/blog/tags/neuralnet/">neuralnet</a><small>8</small></li>
+    <li><a href="/blog/tags/neuralnet/">neuralnet</a><small>9</small></li>
   
     <li><a href="/blog/tags/optimization/">optimization</a><small>5</small></li>
   
@@ -174,7 +184,7 @@ z = t(\epsilon, v) \text{,  where  } t(\epsilon,v) = \epsilon v_1 + v_0 \\
   
     <li><a href="/blog/tags/research/">research</a><small>0</small></li>
   
-    <li><a href="/blog/tags/variational-inference/">variational-inference</a><small>1</small></li>
+    <li><a href="/blog/tags/variational-inference/">variational-inference</a><small>2</small></li>
   
   </ul>
 </div>

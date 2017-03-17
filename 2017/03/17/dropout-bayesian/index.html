@@ -1,0 +1,245 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="utf-8">
+  
+  <title>Dropout as a Bayesian Approximation | Notes</title>
+  <meta name="author" content="Yutaro Yamada">
+  
+  <meta name="description" content="(notes to myself)
+SummaryThe dropout objective minimises the KL divergence between an approximate distribution and the posterior of a deep Gaussian pr">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="Dropout as a Bayesian Approximation"/>
+  <meta property="og:site_name" content="Notes"/>
+
+  
+    <meta property="og:image" content="undefined"/>
+  
+
+  <link href="/blog/favicon.png" rel="icon">
+  <link rel="alternate" href="/blog/atom.xml" title="Notes" type="application/atom+xml">
+  <link rel="stylesheet" href="/blog/css/style.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]--><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  
+
+</head>
+
+
+<body>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><header id="header" class="inner"><div class="alignleft">
+  <h1><a href="/blog/">Notes</a></h1>
+  <h2><a href="/blog/"></a></h2>
+</div>
+<nav id="main-nav" class="alignright">
+  <ul>
+    
+      <li><a href="/blog/">Home</a></li>
+    
+      <li><a href="/blog/archives">Archives</a></li>
+    
+  </ul>
+  <div class="clearfix"></div>
+</nav>
+<div class="clearfix"></div>
+</header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2017-03-17T15:27:50.000Z"><a href="/blog/2017/03/17/dropout-bayesian/">2017-03-17</a></time>
+      
+      
+  
+    <h1 class="title">Dropout as a Bayesian Approximation</h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>(notes to myself)</p>
+<h2 id="Summary"><a href="#Summary" class="headerlink" title="Summary"></a>Summary</h2><p>The dropout objective minimises the KL divergence between an approximate distribution and the posterior of a deep Gaussian process (marginalized over its finite rank covariance function parameters). </p>
+<h2 id="Gaussian-Processes"><a href="#Gaussian-Processes" class="headerlink" title="Gaussian Processes"></a>Gaussian Processes</h2><ul>
+<li>models distributions over functions. </li>
+<li>offers a way to get uncertainty estimates over the function values, robustness to over-fitting, and principled ways of hyper-parameter tuning. </li>
+</ul>
+<h3 id="Bayesian-approach-to-function-approximation"><a href="#Bayesian-approach-to-function-approximation" class="headerlink" title="Bayesian approach to function approximation"></a>Bayesian approach to function approximation</h3><p>Given a training set <span>$\{ X_i, Y_i \}_{i=1}^n$</span><!-- Has MathJax -->, we want to estimate a function $y = f(x)$ that is likely to describe the relationship between $X$ and $Y$. </p>
+<p>Following the Bayesian approach, we can put some prior distribution over the space of functions $p(f)$.<br>We then look for the posterior distribution given data $(X,Y)$:</p>
+<span>$$p(f|X,Y) \propto p(Y|X, f) p(f)$$</span><!-- Has MathJax --> 
+<p>This distribution captures the most likely functions given $(X,Y)$.<br>A prediction can be done in the following way:</p>
+<span>$$p(y^*|x^*, X,Y) = \int p(y^*|x^*,f) p(f|X,Y) df \\
+\iff p(y^*|x^*, X,Y) = \int p(y^*|f) p(f|x,X,Y) df$$</span><!-- Has MathJax -->
+<p>Covariance function is like a kernel function: it takes two arguments, and returns a similarity of these two.  Therefore, given some $n by p$ data matrix, this function induces an $n \times n$ covariance matrix. </p>
+<h2 id="How-do-these-functions-correspond-to-the-Gaussian-process"><a href="#How-do-these-functions-correspond-to-the-Gaussian-process" class="headerlink" title="How do these functions correspond to the Gaussian process?"></a>How do these functions correspond to the Gaussian process?</h2><h2 id="Why-can-we-think-that-the-noise-as-approximate-integration"><a href="#Why-can-we-think-that-the-noise-as-approximate-integration" class="headerlink" title="Why can we think that the noise as approximate integration?"></a>Why can we think that the noise as approximate integration?</h2><ul>
+<li>Because averaging forward passes through the network is equivalent to Monte Carlo integration over a Gaussian process posterior approximation.</li>
+</ul>
+<h3 id="Derivation"><a href="#Derivation" class="headerlink" title="Derivation"></a>Derivation</h3><ul>
+<li>averaging forward passes: </li>
+</ul>
+<span>$$p(y^* | x^*, X, Y) = \int p(y^*|x^*,\omega) p(\omega|X,Y) d\omega$$</span><!-- Has MathJax --> 
+<p>where one forward pass calculation (given all the weights $\omega$ and the test input $x^<em>$ is equal to one sample draw from this distribution $p(y^</em>|x^*,\omega)$, where we define </p>
+<span>$$p(y^*|x^*,\omega) = N(y^*; \sqrt{\frac{1}{K}} \sigma(x^* W_1 + b) W_2, \tau^{-1} I_n)$$</span><!-- Has MathJax --> 
+<h1 id="Gaussian-Process"><a href="#Gaussian-Process" class="headerlink" title="Gaussian Process"></a>Gaussian Process</h1><ul>
+<li><p>A Gaussian process is completely specified by its mean function and covariance function. </p>
+</li>
+<li><p>The predictions from a GP model take the form of a full predictive distribution</p>
+</li>
+<li><p>A Gaussian process is a collection of random variables, any finite number of which have a joint Gaussian distribution. </p>
+</li>
+<li><p>The random variables represent the value of the function $f(x)$ at location $x$. </p>
+</li>
+<li><p>Often, GP is defined over time, where the index set of random variables is time, but this is not normally the case. </p>
+</li>
+<li><p>Usually, the index set $\mathcal{X}$ is the set of all possible inputs, i.e. $\mathbb{R}^D$. </p>
+</li>
+</ul>
+<p>Question: When you say “distribution over functions”, it means we put some probability mass on every possible function in the function space of interest. How do we put such a mass in what way? </p>
+<p>-&gt; We can see this from the fact that we can draw samples from the distribution of functions evaluated at any number of points; i.e. we choose a number of input points $X_*$ and write out the corresponding covariance matrix using pre-defined covariance function elementwise. Then we generate a random Gaussian vector with this covariance matrix:</p>
+<span>$$f_* \sim N(0, K(X_*, X_*))$$</span><!-- Has MathJax -->
+<h3 id="Reference"><a href="#Reference" class="headerlink" title="Reference:"></a>Reference:</h3><ul>
+<li><a href="http://mlg.eng.cam.ac.uk/yarin/blog_3d801aa532c1ce.html" target="_blank" rel="external">http://mlg.eng.cam.ac.uk/yarin/blog_3d801aa532c1ce.html</a></li>
+<li><a href="https://arxiv.org/pdf/1506.02157.pdf" target="_blank" rel="external">https://arxiv.org/pdf/1506.02157.pdf</a></li>
+<li>Gaussian Processes for Machine Learning</li>
+</ul>
+
+      
+    </div>
+    <footer>
+      
+        
+        
+  
+  <div class="tags">
+    <a href="/blog/tags/neuralnet/">neuralnet</a>, <a href="/blog/tags/variational-inference/">variational-inference</a>
+  </div>
+
+        
+  <div class="addthis addthis_toolbox addthis_default_style">
+    
+      <a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+    
+    
+      <a class="addthis_button_tweet"></a>
+    
+    
+      <a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
+    
+    
+      <a class="addthis_button_pinterest_pinit" pi:pinit:layout="horizontal"></a>
+    
+    <a class="addthis_counter addthis_pill_style"></a>
+  </div>
+  <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js"></script>
+
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+<section id="comment">
+  <h1 class="title">Kommentare</h1>
+
+  
+      <div id="fb-root"></div>
+<script>
+  (function(d, s, id) {
+    var js, fjs = d.getElementsByTagName(s)[0];
+    if (d.getElementById(id)) return;
+    js = d.createElement(s); js.id = id;
+    js.src = "//connect.facebook.net/en_US/all.js#xfbml=1&appId=123456789012345";
+    fjs.parentNode.insertBefore(js, fjs);
+  }(document, 'script', 'facebook-jssdk'));
+</script>
+
+<div class="fb-comments" data-href="http://runopti.github.io/blog/2017/03/17/dropout-bayesian/index.html" data-num-posts="5" data-width="840" data-colorscheme="light"></div>
+      
+  
+</section>
+
+</div></div>
+    <aside id="sidebar" class="alignright">
+  <div class="search">
+  <form action="//google.com/search" method="get" accept-charset="utf-8">
+    <input type="search" name="q" results="0" placeholder="Suche">
+    <input type="hidden" name="q" value="site:runopti.github.io/blog">
+  </form>
+</div>
+
+  
+
+  
+<div class="widget tag">
+  <h3 class="title">Tags</h3>
+  <ul class="entry">
+  
+    <li><a href="/blog/tags/PRML/">PRML</a><small>1</small></li>
+  
+    <li><a href="/blog/tags/cv/">cv</a><small>1</small></li>
+  
+    <li><a href="/blog/tags/decision-theory/">decision-theory</a><small>3</small></li>
+  
+    <li><a href="/blog/tags/math/">math</a><small>7</small></li>
+  
+    <li><a href="/blog/tags/neuralnet/">neuralnet</a><small>9</small></li>
+  
+    <li><a href="/blog/tags/optimization/">optimization</a><small>5</small></li>
+  
+    <li><a href="/blog/tags/paper-memo/">paper-memo</a><small>2</small></li>
+  
+    <li><a href="/blog/tags/research/">research</a><small>0</small></li>
+  
+    <li><a href="/blog/tags/variational-inference/">variational-inference</a><small>2</small></li>
+  
+  </ul>
+</div>
+
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2017 Yutaro Yamada
+  
+</div>
+<div class="clearfix"></div></footer>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<script src="/blog/js/jquery.imagesloaded.min.js"></script>
+<script src="/blog/js/gallery.js"></script>
+
+
+
+
+<link rel="stylesheet" href="/blog/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/blog/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+  $('.fancybox').fancybox();
+})(jQuery);
+</script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"displayMath":[["$$","$$"],["\\[","\\]"]],"processEscapes":true}});
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+
+</body>
+</html>
