@@ -3,15 +3,18 @@
 <head>
   <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="utf-8">
   
-  <title>Hello World | Notes</title>
+  <title>On Cross Validation | Notes</title>
   <meta name="author" content="Yutaro Yamada">
   
-  <meta name="description" content="Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hexo, you can find the answer in ">
+  <meta name="description" content="Setting
+We have models $\mathcal{M}_1, …, \mathcal{M}_k$. 
+There are $2n$ data points
+Split the data randomly into two: $D = (Y_1, …, Y_n)$ and $T = (">
   
   
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
-  <meta property="og:title" content="Hello World"/>
+  <meta property="og:title" content="On Cross Validation"/>
   <meta property="og:site_name" content="Notes"/>
 
   
@@ -51,25 +54,35 @@
     <header>
       
         <div class="icon"></div>
-        <time datetime="2016-09-04T03:20:55.000Z"><a href="/blog/2016/09/04/hello-world/">2016-09-04</a></time>
+        <time datetime="2017-03-17T21:31:33.000Z"><a href="/blog/2017/03/17/risk-bounds/">2017-03-17</a></time>
       
       
   
-    <h1 class="title">Hello World</h1>
+    <h1 class="title">On Cross Validation</h1>
   
 
     </header>
     <div class="entry">
       
-        <p>Welcome to <a href="https://hexo.io/" target="_blank" rel="external">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="external">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="external">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="external">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo new <span class="string">"My New Post"</span></div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="external">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo server</div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="external">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo generate</div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="external">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo deploy</div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/deployment.html" target="_blank" rel="external">Deployment</a></p>
+        <h2 id="Setting"><a href="#Setting" class="headerlink" title="Setting"></a>Setting</h2><ul>
+<li>We have models $\mathcal{M}_1, …, \mathcal{M}_k$. </li>
+<li>There are $2n$ data points</li>
+<li>Split the data randomly into two: $D = (Y_1, …, Y_n)$ and $T = (Y^<em>_1,…,Y^</em>_n)$. </li>
+</ul>
+<h3 id="Definition-1"><a href="#Definition-1" class="headerlink" title="Definition 1"></a>Definition 1</h3><p>A random variable $X$ with mean $\mu = E[X]$ is sub-Gaussian if there is a positive number $\sigma$ such that </p>
+<span>$$E[e^{\lambda (X - \mu)}] \le e^{\frac{\sigma^2 \lambda^2}{2}}$$</span><!-- Has MathJax -->
+<h3 id="Step-1"><a href="#Step-1" class="headerlink" title="Step 1:"></a>Step 1:</h3><ul>
+<li>Find MLE $\hat{\theta}_j$ using $D$. </li>
+</ul>
+<p>(WIP)</p>
+<h2 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h2><p>AIC,BIC,Cross-Validation:  </p>
+<ul>
+<li><a href="http://www.stat.cmu.edu/~larry/=stat705/Lecture16.pdf" target="_blank" rel="external">http://www.stat.cmu.edu/~larry/=stat705/Lecture16.pdf</a></li>
+</ul>
+<p>Concentration inequalities: </p>
+<ul>
+<li><a href="https://www.stat.berkeley.edu/~mjwain/stat210b/Chap2_TailBounds_Jan22_2015.pdf" target="_blank" rel="external">https://www.stat.berkeley.edu/~mjwain/stat210b/Chap2_TailBounds_Jan22_2015.pdf</a></li>
+</ul>
 
       
     </div>
@@ -77,6 +90,11 @@
       
         
         
+  
+  <div class="tags">
+    <a href="/blog/tags/learning-theory/">learning-theory</a>
+  </div>
+
         
   <div class="addthis addthis_toolbox addthis_default_style">
     
@@ -117,7 +135,7 @@
   }(document, 'script', 'facebook-jssdk'));
 </script>
 
-<div class="fb-comments" data-href="http://runopti.github.io/blog/2016/09/04/hello-world/index.html" data-num-posts="5" data-width="840" data-colorscheme="light"></div>
+<div class="fb-comments" data-href="http://runopti.github.io/blog/2017/03/17/risk-bounds/index.html" data-num-posts="5" data-width="840" data-colorscheme="light"></div>
       
   
 </section>
@@ -142,15 +160,23 @@
   
     <li><a href="/blog/tags/cv/">cv</a><small>1</small></li>
   
-    <li><a href="/blog/tags/math/">math</a><small>6</small></li>
+    <li><a href="/blog/tags/decision-theory/">decision-theory</a><small>3</small></li>
   
-    <li><a href="/blog/tags/neuralnet/">neuralnet</a><small>8</small></li>
+    <li><a href="/blog/tags/learning-theory/">learning-theory</a><small>1</small></li>
+  
+    <li><a href="/blog/tags/math/">math</a><small>7</small></li>
+  
+    <li><a href="/blog/tags/neuralnet/">neuralnet</a><small>9</small></li>
+  
+    <li><a href="/blog/tags/neuralnet-variational-inference/">neuralnet, variational-inference</a><small>0</small></li>
   
     <li><a href="/blog/tags/optimization/">optimization</a><small>5</small></li>
   
     <li><a href="/blog/tags/paper-memo/">paper-memo</a><small>2</small></li>
   
     <li><a href="/blog/tags/research/">research</a><small>0</small></li>
+  
+    <li><a href="/blog/tags/variational-inference/">variational-inference</a><small>2</small></li>
   
   </ul>
 </div>

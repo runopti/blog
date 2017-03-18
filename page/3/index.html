@@ -3,7 +3,7 @@
 <head>
   <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="utf-8">
   
-  <title>Page 3 | Notes</title>
+  <title>Seite 3 | Notes</title>
   <meta name="author" content="Yutaro Yamada">
   
   
@@ -44,6 +44,48 @@
 </header>
   <div id="content" class="inner">
     <div id="main-col" class="alignleft"><div id="wrapper">
+  <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2016-05-28T05:47:17.000Z"><a href="/blog/2016/05/28/duality/">2016-05-28</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/blog/2016/05/28/duality/">Easy way to generate a dual problem</a></h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>Consider the following Primal Problem:</p>
+<span>$$\min c^T x \quad 
+s.t. \quad Ax \ge b, x \ge 0$$</span><!-- Has MathJax -->
+<p>Then the Lagrange function will be</p>
+<p>$$<br> L(x,p) = c^T x + p^T(b-Ax)<br>$$</p>
+<p>If we stare at it for a while, we notice that we can rewrite the primal problem as</p>
+<span>$$\min_{x\ge0} \max_{p\ge0} L(x,p)$$</span><!-- Has MathJax -->
+<p>(Suppose $b-Ax\ge0$. Then by letting $p$ large, we can make $\max_{p\ge0} L(x,p)$ arbitrarily large. In order to have a sensible solution, we need $b-Ax \le 0$; the constraint is implicitly incorporated by this $max$ operator.)</p>
+<p>Flip min and max, and then you get the dual problem:</p>
+<span>$$\max_{p\ge0} \min_{x\ge0} L(x,p)$$</span><!-- Has MathJax -->
+
+      
+    </div>
+    <footer>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+
   <article class="post">
   
   <div class="post-content">
@@ -321,7 +363,7 @@ J(W,b) ={\frac {1} {2} \left\| y-h_{W,b}(x)\right\|^2}$$</span><!-- Has MathJax 
 
 <nav id="pagination">
   
-    <a href="/blog/page/2/" class="alignleft prev">Prev</a>
+    <a href="/blog/page/2/" class="alignleft prev">Vorherige Seite</a>
   
   
   <div class="clearfix"></div>
@@ -329,7 +371,7 @@ J(W,b) ={\frac {1} {2} \left\| y-h_{W,b}(x)\right\|^2}$$</span><!-- Has MathJax 
     <aside id="sidebar" class="alignright">
   <div class="search">
   <form action="//google.com/search" method="get" accept-charset="utf-8">
-    <input type="search" name="q" results="0" placeholder="Search">
+    <input type="search" name="q" results="0" placeholder="Suche">
     <input type="hidden" name="q" value="site:runopti.github.io/blog">
   </form>
 </div>
@@ -347,9 +389,13 @@ J(W,b) ={\frac {1} {2} \left\| y-h_{W,b}(x)\right\|^2}$$</span><!-- Has MathJax 
   
     <li><a href="/blog/tags/decision-theory/">decision-theory</a><small>3</small></li>
   
+    <li><a href="/blog/tags/learning-theory/">learning-theory</a><small>1</small></li>
+  
     <li><a href="/blog/tags/math/">math</a><small>7</small></li>
   
     <li><a href="/blog/tags/neuralnet/">neuralnet</a><small>9</small></li>
+  
+    <li><a href="/blog/tags/neuralnet-variational-inference/">neuralnet, variational-inference</a><small>0</small></li>
   
     <li><a href="/blog/tags/optimization/">optimization</a><small>5</small></li>
   

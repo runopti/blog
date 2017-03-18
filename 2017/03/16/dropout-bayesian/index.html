@@ -52,7 +52,7 @@ SummaryThe dropout objective minimises the KL divergence between an approximate 
     <header>
       
         <div class="icon"></div>
-        <time datetime="2017-03-17T15:27:50.000Z"><a href="/blog/2017/03/17/dropout-bayesian/">2017-03-17</a></time>
+        <time datetime="2017-03-16T15:27:50.000Z"><a href="/blog/2017/03/16/dropout-bayesian/">2017-03-16</a></time>
       
       
   
@@ -101,10 +101,19 @@ SummaryThe dropout objective minimises the KL divergence between an approximate 
 <p>Question: When you say “distribution over functions”, it means we put some probability mass on every possible function in the function space of interest. How do we put such a mass in what way? </p>
 <p>-&gt; We can see this from the fact that we can draw samples from the distribution of functions evaluated at any number of points; i.e. we choose a number of input points $X_*$ and write out the corresponding covariance matrix using pre-defined covariance function elementwise. Then we generate a random Gaussian vector with this covariance matrix:</p>
 <span>$$f_* \sim N(0, K(X_*, X_*))$$</span><!-- Has MathJax -->
-<h3 id="Reference"><a href="#Reference" class="headerlink" title="Reference:"></a>Reference:</h3><ul>
+<p>(WIP)</p>
+<h3 id="Reference"><a href="#Reference" class="headerlink" title="Reference:"></a>Reference:</h3><p>Yarin Gal’s blog post about the paper</p>
+<ul>
 <li><a href="http://mlg.eng.cam.ac.uk/yarin/blog_3d801aa532c1ce.html" target="_blank" rel="external">http://mlg.eng.cam.ac.uk/yarin/blog_3d801aa532c1ce.html</a></li>
+</ul>
+<p>The paper :<br>“Dropout as a Bayesian Approximation: Representing Model Uncertainty in Deep Learning”</p>
+<ul>
+<li><a href="https://arxiv.org/abs/1506.02142" target="_blank" rel="external">https://arxiv.org/abs/1506.02142</a></li>
 <li><a href="https://arxiv.org/pdf/1506.02157.pdf" target="_blank" rel="external">https://arxiv.org/pdf/1506.02157.pdf</a></li>
-<li>Gaussian Processes for Machine Learning</li>
+</ul>
+<p>Textbook: Gaussian Processes for Machine Learning</p>
+<ul>
+<li><a href="http://www.gaussianprocess.org/gpml/chapters/RW2.pdf" target="_blank" rel="external">http://www.gaussianprocess.org/gpml/chapters/RW2.pdf</a></li>
 </ul>
 
       
@@ -144,7 +153,7 @@ SummaryThe dropout objective minimises the KL divergence between an approximate 
 
 
 <section id="comment">
-  <h1 class="title">Comments</h1>
+  <h1 class="title">Kommentare</h1>
 
   
       <div id="fb-root"></div>
@@ -158,7 +167,7 @@ SummaryThe dropout objective minimises the KL divergence between an approximate 
   }(document, 'script', 'facebook-jssdk'));
 </script>
 
-<div class="fb-comments" data-href="http://runopti.github.io/blog/2017/03/17/dropout-bayesian/index.html" data-num-posts="5" data-width="840" data-colorscheme="light"></div>
+<div class="fb-comments" data-href="http://runopti.github.io/blog/2017/03/16/dropout-bayesian/index.html" data-num-posts="5" data-width="840" data-colorscheme="light"></div>
       
   
 </section>
@@ -167,7 +176,7 @@ SummaryThe dropout objective minimises the KL divergence between an approximate 
     <aside id="sidebar" class="alignright">
   <div class="search">
   <form action="//google.com/search" method="get" accept-charset="utf-8">
-    <input type="search" name="q" results="0" placeholder="Search">
+    <input type="search" name="q" results="0" placeholder="Suche">
     <input type="hidden" name="q" value="site:runopti.github.io/blog">
   </form>
 </div>
@@ -185,9 +194,13 @@ SummaryThe dropout objective minimises the KL divergence between an approximate 
   
     <li><a href="/blog/tags/decision-theory/">decision-theory</a><small>3</small></li>
   
+    <li><a href="/blog/tags/learning-theory/">learning-theory</a><small>1</small></li>
+  
     <li><a href="/blog/tags/math/">math</a><small>7</small></li>
   
     <li><a href="/blog/tags/neuralnet/">neuralnet</a><small>9</small></li>
+  
+    <li><a href="/blog/tags/neuralnet-variational-inference/">neuralnet, variational-inference</a><small>0</small></li>
   
     <li><a href="/blog/tags/optimization/">optimization</a><small>5</small></li>
   
