@@ -3,15 +3,15 @@
 <head>
   <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="utf-8">
   
-  <title>This is amazing | Notes</title>
+  <title>RKHS Intuition | Notes</title>
   <meta name="author" content="Yutaro Yamada">
   
-  <meta name="description" content="The progress on image generation has been dramatically improved due to VAE/GAN. The quality of Figure 5 in this paper is incredible.">
+  <meta name="description" content="At first RKHS was scary, but after I realized thatit’s just a space where every point in the space is a linear combination of kernels, which allows us">
   
   
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
-  <meta property="og:title" content="This is amazing"/>
+  <meta property="og:title" content="RKHS Intuition"/>
   <meta property="og:site_name" content="Notes"/>
 
   
@@ -51,17 +51,19 @@
     <header>
       
         <div class="icon"></div>
-        <time datetime="2016-01-09T05:00:00.000Z"><a href="/blog/2016/01/09/this-is-amazing/">2016-01-09</a></time>
+        <time datetime="2017-03-26T01:34:41.000Z"><a href="/blog/2017/03/25/rkhs-intuition/">2017-03-25</a></time>
       
       
   
-    <h1 class="title">This is amazing</h1>
+    <h1 class="title">RKHS Intuition</h1>
   
 
     </header>
     <div class="entry">
       
-        <p>The progress on image generation has been dramatically improved due to VAE/GAN. The quality of Figure 5 in <a href="http://arxiv.org/pdf/1512.09300.pdf" target="_blank" rel="external">this paper</a> is incredible.  </p>
+        <p>At first RKHS was scary, but after I realized that<br>it’s just a space where every point in the space is a linear combination of kernels, which allows us<br>to replace the inner product calculation in this space with the kernel evaluation,<br>I feel like things are much simpler now. </p>
+<p>The fact that the space is spanned by kernels and the “regular” inner product definition<br>assures the reproducing property of kernel, which can be verified by some simple algebra. </p>
+<p>I somehow thought that the reproducing property is something we need to put as an additional condition,<br>but it was just a natural consequence from these two facts above.  </p>
 
       
     </div>
@@ -71,7 +73,7 @@
         
   
   <div class="tags">
-    <a href="/blog/tags/cv/">cv</a>
+    <a href="/blog/tags/learning-theory/">learning-theory</a>
   </div>
 
         
@@ -114,7 +116,7 @@
   }(document, 'script', 'facebook-jssdk'));
 </script>
 
-<div class="fb-comments" data-href="http://runopti.github.io/blog/2016/01/09/this-is-amazing/index.html" data-num-posts="5" data-width="840" data-colorscheme="light"></div>
+<div class="fb-comments" data-href="http://runopti.github.io/blog/2017/03/25/rkhs-intuition/index.html" data-num-posts="5" data-width="840" data-colorscheme="light"></div>
       
   
 </section>

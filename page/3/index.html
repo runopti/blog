@@ -3,7 +3,7 @@
 <head>
   <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="utf-8">
   
-  <title>Seite 3 | Notes</title>
+  <title>Página 3 | Notes</title>
   <meta name="author" content="Yutaro Yamada">
   
   
@@ -44,6 +44,83 @@
 </header>
   <div id="content" class="inner">
     <div id="main-col" class="alignleft"><div id="wrapper">
+  <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2016-05-30T06:55:14.000Z"><a href="/blog/2016/05/30/conjugate-gradient/">2016-05-30</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/blog/2016/05/30/conjugate-gradient/">Conjugate Gradient Method Derivation</a></h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <ul>
+<li>CG solves a linear equation $Ax = b$.</li>
+</ul>
+<h4 id="Derivation"><a href="#Derivation" class="headerlink" title="Derivation:"></a>Derivation:</h4><ol>
+<li>Recall the step size calculation of Steepest Gradient Descent.</li>
+</ol>
+<span>$$-\nabla f(x_i)^T r_{i+1} = 0 \\
+\iff r_i^T r_{i+1} = 0 \\
+\iff (b - Ax_{i+1})^T r_{i} = 0 \\
+\iff (b - A(x_i - \alpha \nabla f(x_i))^T r_i = 0 \\
+\iff (r_i - \alpha A r_i)^T r_i = 0 \\
+\iff \alpha = \frac{r_i^T r_i}{r_i^T A r_i}$$</span><!-- Has MathJax -->
+<p>Recall that $f(x) = \frac{1}{2} x^T A x - b^Tx + c$ is the corresponding parabollic function for the linear equation $Ax = b$ (the minus sign for b is just to make it nice when we consider the relation between $Ax=b$ and its quadratic form). And $f’(x) = \frac{1}{2}A^Tx + \frac{1}{2}Ax - b$</p>
+<p>When $A$ is symmetric, this becomes $f’(x) = Ax - b$. So $-f’(x_i) = r_i$, where $r_i = b - Ax_i$ (residual vector)</p>
+<ol>
+<li><p>Recall the typical trajectory of Steepest Descent. It is often redundant or inefficient when it’s close to the true solution. Can we improve somehow? For example, if we can pick $n$ orthogonal search directions {$d_1, d_2, … d_n$} such that we only need exactly one step for each direction to get to the solution, it would be much more efficient. One obvious choice (but impractical) is to choose coordinate axes as our search directions. This would lead us to:</p>
+<ul>
+<li>Update Equation: $x_{i+1} = x_i + \alpha d_i$</li>
+<li>How to find $\alpha$ :<ul>
+<li>Observe that $d<em>i$ has to be orthogonal to $e</em>{i+1} = x_{i+1} - x$. So,</li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+<span>$$e_{i+1}^T d_i = 0 \\
+\iff (x_{i+1} - x)^T d_i = 0 \\
+\iff (x_{i} + \alpha d_i - x)^T d_i = 0 \\
+\iff (e_{i} + \alpha d_i)^T d_i = 0 \\
+\iff \alpha = - \frac{e_{i}^T d_i}{d_i^Td_i}$$</span><!-- Has MathJax -->
+<ol>
+<li><p>But we don’t know $e_i$ (because we don’t know $x$) so this is useless. But we can modify the above idea by picking an $A$-orthogonal set of search directions, instead of orthogonal one. $d_i$ and $d_j$ is $A$-orthogonal if $d_i^T A d_j = 0$. How can we find an appropriate step size?</p>
+</li>
+<li><p>Recall the original idea of step size: we want to minimize the function value most by choosing the best step size. It means we want to solve $argmin f(x_i + \alpha d_i)$. Setting the derivative w.r.t. $\alpha$ equal to 0 tells us that</p>
+<span>$\frac{\partial{f(x_{i+1})}}{\partial \alpha} = 0 \iff \nabla f(x_{i+1})^T \frac{d}{d \alpha} x_{i+1} = 0 \iff -r_{i+1}^T d_i  = 0 \\$</span><!-- Has MathJax -->
+</li>
+</ol>
+<p>(directional derivative: <a href="http://tutorial.math.lamar.edu/Classes/CalcIII/DirectionalDeriv.aspx" target="_blank" rel="external">http://tutorial.math.lamar.edu/Classes/CalcIII/DirectionalDeriv.aspx</a>)</p>
+<p>Now recall that $r_i = b - Ax_i = b - Ax + Ax - Ax_i = -Ae_i$ (Note: b - Ax = 0). So the last term will become<br><span>$$e_{i+1}^T A d_i = 0 \iff (e_i + \alpha d_i)^T A d_i = 0 \\
+\iff \alpha = -\frac{e_i^T A d_i}{d_i^T A d_i}
+= -\frac{r_i^T d_i}{d_i^T A d_i}$$</span><!-- Has MathJax --></p>
+<ul>
+<li>So how to find an A-orthogonal set of search directions? Is the existence even guaranteed?</li>
+</ul>
+<h3 id="Gram-Schmidt-Conjugation"><a href="#Gram-Schmidt-Conjugation" class="headerlink" title="Gram-Schmidt Conjugation"></a>Gram-Schmidt Conjugation</h3><p><a href="https://www.cs.cmu.edu/~quake-papers/painless-conjugate-gradient.pdf" target="_blank" rel="external">https://www.cs.cmu.edu/~quake-papers/painless-conjugate-gradient.pdf</a></p>
+
+      
+    </div>
+    <footer>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+
   <article class="post">
   
   <div class="post-content">
@@ -363,7 +440,7 @@ J(W,b) ={\frac {1} {2} \left\| y-h_{W,b}(x)\right\|^2}$$</span><!-- Has MathJax 
 
 <nav id="pagination">
   
-    <a href="/blog/page/2/" class="alignleft prev">Vorherige Seite</a>
+    <a href="/blog/page/2/" class="alignleft prev">Anterior</a>
   
   
   <div class="clearfix"></div>
@@ -371,7 +448,7 @@ J(W,b) ={\frac {1} {2} \left\| y-h_{W,b}(x)\right\|^2}$$</span><!-- Has MathJax 
     <aside id="sidebar" class="alignright">
   <div class="search">
   <form action="//google.com/search" method="get" accept-charset="utf-8">
-    <input type="search" name="q" results="0" placeholder="Suche">
+    <input type="search" name="q" results="0" placeholder="Buscar">
     <input type="hidden" name="q" value="site:runopti.github.io/blog">
   </form>
 </div>
@@ -380,7 +457,7 @@ J(W,b) ={\frac {1} {2} \left\| y-h_{W,b}(x)\right\|^2}$$</span><!-- Has MathJax 
 
   
 <div class="widget tag">
-  <h3 class="title">Tags</h3>
+  <h3 class="title">Etiquetas</h3>
   <ul class="entry">
   
     <li><a href="/blog/tags/PRML/">PRML</a><small>1</small></li>
@@ -389,13 +466,11 @@ J(W,b) ={\frac {1} {2} \left\| y-h_{W,b}(x)\right\|^2}$$</span><!-- Has MathJax 
   
     <li><a href="/blog/tags/decision-theory/">decision-theory</a><small>3</small></li>
   
-    <li><a href="/blog/tags/learning-theory/">learning-theory</a><small>1</small></li>
+    <li><a href="/blog/tags/learning-theory/">learning-theory</a><small>2</small></li>
   
     <li><a href="/blog/tags/math/">math</a><small>7</small></li>
   
     <li><a href="/blog/tags/neuralnet/">neuralnet</a><small>9</small></li>
-  
-    <li><a href="/blog/tags/neuralnet-variational-inference/">neuralnet, variational-inference</a><small>0</small></li>
   
     <li><a href="/blog/tags/optimization/">optimization</a><small>5</small></li>
   
