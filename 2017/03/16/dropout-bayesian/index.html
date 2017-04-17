@@ -68,6 +68,41 @@ SummaryThe dropout objective minimises the KL divergence between an approximate 
 <li>models distributions over functions. </li>
 <li>offers a way to get uncertainty estimates over the function values, robustness to over-fitting, and principled ways of hyper-parameter tuning. </li>
 </ul>
+<h4 id="How-to-get-uncertainty-information-from-these-deep-learning-models-for-free-–-without-changing-a-thing"><a href="#How-to-get-uncertainty-information-from-these-deep-learning-models-for-free-–-without-changing-a-thing" class="headerlink" title="How to get uncertainty information from these deep learning models for free – without changing a thing"></a>How to get uncertainty information from these deep learning models for free – without changing a thing</h4><ul>
+<li>it’s long been known that these deep tools can be related to Gaussian processes</li>
+<li><p>What are the uncertainty estimates that we can get from Gaussian proceses?<br>– Variance of a predictive distribution. </p>
+</li>
+<li><p>So when we say, we can get uncertainty information from dropout network, it means that we can just calculate the variance of the predictive distribution induced by our dropout network. </p>
+</li>
+</ul>
+<h4 id="How-exactly-do-we-calculate-the-variance-of-the-predictive-distribution"><a href="#How-exactly-do-we-calculate-the-variance-of-the-predictive-distribution" class="headerlink" title="How exactly do we calculate the variance of the predictive distribution?"></a>How exactly do we calculate the variance of the predictive distribution?</h4><ul>
+<li><ol>
+<li>Define a prior length-scale $l$, which captures our belief over the function frequency. A short length-scale ll corresponds to high frequency data, and a long length-scale corresponds to low frequency data.</li>
+</ol>
+</li>
+<li><ol>
+<li>Take the length-scale squared, and divide it by the weight decay. We then scale the result by half the dropout probability over the number of data points. That is,</li>
+</ol>
+</li>
+</ul>
+<span>$$\tau = \frac{l^2 p}{2 N \lambda}$$</span><!-- Has MathJax --> 
+<p>where $p$ indicates the probability of the units not being dropped. (usually $p$ is the probability of units being dropped, so be careful!)</p>
+<ul>
+<li><ol>
+<li>This $\tau$ is the Gaussian Process precision. (to see why see the derivation part.)</li>
+</ol>
+</li>
+<li><ol>
+<li>Next, simulate a network with a test point $x^<em>$ with dropout on. Repeat this $T$ times with different units dropped, and collect the results ${ y</em><em>t }</em>{t=1}^T$. These are empirical samples from our approximate predictive posterior distribution. </li>
+</ol>
+</li>
+<li><ol>
+<li>We can get an empirical estimator for the predictive mean of our approximate posterior as well as the predictive variance (our uncertainty) from these samples as follows:</li>
+</ol>
+</li>
+</ul>
+<span>$$E[ y^*] \approx \frac{1}{T} \sum_{t=1}^T \hat{y}^*_t(x^*) \\ 
+Var[y^*] \approx \tau^{-1} I + \frac{1}{T} \sum_{t=1}^T \hat{y}^*_t (x^*)^T \hat{y}^*_t (x^*) - E[y^*]^T E[y^*]$$</span><!-- Has MathJax --> 
 <h3 id="Bayesian-approach-to-function-approximation"><a href="#Bayesian-approach-to-function-approximation" class="headerlink" title="Bayesian approach to function approximation"></a>Bayesian approach to function approximation</h3><p>Given a training set <span>$\{ X_i, Y_i \}_{i=1}^n$</span><!-- Has MathJax -->, we want to estimate a function $y = f(x)$ that is likely to describe the relationship between $X$ and $Y$. </p>
 <p>Following the Bayesian approach, we can put some prior distribution over the space of functions $p(f)$.<br>We then look for the posterior distribution given data $(X,Y)$:</p>
 <span>$$p(f|X,Y) \propto p(Y|X, f) p(f)$$</span><!-- Has MathJax --> 
