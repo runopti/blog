@@ -50,6 +50,62 @@
     <header>
       
         <div class="icon"></div>
+        <time datetime="2017-04-19T00:49:09.000Z"><a href="/blog/2017/04/18/l1-nn-1/">2017-04-18</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/blog/2017/04/18/l1-nn-1/">l1-nn-1</a></h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>Notes for <a href="https://arxiv.org/pdf/1510.03528.pdf" target="_blank" rel="external">l1-legularized Neural Networks are Improperly Learnable in Polynomial Time</a></p>
+<h2 id="Problem-Setting"><a href="#Problem-Setting" class="headerlink" title="Problem Setting"></a>Problem Setting</h2><h3 id="Model"><a href="#Model" class="headerlink" title="Model:"></a>Model:</h3><p>For $|| x ||_2 \le 1$, the class of functions we consider is</p>
+<span>$\mathcal{N}_{k,L,\sigma} =  \left\{ f(x) = \sigma ( \cdots (\sigma(x\mathbf{W^{(1)}}) \cdots \mathbf{W^{(k)}} ) , \left\lVert \mathbf{W}^{(0)}_i \right\rVert_2 \le L, \left\lVert \mathbf{W}^{(l)}_i \right\rVert_1 \le L  \text{ for } 1 \le l \le k \right\}$</span><!-- Has MathJax --> 
+<p>where $\mathbf{W}_i$ represents its $i$th row vector. </p>
+<h3 id="Assumption-in-words"><a href="#Assumption-in-words" class="headerlink" title="Assumption (in words):"></a>Assumption (in words):</h3><ul>
+<li>The input vector $x$ has bounded $\ell_2$ norm: $\left\lVert x \right\rVert \le 1$</li>
+<li><p>The edge weights in the first layer have bounded $\ell_2$ norms.<br>($\rightarrow$ each row of $\mathbf{W^{(1)}}$ is bounded)</p>
+</li>
+<li><p>The edge weights in the other layers have bounded $\ell_1$ norms.<br>($\rightarrow$ The $\ell_1$-regularization induces sparsity on the neural network.)</p>
+</li>
+</ul>
+<h3 id="Goal"><a href="#Goal" class="headerlink" title="Goal:"></a>Goal:</h3><p>Learn a predictor $f: \mathcal{X} \rightarrow \mathbb{R}$ whose generalization loss is at most $\epsilon$ worse than that  of the best neural network in $\mathcal{N}_{k,L,\sigma}$</p>
+<h2 id="What’s-shown-in-the-paper"><a href="#What’s-shown-in-the-paper" class="headerlink" title="What’s shown in the paper:"></a>What’s shown in the paper:</h2><h4 id="Claim"><a href="#Claim" class="headerlink" title="Claim:"></a>Claim:</h4><p>Theorem 1 implies that the neural network activated by <span>$\sigma_{erf}$</span><!-- Has MathJax --> or <span>$\sigma_{sh}$</span><!-- Has MathJax --> is learnable in polynomial time given any constant $(k, L)$. </p>
+<h4 id="Proof-Steps"><a href="#Proof-Steps" class="headerlink" title="Proof Steps:"></a>Proof Steps:</h4><ul>
+<li><p>First show that the RKHS <span>$F_{k,B}$</span><!-- Has MathJax --> (induced by the kernel $K^k(x,y)$ which I will describe shortly) contains <span>$\mathcal{N_{k,L,\sigma}}$</span><!-- Has MathJax --> by arguing that any input to a neuron (which is a function of $x \in \mathcal{X}$) is an element of RKHS $F_{k,B}$. </p>
+</li>
+<li><p>Then show that if we use <span>$\sigma_{erf}$</span><!-- Has MathJax --> or <span>$\sigma_{sh}$</span><!-- Has MathJax -->, the norm of an input of an neuron in any layer will be bounded (which is equivalent to saying that $||f|| \le B$ for all $f \in F_{k,B}$.) (This part corresponds to Proposition 1 in the paper.)</p>
+</li>
+<li><p>Invoke Theorem 2.2 from <a href="https://www.cs.cornell.edu/~sridharan/sicomp.pdf" target="_blank" rel="external">(Shalev-Shwartz, 2011)</a> to establish the claim. </p>
+</li>
+</ul>
+<p>To be more precise in Step 2, they first construct this quantity $H(\lambda)$, which gives the upper bound on the norm of an input of any neuron. (This is shown in the proof for Lemma 1 in the Appendix A.) They then show that $H(\lambda)$ is bounded if we use <span>$\sigma_{erf}$</span><!-- Has MathJax --> or <span>$\sigma_{sh}$</span><!-- Has MathJax -->. </p>
+<h3 id="Kernel-function"><a href="#Kernel-function" class="headerlink" title="Kernel function"></a>Kernel function</h3><p>The kernel function they used is the following:<br><span>$$K(x,y) := \frac{1}{2 - &lt;x,y&gt;}$$</span><!-- Has MathJax --> </p>
+<p>The validity of this kernel is proven by explicitly constructing a mapping $\psi(x)$ s.t. $k(x,y) = &lt;\psi(x), \psi(y)&gt;$.<br>That is, they consider $\psi(x)$ as an infinite dimensional vector, indexed by $i$, where $i = (k_1, … , k_j)$ for all <span>$(k_1,...,k_j) \in \{1,...,n\}$</span><!-- Has MathJax --> and $j=1,..,\infty$. (So if we treat $\psi(x)$ as a $M-$dimensional vector, there exsits <span>$\sum_{j=0}^M n^j$</span><!-- Has MathJax --> number of entries in $\psi(x)$. Of course, this is just to grasp the picture of this vector. In reality, $M$ is infinity.)</p>
+<h2 id="Recursive-Kernel-Method"><a href="#Recursive-Kernel-Method" class="headerlink" title="Recursive Kernel Method"></a>Recursive Kernel Method</h2>
+      
+    </div>
+    <footer>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+
+  <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
         <time datetime="2017-04-16T18:25:49.000Z"><a href="/blog/2017/04/16/model-uncertainty/">2017-04-16</a></time>
       
       
@@ -675,56 +731,6 @@ c = \frac{||\theta||^2}{||\theta||^2 + m \sigma^2}$$</span><!-- Has MathJax -->
 
 
 
-  <article class="post">
-  
-  <div class="post-content">
-    <header>
-      
-        <div class="icon"></div>
-        <time datetime="2017-02-03T20:37:20.000Z"><a href="/blog/2017/02/03/mcmc/">2017-02-03</a></time>
-      
-      
-  
-    <h1 class="title"><a href="/blog/2017/02/03/mcmc/">Notes on MCMC</a></h1>
-  
-
-    </header>
-    <div class="entry">
-      
-        <p>MCMC (Markov Chain Monte Carlo) is a way to numerically sample from posterior distribution of interest by constructing Markov Chain in a smart way so that the stationary distribution of MC matches the desired posterior distribution.</p>
-<p>The way I see it is to consider Markov Chain as a search on the parameter space. The goal is to find a parameter $\theta$ that specifies the desired posterior distribution $p(\theta|x)$. </p>
-<p>To have a concrete picture, it’s useful to consider the parameter space (or should I say distribution space, which emphasizes that the space is invariance to reparametrization?) as a discrete space. </p>
-<p>Let’s say we partition the parameter space into a countable blocks, and we start from a certain block at time 0.<br>Suppose at time $t$, we are at block $x$. Denote this probability as $P(\theta_t \in x)$ </p>
-<p>How should we move? </p>
-<ul>
-<li><p>we should move toward regions of the parameter space with higher probability (with respect to the target distribution? But we don’t know this distribution do we..? Oh but we do know the likelihood and prior. So, although we cannot calculate the posterior distribution exactly, we are able to evaluate if the current point is higher than the next point, because this evaluation can be done by $\frac{p(\theta<em>{t+1})p(x|\theta</em>{t+1})}{p(\theta<em>{t})p(x|\theta</em>{t})}$; the integral constant will be cancelled out when you take the proportion.)</p>
-</li>
-<li><p>we should avoid the regions with lower probability with respect to the target distribution. </p>
-</li>
-</ul>
-<p>Transition matrix T(x|y) $\iff$ Proposal distribution with pdf $g(x|x’)$ defined for all $x,x’ \in \xx$. </p>
-<h3 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h3><ul>
-<li><p><a href="http://astrostatistics.psu.edu/su14/lectures/CosPop14-2-2-BayesComp-2.pdf" target="_blank" rel="external">http://astrostatistics.psu.edu/su14/lectures/CosPop14-2-2-BayesComp-2.pdf</a></p>
-</li>
-<li><p><a href="http://www2.stat.duke.edu/~km68/materials/214.7%20(MH).pdf" target="_blank" rel="external">http://www2.stat.duke.edu/~km68/materials/214.7%20(MH).pdf</a></p>
-</li>
-</ul>
-
-      
-    </div>
-    <footer>
-      
-        
-        
-      
-      <div class="clearfix"></div>
-    </footer>
-  </div>
-</article>
-
-
-
-
 
 <nav id="pagination">
   
@@ -754,11 +760,11 @@ c = \frac{||\theta||^2}{||\theta||^2 + m \sigma^2}$$</span><!-- Has MathJax -->
   
     <li><a href="/blog/tags/decision-theory/">decision-theory</a><small>3</small></li>
   
-    <li><a href="/blog/tags/learning-theory/">learning-theory</a><small>2</small></li>
+    <li><a href="/blog/tags/learning-theory/">learning-theory</a><small>3</small></li>
   
     <li><a href="/blog/tags/math/">math</a><small>7</small></li>
   
-    <li><a href="/blog/tags/neuralnet/">neuralnet</a><small>9</small></li>
+    <li><a href="/blog/tags/neuralnet/">neuralnet</a><small>10</small></li>
   
     <li><a href="/blog/tags/optimization/">optimization</a><small>5</small></li>
   

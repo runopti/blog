@@ -50,6 +50,60 @@
     <header>
       
         <div class="icon"></div>
+        <time datetime="2016-06-30T10:31:24.000Z"><a href="/blog/2016/06/30/MetricLearningPart1/">2016-06-30</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/blog/2016/06/30/MetricLearningPart1/">Metric Learning Part1</a></h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <h2 id="Metric-Learning-Part-1"><a href="#Metric-Learning-Part-1" class="headerlink" title="Metric Learning: Part 1"></a>Metric Learning: Part 1</h2><hr>
+<p><strong><em>Note:</em></strong> <em>this post is the first part of the distance metric series. The first post discusses “Distance Metric Learning, with application<br>to clustering with side-information” (<a href="http://ai.stanford.edu/~ang/papers/nips02-metric.pdf" target="_blank" rel="external">http://ai.stanford.edu/~ang/papers/nips02-metric.pdf</a>) and the<br>second post discusses “Geometric Mean Metric Learning” (<a href="http://suvrit.de/papers/GMML.pdf" target="_blank" rel="external">http://suvrit.de/papers/GMML.pdf</a>)</em></p>
+<hr>
+<p>I attended one of the optimization session on the first day of ICML and one of the talks I listened to was about geometric<br>mean metric learning (<a href="http://suvrit.de/papers/GMML.pdf" target="_blank" rel="external">http://suvrit.de/papers/GMML.pdf</a>). I was amazed by their result so I’ll make some notes about<br>their method for myself. </p>
+<p>In many machine learning tasks (i.e. classification, search, clustering),<br>it is necessary to learn some sort of notion of distance between input<br>data points. For example, in classification, one needs to –</p>
+<p>Metric learning was (first?) introduced in this paper: “Distance Metric Learning, with application<br>to clustering with side-information”<br><a href="http://ai.stanford.edu/~ang/papers/nips02-metric.pdf" target="_blank" rel="external">http://ai.stanford.edu/~ang/papers/nips02-metric.pdf</a>.</p>
+<h3 id="Problem-Setting"><a href="#Problem-Setting" class="headerlink" title="Problem Setting"></a>Problem Setting</h3><hr>
+<p>Suppose we have a set of points <span>$\{x_i\}_{i=1}^n \subseteq R^m$</span><!-- Has MathJax -->. Suppose also we are given a set of “side information” that tells us that a certain set of points are “similar” s.t. <span>$S: (x_i, x_j) \in S \text{ if } x_i \text{ and } x_j \text{ are similar. }$</span><!-- Has MathJax --> How can we encode this similar-dissimilar information in a distance metric? </p>
+<h3 id="Simple-answer"><a href="#Simple-answer" class="headerlink" title="Simple answer"></a>Simple answer</h3><hr>
+<p>Learn a Mahalanobis distance $d(x,y) = \sqrt{(x-y)^T A (x-y)}$ so that $A$ will somehow encode the desired information. </p>
+<p>Now the problem is reduced to how to learn the matrix A. Whenever we want to learn something, we should remind ourselves of viewing it as optimization. To do so, we need to define what we want to minimize (or maximize…just flip the sign of the objective function), which should correspond to the notion of “goodness” of the matrix A. But before that, we will go over how the Mahalanobis distance came in.</p>
+<h3 id="Mahalanobis-distance-in-R-2"><a href="#Mahalanobis-distance-in-R-2" class="headerlink" title="Mahalanobis distance in R^2"></a>Mahalanobis distance in R^2</h3><p>To get the feel of it, we will look at some examples. </p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</div><div class="line"><span class="keyword">import</span> tensorflow <span class="keyword">as</span> tf</div><div class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</div></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">%matplotlib inline</div><div class="line">mu = [<span class="number">0</span>, <span class="number">0</span>]</div><div class="line">cov = [[<span class="number">1</span>,<span class="number">0</span>],[<span class="number">0</span>,<span class="number">1</span>]]</div><div class="line">x_data, y_data = np.random.multivariate_normal(mu,cov,<span class="number">500</span>).T</div><div class="line"><span class="comment">#x_data = np.float32(np.random.rand(1,1000))</span></div><div class="line"><span class="comment">#y_data = np.float32(np.random.rand(1,1000))</span></div><div class="line">fig = plt.figure(figsize=(<span class="number">8</span>,<span class="number">8</span>))</div><div class="line">plt.axis([<span class="number">-10.0</span>,<span class="number">10.0</span>,<span class="number">-10.0</span>,<span class="number">10.0</span>],size=<span class="number">20</span>)</div><div class="line">plt.grid(<span class="keyword">True</span>)</div><div class="line">ax = fig.add_subplot(<span class="number">1</span>,<span class="number">1</span>,<span class="number">1</span>)</div><div class="line">plot_out = plt.scatter(x_data,y_data,color=<span class="string">'b'</span>,marker=<span class="string">'o'</span>,label=<span class="string">"$K_2,mu_2$"</span>, alpha=<span class="number">0.3</span>)</div><div class="line">circle = plt.Circle((<span class="number">0</span>,<span class="number">0</span>),<span class="number">1</span>,color=<span class="string">'r'</span>, fill=<span class="keyword">False</span>, alpha=<span class="number">0.9</span>)</div><div class="line">plot_out = ax.add_artist(circle)</div><div class="line"><span class="comment">#plot_out = plt.plot(x_data, y_data, "bo", alpha=0.3, )</span></div><div class="line"></div><div class="line"><span class="comment">#plt.show()</span></div></pre></td></tr></table></figure>
+<img src="/blog/2016/06/30/MetricLearningPart1/output_6_0.png" alt="title" title="title">
+<p>Suppose that the data distribution were Gaussian and our data samples are distributed according to $N(0, I)$. The red circle marks the unit standard deviation. Now, take two blue points x and y. The Euclidian distance between x and y is $|| x - y ||_2 = \sqrt{(x-y)^T (x-y)}$. Now normally the data are not distributed according to Gaussian, but rather some obscure distribution. In this data distribution, some data samples might be “similar” and others are not. If we use Euclidian distance as a way to measure similarity, we might end up disregarding the intrinsic information within the data distribution. We want to “correct” this.  </p>
+<p>To be more concrete, suppose our real data distribution were something like $\mu = 0$ and $Cov = [[1,0], [0, 6]], which is still too simplistic for any real data. Then sample distribution might look like this:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">%matplotlib inline</div><div class="line">mu = [<span class="number">0</span>, <span class="number">0</span>]</div><div class="line">cov = [[<span class="number">3</span>,<span class="number">1</span>],[<span class="number">1</span>,<span class="number">2</span>]]</div><div class="line">x_data, y_data = np.random.multivariate_normal(mu,cov,<span class="number">500</span>).T</div><div class="line"><span class="comment">#x_data = np.float32(np.random.rand(1,1000))</span></div><div class="line"><span class="comment">#y_data = np.float32(np.random.rand(1,1000))</span></div><div class="line">fig = plt.figure(figsize=(<span class="number">8</span>,<span class="number">8</span>))</div><div class="line">plt.axis([<span class="number">-10.0</span>,<span class="number">10.0</span>,<span class="number">-10.0</span>,<span class="number">10.0</span>],size=<span class="number">20</span>)</div><div class="line">plt.grid(<span class="keyword">True</span>)</div><div class="line">ax = fig.add_subplot(<span class="number">1</span>,<span class="number">1</span>,<span class="number">1</span>)</div><div class="line">plot_out = plt.scatter(x_data,y_data,color=<span class="string">'b'</span>,marker=<span class="string">'o'</span>,label=<span class="string">"$K_2,mu_2$"</span>, alpha=<span class="number">0.3</span>)</div><div class="line">circle = plt.Circle((<span class="number">0</span>,<span class="number">0</span>),<span class="number">1</span>,color=<span class="string">'r'</span>, fill=<span class="keyword">False</span>, alpha=<span class="number">0.9</span>)</div><div class="line">plot_out = ax.add_artist(circle)</div><div class="line"></div><div class="line"><span class="comment"># TO DO: I should fix the red circle so that it will correspond to the blue distribution.</span></div></pre></td></tr></table></figure>
+<img src="/blog/2016/06/30/MetricLearningPart1/output_9_0.png" alt="title" title="title">
+<p>In order to reflect the distortion, we should use ; what is the correct way to measure the distance between x and y in the new plot? For example, can we say that the point at the top of the distribution and that point right this and this are the same distance? We should fix this because we think that those two points that are along the principle direction should be “more” similar than those that are not (in this case perpendicular). How can we fix this? By rotating back. The rotation matrix we used was C. So one correct distance metric we could use is $|| x - y ||_{C^{-1}} = \sqrt{(x-y)^T C^{-1} (x-y)}$</p>
+<p>Now let’s go back to the paper. What the paper says is this: why not let the data decide which matrix $C^{-1}$ to use. </p>
+<h3 id="Optimization-problem"><a href="#Optimization-problem" class="headerlink" title="Optimization problem"></a>Optimization problem</h3><p>The simplest formulation would be : <span>$\min \sum_{x_i, y_i \in S} || x_i - y_i ||_A$</span><!-- Has MathJax -->. However, this would lead to the non-interesting answer which is to let A be 0 matrix, which will give us 0 for even pairs of x and y which are in a dissimilar set $D$. So we should have a restriction which prevents that to happen. One way to do is add a constraint on $A$ such that $\sum_{x_i, y_i \in D} || x_i - y_i ||_A \ge c$, where $c$ is some positive constant.  such that (most of) $|| x_i - y_i ||_A = 0$ even if $x_i \neq y_i$, which is not even a distance anymore. (Recall the definition of “distance”.) So the final form is:<br><span>$\min \sum_{x_i, y_i \in S} || x_i - y_i ||_A  \text{ s.t. }  \sum_{x_i, y_i \in D} || x_i - y_i ||_A \ge c \text{ and } A \succeq 0$</span><!-- Has MathJax --></p>
+
+      
+    </div>
+    <footer>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+
+  <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
         <time datetime="2016-06-06T22:17:33.000Z"><a href="/blog/2016/06/06/Ch19-Approximate-Inference/">2016-06-06</a></time>
       
       
@@ -548,11 +602,11 @@ J(W,b) ={\frac {1} {2} \left\| y-h_{W,b}(x)\right\|^2}$$</span><!-- Has MathJax 
   
     <li><a href="/blog/tags/decision-theory/">decision-theory</a><small>3</small></li>
   
-    <li><a href="/blog/tags/learning-theory/">learning-theory</a><small>2</small></li>
+    <li><a href="/blog/tags/learning-theory/">learning-theory</a><small>3</small></li>
   
     <li><a href="/blog/tags/math/">math</a><small>7</small></li>
   
-    <li><a href="/blog/tags/neuralnet/">neuralnet</a><small>9</small></li>
+    <li><a href="/blog/tags/neuralnet/">neuralnet</a><small>10</small></li>
   
     <li><a href="/blog/tags/optimization/">optimization</a><small>5</small></li>
   
