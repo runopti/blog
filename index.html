@@ -173,6 +173,8 @@
 <li><p>the “regular” inner product definition </p>
 </li>
 </ul>
+<p>For example, take two functions $f(\cdot) = \sum_{i=1}^m \alpha_i k(\cdot, x_i)$ and <span>$g(\cdot) = \sum_{j=1}^{m&apos;} \beta_j k(\cdot, x&apos;_j)$</span><!-- Has MathJax -->.<br>Define the inner product:<br><span>$&lt;f, g&gt;_{\mathcal{H}_k} = \sum_{i=1}^m \sum_{j=1}^{m&apos;} \alpha_i \beta_j k(x_i, x&apos;_j)$</span><!-- Has MathJax --></p>
+<p>Then,<br><span>$&lt;f, k(\cdot, x&apos;_k)&gt; = \sum_{i=1}^m \sum_{j=1}^{m&apos;} \alpha_i \beta_j k(x_i, x&apos;_j) = \sum_{i=1}^m \alpha_i k(x_i,x&apos;_k) = f(x&apos;_k)$</span><!-- Has MathJax --><br>where I set $\beta_j = 0$ when $j \neq k$ and $\beta_j = 1$ when $j=k$ to represent $k(\cdot, x_k)$ as a linear combinations of kernels in the Hilbert space.</p>
 <p>Often times, the reproducing property is introduced to define RKHS (because it’s simpler?), but at least to me, viewing the reproducing property as a natural consequence from these two facts above was easier to grasp the concept of RKHS than thinking it as a condition required to construct RKHS, although this is more like the chicken and egg thing. </p>
 
       
